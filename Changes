@@ -2,6 +2,7 @@
     -   A belated thank you added to the anonymous folk who send in RT bugs ;-)
     -   Tweaked link to XUL::Node in SEE ALSO so hopefully it will work on
         search.cpan.org
+    -   Changed RT link so it went directly to Test::Class page
 
 0.10
     -   Really fixed the _test_classes by (doh!)

@@ -50,7 +50,7 @@ sub _test_info {
 
 sub _method_info {
 	my ($self, $class, $method) = @_;
-	return(_test_info($self)->{$class}->{$method});
+	return( _test_info($self)->{$class}->{$method} );
 };
 
 sub _methods_of_class {
@@ -75,11 +75,14 @@ sub _parse_attribute_args {
 	return( $type, $num_tests );
 };
 
-sub Tests : ATTR(CODE,RAWDATA) {
-	my ($class, $symbol, $code_ref, $attr, $args) = @_;
-    $args ||= 'no_plan';
-    Test( $class, $symbol, $code_ref, $attr, $args );
-};
+sub _is_public_method {
+    my ($class, $name) = @_;
+    foreach my $parent_class ( Class::ISA::super_path( $class ) ) {
+        return unless $parent_class->can( $name );
+        return if _method_info( $class, $parent_class, $name );
+    }
+    return 1;
+}
 
 sub Test : ATTR(CODE,RAWDATA) {
 	my ($class, $symbol, $code_ref, $attr, $args) = @_;
@@ -87,6 +90,8 @@ sub Test : ATTR(CODE,RAWDATA) {
 		warn "cannot test anonymous subs\n";
 	} else {
         my $name = *{$symbol}{NAME};
+        warn "overriding public method $name with a test method in $class\n"
+                if _is_public_method( $class, $name );
         eval { 
             my ($type, $num_tests) = _parse_attribute_args($args);        
             $Tests->{$class}->{$name} = Test::Class::MethodInfo->new(
@@ -98,6 +103,11 @@ sub Test : ATTR(CODE,RAWDATA) {
     };
 };
 
+sub Tests : ATTR(CODE,RAWDATA) {
+	my ($class, $symbol, $code_ref, $attr, $args) = @_;
+    $args ||= 'no_plan';
+    Test( $class, $symbol, $code_ref, $attr, $args );
+};
 
 sub new {
 	my $proto = shift;

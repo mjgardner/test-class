@@ -1017,21 +1017,21 @@ Test::Unit implements it's own testing framework separate from L<Test::Harness>.
 
 None known at the time of writing.
 
-If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/>.
+If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-Class>.
 
 
 =head1 TO DO
 
 If you think this module should do something that it doesn't (or does something that it shouldn't) please let me know.
 
-You can see my current to do list at L<http://adrianh.tadalist.com/lists/show/4798>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/4798>.
+You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/4798>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/4798>.
 
 
 =head1 ACKNOWLEGEMENTS
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon, anonymous RT bug submitters and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
