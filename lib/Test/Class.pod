@@ -183,9 +183,16 @@ If your test method runs more than one test, you should put the number of tests 
       is(20 + 10, 30, '  both ways');
   };
 
-If you don't know the number of tests at compile time you use C<no_plan> like this.
+If you don't know the number of tests at compile time you can use C<no_plan> like this.
 
   sub check_class : Test(no_plan) {
+      my $objects = shift->{objects};
+      isa_ok($_, "Object") foreach @$objects;
+  };
+  
+or use the :Tests attribute, which acts just like C<:Test> but defaults to C<no_plan> if no number is given:
+
+  sub check_class : Tests {
       my $objects = shift->{objects};
       isa_ok($_, "Object") foreach @$objects;
   };
@@ -442,7 +449,7 @@ You can also skip tests just as you do in Test::More or Test::Builder - see L<Te
 
 I<Note:> if you want to skip tests in a method with C<no_plan> tests then you have to explicitly skip the tests in the method - since Test::Class cannot determine how many tests (if any) should be skipped:
 
-  sub test_objects : Test(no_plan) {
+  sub test_objects : Tests {
       my $self = shift;
       my $objects = $self->{objects};
       if (@$objects) {
@@ -599,6 +606,17 @@ If N is the string C<no_plan> then the method can run an arbitrary number of tes
 If N is not specified it defaults to C<1> for test methods, and C<0> for startup, setup, teardown and shutdown methods. 
 
 You can change the number of tests that a method runs using L<num_method_tests()|/"num_method_tests"> or L<num_tests()|/"num_tests">.
+
+
+=item B<Tests>
+
+  sub method_name : Tests { ... };
+  sub method_name : Tests(N) { ... };
+
+Acts just like the C<:Test> attribute, except that if the number of tests is not specified it defaults to C<no_plan>. So the following are equivalent:
+
+  sub silly1 :Test( no_plan ) { ok(1) foreach (1 .. rand 5) };
+  sub silly2 :Tests           { ok(1) foreach (1 .. rand 5) };
 
 
 =item B<new>
@@ -767,7 +785,7 @@ For example, the following test class will run a different number of tests depen
       return($self);
   };
 
-  sub test_objects : Test(no_plan) {
+  sub test_objects : Tests {
     my $self = shift;
     ok($_->open, "opened $_") foreach @{$self->{objects}};
   };
@@ -809,7 +827,7 @@ Set or return the number of expected tests associated with the currently running
 
 For example:
 
-  sub txt_files_readable : Test(no_plan) {
+  sub txt_files_readable : Tests {
       my $self = shift;
       my @files = <*.txt>;
       $self->num_tests(scalar(@files));

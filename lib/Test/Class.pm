@@ -75,6 +75,12 @@ sub _parse_attribute_args {
 	return( $type, $num_tests );
 };
 
+sub Tests : ATTR(CODE,RAWDATA) {
+	my ($class, $symbol, $code_ref, $attr, $args) = @_;
+    $args ||= 'no_plan';
+    Test( $class, $symbol, $code_ref, $attr, $args );
+};
+
 sub Test : ATTR(CODE,RAWDATA) {
 	my ($class, $symbol, $code_ref, $attr, $args) = @_;
 	if ($symbol eq "ANON") {
@@ -91,6 +97,7 @@ sub Test : ATTR(CODE,RAWDATA) {
         } || warn "bad test definition '$args' in $class->$name\n";	
     };
 };
+
 
 sub new {
 	my $proto = shift;

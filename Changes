@@ -1,6 +1,8 @@
 0.10
     -   Really fixed the _test_classes by (doh!)
-    
+    -   Added :Tests attribute that acts like :Test but defaults to 'no_plan'
+        if no test number is given.
+
 0.09
     -   Fixed bug with _test_classes spotted by Corion's cpan smoker
         (see t/test_classes.t)
