@@ -256,7 +256,7 @@ sub SKIP_CLASS {
 
 sub _test_classes {
 	my $class = shift;
-	grep { $_ ne '0' && $_->isa( $class ) } Devel::Symdump->rnew->packages;
+	grep { $_ && $_->isa( $class ) } Devel::Symdump->rnew->packages;
 };
 
 sub runtests {
