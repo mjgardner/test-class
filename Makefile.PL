@@ -17,6 +17,6 @@ WriteMakefile(
     	Devel::Symdump			=> 2.03,
     }, # e.g., Module::Name => 1.1
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'lib/Test/Class.pm', # retrieve abstract from module
+      (ABSTRACT_FROM => 'lib/Test/Class.pod', # retrieve abstract from module
        AUTHOR     => 'Adrian Howard <adrianh@quietstars.com>') : ()),
 );
