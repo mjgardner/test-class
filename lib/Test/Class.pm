@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.06_1';
+our $VERSION = '0.06_2';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -34,9 +34,16 @@ sub builder { $Builder };
 
 my $Tests = {};
 
+my %_Test;  # inside-out object field indexed on $self
+
+sub DESTROY {
+    my $self = shift;
+    delete $_Test{$self};
+};
+
 sub _test_info {
 	my $self = shift;
-	return(ref($self) ? $self->{_test} : $Tests);
+	return(ref($self) ? $_Test{$self} : $Tests);
 };
 
 sub _method_info {
@@ -60,10 +67,11 @@ sub add_method {
 
 sub _new_method_info {
 	my ($class, $method_name, $args) = @_;
-	$args ||= "test => 1";
 	my $num_tests = 0;
 	my @types;
-	foreach my $arg (split /\s*=>\s*/, $args) {
+	$args ||= "test => 1";
+	$args =~ s/\s+//sg;
+	foreach my $arg (split /=>/, $args) {
 		if (Test::Class::MethodInfo->is_num_tests($arg)) {
 			$num_tests = $arg;
 		} elsif (Test::Class::MethodInfo->is_method_type($arg)) {
@@ -93,8 +101,7 @@ sub new {
 	my $class = ref($proto) || $proto;
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
-	$self->{_test} = dclone($Tests);
-	$self->{-test} = "the documentation says you shouldn't use this...";
+	$_Test{$self} = dclone($Tests);
 	return($self);
 };
 
