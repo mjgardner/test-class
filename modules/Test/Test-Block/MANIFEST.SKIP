@@ -6,3 +6,4 @@ MANIFEST.SKIP
 Makefile$
 \.old$
 ^Test-Exception-
+\.svn

@@ -13,7 +13,7 @@ test_test("count okay");
 
 
 test_out('ok 1');
-test_out('not ok 2 - block expected 2 test(s) and ran 1');
+test_out('not ok 2 - block 2 expected 2 test(s) and ran 1');
 test_fail(+2);
 {
 	my $block = Test::Block->plan(2);
@@ -24,7 +24,7 @@ test_test("too few tests");
 
 test_out('ok 1');
 test_out('ok 2');
-test_out('not ok 3 - block expected 1 test(s) and ran 2');
+test_out('not ok 3 - block 3 expected 1 test(s) and ran 2');
 test_fail(+2);
 {
 	my $block = Test::Block->plan(1);
@@ -56,10 +56,10 @@ test_out('ok 1');
 test_test("nested blocks");
 
 test_out('ok 1');
-test_out("not ok 2 - block 'foo' expected 2 test(s) and ran 1");
+test_out("not ok 2 - block foo expected 2 test(s) and ran 1");
 test_fail(+2);
 {
-	my $block = Test::Block->plan(tests => 2, name => 'foo');
+	my $block = Test::Block->plan(foo => 2);
 	ok(1);
 }
 test_test("named block");

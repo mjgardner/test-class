@@ -5,7 +5,7 @@ use Test::More;
 use Test::Block;
 
 test_out("ok 1 - remaining set");
-test_out("not ok 2 - block 'inner' expected 1 test(s) and ran 0");
+test_out("not ok 2 - block inner expected 1 test(s) and ran 0");
 test_fail(+8);
 test_out("ok 3 - remaining updated");
 test_out("ok 4 # skip last test");
@@ -14,7 +14,7 @@ SKIP: {
 	local $Test::Block::Plan = 4;
 	is( $Test::Block::Plan, 4, 'remaining set' );
 	{
-		local $Test::Block::Plan = {tests => 1, name => 'inner'};
+		local $Test::Block::Plan = { inner => 1 };
 	}
 	is( $Test::Block::Plan, 2, 'remaining updated' );
 	skip 'last test', $Test::Block::Plan;
