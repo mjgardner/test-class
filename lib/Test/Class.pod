@@ -1086,7 +1086,7 @@ L<Pixie>
 
 =item *
 
-L<XUL::Node>
+L<XUL-Node>
 
 =back
 
