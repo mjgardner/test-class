@@ -1,0 +1,14 @@
+Changes
+lib/Test/Block.pm
+Makefile.PL
+MANIFEST			This list of files
+README
+t/all_in_block.t
+t/bad_args.t
+t/block.t
+t/class_methods.t
+t/documented.t
+t/import.t
+t/pod.t
+t/variable.t
+META.yml                                 Module meta-data (added by MakeMaker)

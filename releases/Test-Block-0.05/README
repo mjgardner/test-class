@@ -1,0 +1,116 @@
+NAME
+    Test::Block - specify fine granuality test plans
+
+SYNOPSIS
+      use Test::More 'no_plan';
+      use Test::Block;
+
+      {
+          # This block should run exactly two tests
+          my $block = Test::Block->expecting(2);
+          ok(1);
+          ok(1);
+      };
+
+      SKIP: {
+          # This block should run exactly three tests
+          my $block = Test::Block->expecting(3);
+          ok(1);
+          skip "skip remaining tests in block", $block->remaining;
+      };
+
+DESCRIPTION
+    This module allows you to specify the number of expected tests at a
+    finer level of granuality than an entire test script. It is built with
+    Test::Builder and plays happily with Test::More and friends.
+
+    If you are not already familiar with Test::More now would be the time to
+    go take a look.
+
+    expecting
+        You create a Test::Block object with the "expecting" class method,
+        specifying the number of tests. When the object is destroyed it
+        creates a failed test if the expected number of tests have not run.
+        For example doing:
+
+          {
+              my $block = Test::Block->expecting(3);
+              ok(1);
+              # oops - missed two tests out
+          }
+
+        will produce
+
+          ok 1
+          not ok 2 - block expected 3 test(s) and ran 1
+
+    remaining
+        You can find out the number of remaining tests in the block by
+        calling the "remaining" method on the object. This can be useful in
+        "SKIP" blocks, for example:
+
+          SKIP: {
+              my $block = Test::Block->expecting(5);
+              my $pig = Pig->new;
+              isa_ok($pig, 'Pig')
+                  || skip "cannot breed pigs", $block->remaining;
+              can_ok($pig, 'takeoff')
+                  || skip "pigs don't fly here", $block->remaining;
+              ok($pig->takeoff, 'takeoff')
+                  || skip "takeoff failed", $block->remaining;
+              ok( $pig->altitude > 0, 'Pig is airborne' );
+              ok( $pig->airspeed > 0, '  and moving'    );
+          };
+
+        If you run this test in an environment where "Pig->new" worked and
+        the takeoff method existed, but failed when ran, you would get:
+
+          ok 1 - The object isa Pig
+          ok 2 - can takeoff
+          not ok 3 - takeoff
+          ok 4 # skip takeoff failed
+          ok 5 # skip takeoff failed
+
+BUGS
+    None known at the time of writing.
+
+    If you find any please let me know by e-mail, or report the problem with
+    <http://rt.cpan.org/>.
+
+TO DO
+    Nothing at the time of writing.
+
+    If you think this module should do something that it doesn't do at the
+    moment please let me know.
+
+ACKNOWLEGEMENTS
+    Thanks to chromatic and Michael G Schwern for the excellent
+    Test::Builder, without which this module wouldn't be possible.
+
+    Thanks to Michael G Schwern and Tony Bowden for the mails on
+    perl-qa@perl.org that sparked the idea for this module.
+
+AUTHOR
+    Adrian Howard <adrianh@quietstars.com>
+
+    If you can spare the time, please drop me a line if you find this module
+    useful.
+
+SEE ALSO
+    Test::Builder provides a consistent backend for building test libraries.
+    The following modules are all built with Test::Builder and work well
+    together.
+
+    Test::Simple & Test::More
+        Basic utilities for writing tests.
+
+    Test::Class
+        Easily create test classes in an xUnit style. Test::Class allows you
+        to specify the number of tests on a method-by-method basis.
+
+LICENCE
+    Copyright 2003 Adrian Howard, All Rights Reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
