@@ -11,7 +11,6 @@ Test::Class - easily create test classes in an xUnit/JUnit style
   # setup methods are run before every test method. 
   sub make_fixture : Test(setup) {
       my $array = [1, 2];
-      diag("array = (@$array) before test(s)");
       shift->{test_array} = $array;
   };
 
@@ -37,18 +36,16 @@ Test::Class - easily create test classes in an xUnit/JUnit style
       diag("array = (@$array) after test(s)");
   };
   
-  Test::Class->runtests;
+  Example::Test->runtests;
 
 Outputs:
 
-  # array = (1 2) before test(s)
   1..5
   ok 1 - pop = 2
   ok 2 - pop = 1
   ok 3 - array empty
   ok 4 - pop = undef
   # array = () after test(s)
-  # array = (1 2) before test(s)
   ok 5 - push worked
   # array = (1 2 3) after test(s)
 
@@ -172,9 +169,11 @@ You define test methods using the L<Test|/"Test"> attribute. For example:
   use base qw(Test::Class);
   use Test::More;
 
-  sub always_pass : Test { ok(1 == 1) };
+  sub subtraction : Test {
+      is( 2-1, 1, 'subtraction works );
+  };
 
-This declares the C<always_pass> method as a test method that runs one test. 
+This declares the C<subtraction> method as a test method that runs one test. 
 
 If your test method runs more than one test, you should put the number of tests in brackets like this:
 
@@ -224,23 +223,14 @@ You can also declare setup and teardown methods as running tests. For example yo
       ok($pig->alive, 'pig survived tests' );
   };
 
-You can even have a method run as both a setup and a teardown. For example:
-
-  sub pig_status : Test(setup => teardown) {
-      my $pig = shift->{test_pig};
-      diag("The pig is " . ($pig->hungry ? "hungry" : "full"));
-  };
-  
-The above will be run before and after every test method.
-
 
 =head2 3) Startup and shutdown methods
 
-Startup and shutdown methods are like setup and teardown methods for the whole test suite. All the startup methods are run once when you start running a test class. All the shutdown methods are run once just before a test class stops running.
+Startup and shutdown methods are like setup and teardown methods for the whole test class. All the startup methods are run once when you start running a test class. All the shutdown methods are run once just before a test class stops running.
 
 You can use these to create and destroy expensive objects that you don't want to have to create and destroy for every test - a database connection for example:
 
-  sub db_connect : Test(setup) {
+  sub db_connect : Test(startup) {
       shift->{dbi} = DBI->connect;
   };
   
@@ -254,13 +244,103 @@ Just like setup and teardown methods you can pass an optional number of tests to
       ok(1, 'a setup method with one test');
   };
 
-   
-  
+=head1 RUNNING TESTS
+
+You have already seen that you can run all the test methods in a test class by doing:
+
+  Example::Test->runtests
+
+This is actually a shortcut for saying:
+
+  Example::Test->new->runtests
+
+The object created by C<Example::Test-E<gt>new> is the one passed to every method.
+
+If you want to run multiple test objects in a single script you can pass L<runtests()|/"runtests"> a list of test objects. For example:
+
+  my $o1 = Example::Test->new;
+  my $o2 = Another::Test->new;
+  # runs all the tests in $o1 and $o2
+  $o1->runtests($o2);
+
+Since, by definition, the base Test::Class has no tests you could also have written:
+
+  my $o1 = Example::Test->new;
+  my $o2 = Another::Test->new;
+  Test::Class->runtests($o1, $o2);
+
+Since you can pass L<runtests()|/"runtests"> class names instead of objects the above can be written more compactly as:
+
+  Test::Class->runtests(qw( Example::Test Another::Test ))
+
+In all of the above examples L<runtests()|/"runtests"> will look at the number of tests both test classes run and output an appropriate test header for L<Test::Harness> automatically.
+
+What happens if you run test classes and normal tests in the same script? For example:
+
+  Example::Test->runtests;
+  ok(Example->new->foo, 'a test not in the test class');
+  ok(Example->new->bar, 'ditto');
+
+L<Test::Harness> will complain that it saw more tests than it expected since the test header output by L<runtests()|/"runtests"> will not include the two normal tests.
+
+To overcome this problem you can pass an integer value to L<runtests()|/"runtests">. This is added to the total number of tests in the test header. So the problematic example can be rewritten as follows:
+
+  Example::Test->runtests(+2);
+  ok(Example->new->foo, 'a test not in the test class');
+  ok(Example->new->bar, 'ditto');
+
+If you prefer to write your test plan explicitly you can use L<expected_tests()|/"expected_tests"> to find out the number of tests a class/object is expected to run.
+
+Since L<runtests()|/"runtests"> will not output a test plan if one has already been set the previous example can be written as:
+
+  plan tests => Example::Test->expected_tests(+2);
+  Example::Test->runtests;
+  ok(Example->new->foo, 'a test not in the test class');
+  ok(Example->new->bar, 'ditto');
+
+I<Remember:> Test objects are just normal perl objects. Test classes are just normal perl classes. Setup, test and teardown methods are just normal methods. You are completely free to have other methods in your class that are called from your test methods, or have object specific C<new> and C<DESTROY> methods. 
+
+In particular you can override the new() method to pass parameters to your test object, or re-define the number of tests a method will run. See L<num_method_tests()|/"num_method_tests"> for an example. 
+
+
+
 =head1 RUNNING ORDER OF METHODS
 
-Methods of each type are run in ASCII order.
+Methods of each type are run in the following order:
 
-Most of the time you should not care what order tests are run in, but it can be useful. For example:
+=over 4
+
+=item 1.
+
+All of the startup methods in alphabetical order
+
+=item 2.
+
+For each test method, in alphabetical order:
+
+=over 4
+
+=item 2a.
+
+All of the setup methods in alphabetical order
+
+=item 2b.
+
+The test method.
+
+=item 2c.
+
+All of the teardown methods in alphabetical order
+
+=back
+
+=item 3.
+
+All of the shutdown methods in alphabetical order.
+
+=back
+
+Most of the time you should not care what order tests are run in, but it can occasionaly be useful to force some test methods to be run early. For example:
 
   sub _check_new {
       my $self = shift;
@@ -269,14 +349,10 @@ Most of the time you should not care what order tests are run in, but it can be 
 
 The leading C<_> will force the above method to run first - allowing the entire suite to be aborted before any other test methods run.
 
-Just like test methods, setup and teardown methods are run in alphabetical order before/after each test method.
-
-Finally startup and shutdown methods are run in alphabetical order before/after when the test suite starts/finishes.
-
 
 =head1 HANDLING EXCEPTIONS
 
-If a setup, test or teardown method dies then L<runtests()|/"runtests"> will catch the exception and fail any remaining tests in the method. For example:
+If a setup, test or teardown method dies then L<runtests()|/"runtests"> will catch the exception and fail any remaining test. For example:
 
   sub test_object : Test(2) {
       my $object = Object->new;
@@ -307,6 +383,8 @@ with:
   sub read_file : Test {
       is(read_file('test.txt'), "content", 'test file read');
   };
+  
+If more than one test remains after an exception then the first one is failed, and the remaining ones are skipped.
 
 
 =head1 SKIPPED TESTS
@@ -334,7 +412,7 @@ If you run this test in an environment where C<Pig-E<gt>new> worked and the take
 
 You can also skip tests just as you do in Test::More or Test::Builder - see L<Test::More/"Conditional tests"> for more information. 
 
-I<Note:> if you want to skip tests in a method with C<no_plan> tests then you have to explicitly skip the tests in the method - since Test::Class cannot determine how many tests should be skipped. For example:
+I<Note:> if you want to skip tests in a method with C<no_plan> tests then you have to explicitly skip the tests in the method - since Test::Class cannot determine how many tests (if any) should be skipped:
 
   sub test_objects : Test(no_plan) {
       my $self = shift;
@@ -390,7 +468,6 @@ You can extend test methods by inheritance in the usual way. For example conside
       is($pig->age, 3, "age accessed");
   };
 
-  ... other tests ...
 
 Next consider C<NamedPig> a subclass of C<Pig> where you can give your pig a name.
 
@@ -403,7 +480,7 @@ We want to make sure that all the tests for the C<Pig> object still work for C<N
   sub testing_class { "NamedPig" };
   sub new_args { (shift->SUPER::new_args, -name => 'Porky') };
 
-Now we need to test the name method. Let's do this by extending the C<check_fields> method.
+Now we need to test the name method. We could write another test method, but we also have the option of extending the existing C<check_fields> method.
 
   sub check_fields : Test(2) {
       my $self = shift;
@@ -424,65 +501,6 @@ Test::Class allows us to state explicitly that we are adding tests to an existin
 With the above definition you can add tests to C<check_fields> in C<Pig::Test> without affecting C<NamedPig::Test>.
 
 
-=head1 RUNNING TESTS
-
-You have already seen that you can run all the test methods in a test class by doing:
-
-  Example::Test->runtests
-
-This is actually a shortcut for saying:
-
-  Example::Test->new->runtests
-
-The object created by C<Example::Test-E<gt>new> is the one passed to every setup, test and teardown method.
-
-If you want to run multiple test objects in a single script you can pass L<runtests()|/"runtests"> a list of test objects. For example:
-
-  my $o1 = Example::Test->new;
-  my $o2 = Another::Test->new;
-  # runs all the tests in $o1 and $o2
-  $o1->runtests($o2);
-
-Since, by definition, the base Test::Class has no tests you could also have written:
-
-  my $o1 = Example::Test->new;
-  my $o2 = Another::Test->new;
-  Test::Class->runtests($o1, $o2);
-
-Since you can pass L<runtests()|/"runtests"> class names instead of objects the above can be written more compactly as:
-
-  Test::Class->runtests(qw( Example::Test Another::Test ))
-
-In all of the above examples L<runtests()|/"runtests"> will look at the number of tests both test classes run and output an appropriate test header for L<Test::Harness> automatically.
-
-What happens if you run test classes and normal tests in the same script? For example:
-
-  Example::Test->runtests;
-  ok(Example->new->foo, 'a test not in the test class');
-  ok(Example->new->bar, 'ditto');
-
-L<Test::Harness> will complain that it saw more tests than it expected since the test header output by L<runtests()|/"runtests"> will not include the two normal tests.
-
-To overcome this problem you can pass an integer value to L<runtests()|/"runtests">. This is added to the total number of tests in the test header. So the problematic example can be rewritten as follows:
-
-  Example::Test->runtests(+2);
-  ok(Example->new->foo, 'a test not in the test class');
-  ok(Example->new->bar, 'ditto');
-
-If you prefer to write your test plan explicitly you can use L<expected_tests()|/"expected_tests"> to find out the number of tests a class/object is expected to run.
-
-Since L<runtests()|/"runtests"> will not output a test plan if one has already been set the previous example can be written as:
-
-  plan tests => 2 + Example::Test->expected_tests;
-  Example::Test->runtests;
-  ok(Example->new->foo, 'a test not in the test class');
-  ok(Example->new->bar, 'ditto');
-
-I<Remember:> Test objects are just normal perl objects. Test classes are just normal perl classes. Setup, test and teardown methods are just normal methods. You are completely free to have other methods in your class that are called from your test methods, or have object specific C<new> and C<DESTROY> methods. 
-
-In particular you can override the new() method to pass parameters to your test object, or re-define the number of tests a method will run. See L<num_method_tests()|/"num_method_tests"> for an example. 
-
-
 =head1 ORGANISING YOUR TEST CLASSES
 
 You can, of course, organise your test modules as you wish. My personal preferences is:
@@ -497,8 +515,6 @@ Name test classes with a suffix of C<::Test> so the test class for the C<Foo::Ba
 
 Place all test classes in F<t/lib>.
 
-You can use the INIT method to autorun tests.
-
 =back
 
 
@@ -508,9 +524,6 @@ You can use the INIT method to autorun tests.
 
 =over 4
 
-=item B<add_method>
-
-Adds the specified method as a setup/test/teardown method.
 
 =item B<Test>
 
@@ -526,11 +539,15 @@ Adds the specified method as a setup/test/teardown method.
   sub method_name : Test(teardown) { ... };
   sub method_name : Test(teardown => N) { ... };
 
-  # setup & teardown methods
-  sub method_name : Test(setup => teardown) { ... };
-  sub method_name : Test(setup => teardown => N) { ... };
+  # startup methods
+  sub method_name : Test(startup) { ... };
+  sub method_name : Test(startup => N) { ... };
 
-Marks a method as a setup, test or teardown method. See L<runtests()|/"runtests"> for information on how to run methods declared with the C<Test> attribute.
+  # shutdown methods
+  sub method_name : Test(shutdown) { ... };
+  sub method_name : Test(shutdown => N) { ... };
+
+Marks a startup, setup, test, teardown or shutdown method. See L<runtests()|/"runtests"> for information on how to run methods declared with the C<Test> attribute.
 
 N specifies the number of tests the method runs. 
 
@@ -550,7 +567,7 @@ If N is the string C<no_plan> then the method can run an arbritary number of tes
 
 =back
 
-If N is not specified it defaults to C<1> for test methods, and C<0> for setup and teardown methods. 
+If N is not specified it defaults to C<1> for test methods, and C<0> for startup, setup, teardown and shutdown methods. 
 
 You can change the number of tests that a method runs using L<num_method_tests()|/"num_method_tests"> or L<num_tests()|/"num_tests">.
 
@@ -560,7 +577,7 @@ You can change the number of tests that a method runs using L<num_method_tests()
   $Tests = CLASS->new(KEY => VAL ...)
   $Tests2 = $Tests->new(KEY => VAL ...)
 
-Creates a new test object (hash) containing the specified key/value pairs. 
+Creates a new test object (blessed hashref) containing the specified key/value pairs. 
 
 The keys C<_test> and C<-test> are reserved for internal use and should not be used.
 
@@ -603,7 +620,7 @@ C<expected_tests> is useful when you're integrating one or more test classes int
   use Test::More;
   use My::Test::Class;
 
-  plan tests => My::Test::Class->expected_tests_of(+2);
+  plan tests => My::Test::Class->expected_tests(+2);
 
   ok(whatever, 'a test');
   ok(whatever, 'another test');
@@ -618,54 +635,9 @@ C<expected_tests> is useful when you're integrating one or more test classes int
   $allok = $Tests->runtests(TEST, ...)
   $allok = CLASS->runtests(TEST, ...)
 
-Run, in alphabetical order, all the test methods of the given test object. Calling C<runtests> as a class method is the same as doing C<CLASS-E<gt>new-E<gt>runtests>. Returns C<1> if all the tests pass, C<0> otherwise.
-
-=over 4
-
-=item *
-
-All setup methods are run (in alphabetical order) before each test method.
-
-=item *
-
-All teardown methods are run (in alphabetical order) after each test method has finished.
-
-=item *
-
-If a method is declared as both a setup and a teardown method, it is run before and after every test method.
-
-=back
+Run the tests of the given test object. Calling C<runtests> as a class method is the same as doing C<CLASS-E<gt>new-E<gt>runtests>. Returns C<1> if all the tests pass, C<0> otherwise.
 
 Unless you have already specified a test plan using Test::Builder (or Test::More, et al) C<runtests> will set the test plan just before the first method that runs a test is executed. 
-
-If a method throws an exception before the expected number of tests for that method have run, all remaining tests for that method are failed. The stringified exception is used as the reason for failure. For example:
-
-  sub test_object : Test(2) {
-      my $object = Object->new;
-      isa_ok($object, "Object") or die("could not create object\n");
-      is($object->open, "open worked");
-  };
-
-Would produce something like this if the first test failed:
-
-  not ok 1 - The object isa Object
-  #     Failed test (t/runtests_die.t at line 15)
-  #     The object isn't defined
-  not ok 2 - test_object failed (could not create object)
-  #     Failed test (t/runtests_die.t at line 27)
-
-If a method returns before the expected number of tests for that method have run, all remaining tests for that method are skipped. The return value is used as the reason for skipping the tests, or the method name of the test if the return value is false. For example:
-
-  sub darwin_only : Test {
-      return("darwin only test") unless $^O eq "darwin";
-      ok(-w "/Library", "/Library writable") 
-  };
-
-Will produce:
-
-  ok 1 # skip darwin only test
-
-unless the test is run on the darwin OS.
 
 Just like L<expected_tests()|/"expected_tests">, C<runtests> can take an optional list of test object/classes and integers. All of the test object/classes are run. Any integers are added to the total number of tests shown in the test header output by C<runtests>. 
 
@@ -678,9 +650,11 @@ If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the 
 
 =item B<autorun>
 
-
 =item B<run_all_classes>
 
+=item B<add_method>
+
+Ignore these for the moment. Subject to change.
 
 =back
 
@@ -817,7 +791,7 @@ Things are going so badly all testing should terminate, including running any ad
 
   $self->builder->BAILOUT
 
-See L<Test::Builder/"BAILOUT"> for details. Any teardown methods are I<not> run.
+See L<Test::Builder/"BAILOUT"> for details. Any teardown and shutdown methods are I<not> run.
 
 
 =item B<FAIL_ALL>
@@ -863,7 +837,7 @@ For example, if you had a test script that only applied to the darwin OS you cou
 
 =head1 HELP FOR CONFUSED JUNIT USERS
 
-This section is for people who have used JUnit (or similar) and are confused because they don't see the TestCase/Suite/Runner class framework they were expecting.
+This section is for people who have used JUnit (or similar) and are confused because they don't see the TestCase/Suite/Runner class framework they were expecting. Here we take each of the major classes in JUnit and compare them with their equivalent Perl testing modules.
 
 =over 4
 
@@ -900,23 +874,6 @@ Unlike JUnit you can have multiple setup/teardown methods in a class.
 Test::Class also does the work that would be done by TestSuite in JUnit.
 
 Since the methods are marked with attributes Test::Class knows what is and isn't a test method. This allows it to run all the test methods without having the developer create a suite manually, or use reflection to dynamically determine the test methods by name. See the L<runtests()|/"runtests"> method for more details.
-
-You can easily create a compound suite by using L<runtests()|/"runtests">. So, where in JUnit you would do:
-
-In Test::Class you would do:
-
-	Test::Class->runtest(qw( Foo Bar Ni ));
-
-or, if you want to create a class that you can inherit 
-
-	package Foo;
-	use base qw(Test::Class);
-
-	sub new {
-	};
-
-	sub suite : Test(no_plan) {
-	};
 
 The running order of the test methods is fixed in Test::Class. Methods are executed in alphabetical order.
 
@@ -980,7 +937,7 @@ If you think this module should do something that it doesn't (or does something 
 
 =head1 ACKNOWLEGEMENTS
 
-This is yet another implementation of the ideas from Kent Beck's Testing Framework paper (INSERT URL HERE).
+This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
 Thanks to Michael G Schwern, Tony Bowden, David Wheeler and all the fine folk on perl-qa for their feedback and suggestions.
 
@@ -1006,7 +963,7 @@ Support module for building test libraries.
 
 Basic utilities for writing tests.
 
-=item L<XXXX>
+=item L<http://qa.perl.org/test-modules.html>
 
 Overview of some of the many testing modules available on CPAN.
 

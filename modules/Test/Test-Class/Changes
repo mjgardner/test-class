@@ -5,7 +5,7 @@ Revision history for Perl extension Test::Class.
     -   removed .svn directories from distribution (doh!)
     -   removed Test::Class::Tutorial from distribution - needs rewrite
     -   removed Test::Class::BaseTest - needs rethink
-    -   cleaned up Test::Class POD
+    -   cleaned up Test::Class POD a bit
     -   documented.t now uses Test::Pod::Coverage if available
     -   pod.t now uses Test::Pod if available
     -   private methods now called as functions to avoid problems
