@@ -1,0 +1,13 @@
+Changes
+Exception.pm
+MANIFEST			This list of files
+Makefile.PL
+README
+t/Exception.t
+t/caller.t
+t/documented.t
+t/lives_and.t
+t/pod.t
+t/preserve.t
+t/return.t
+t/stacktrace.t

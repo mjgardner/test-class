@@ -1,0 +1,24 @@
+Class/InsideOut version 0.01
+============================
+
+Quick hack to illustrate a possible base class using inside out
+objects.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+COPYRIGHT AND LICENCE
+
+Put the correct copyright and licence information here.
+
+Copyright (C) 2002 Adrian Howard
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+

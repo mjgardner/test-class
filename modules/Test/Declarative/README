@@ -1,0 +1,29 @@
+Test/Declarative version 0.01
+=============================
+
+Allows you to write tests in a more declarative style.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+        Test::More      =>  0.46,
+        Test::Builder   =>  0.16,
+        Set::CrossProduct   => 1.4,
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2002 Adrian Howard
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+

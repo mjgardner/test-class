@@ -1,0 +1,8 @@
+\.DS_Store$
+\.bak$
+blib
+pm_to_blib
+MANIFEST.SKIP
+Makefile$
+\.old$
+^Discuss-Plugin-User-Boards-

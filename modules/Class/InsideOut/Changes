@@ -1,0 +1,25 @@
+Revision history for Perl extension Class::InsideOut.
+
+0.04
+	-	Aliased self_id to refaddr directly - might as well
+		save the extra subroutine call
+	-	Stored values in an array, as suggested by Aristotle
+	-	Speeded up DESTROY a little bit
+	-	Removed all YAML stuff - needs more thought
+	-	Switched over to Attribute::Handlers::Prospective so we can
+		get at lexical variable names
+	-	Stripped out all Class::InsideOut::Accessor info
+
+0.03
+	-	self method renamed self_id
+	-	removed redundant loading of blessed from Scalar::Util
+
+0.02
+	-	added destroy.t
+	-	removed redundant line from Class::InsideOut::DESTROY spotted
+		by John M. Dlugosz
+
+0.01  Mon Dec 16 16:23:21 2002
+	- original version; created by h2xs 1.22 with options
+		--compat-version=5.6.1 --use-new-tests --skip-exporter -APX -n Class::InsideOut
+

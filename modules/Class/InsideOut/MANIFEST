@@ -1,0 +1,9 @@
+Changes
+lib/Class/InsideOut.pm
+Makefile.PL
+MANIFEST
+README
+t/accessor.t
+t/insideout.t
+t/destroy.t
+examples/carpet.pl

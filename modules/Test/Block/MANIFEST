@@ -1,0 +1,12 @@
+Block.pm
+Changes
+MANIFEST
+Makefile.PL
+README
+t/all_in_block.t
+t/block.t
+t/class_methods.t
+t/documented.t
+t/import.t
+t/pod.t
+t/variable.t

@@ -1,0 +1,45 @@
+Test::Class version 0.04
+========================
+
+Test::Class provides a simple way of creating classes and objects to
+test your code in an xUnit style.
+                          
+Built using Test::Builder it is designing to work with other
+Test::Builder based modules (Test::More, Test::Differences,
+Test::Exception, etc.)    
+                          
+Note: This module will make more sense if you are already familiar
+with the "standard" mechanisms for testing perl code. Those unfamiliar
+with Test::Harness, Test::Simple, Test::More and friends should go take
+a look at them now.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+    Attribute::Handlers     => 0.77
+    Class::ISA              => 0.32
+    Devel::Symdump			=> 2.03
+    IO::File                => 1.08
+    Storable                => 2.04
+    Test::Builder           => 0.15
+    Test::Builder::Tester   => 0.09
+    Test::Differences       => 0.43
+    Test::Exception         => 0.10
+    Test::More              => 0.44
+
+COPYRIGHT AND LICENCE
+
+Copyright 2002 Adrian Howard, All Rights Reserved.
+
+This program is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.

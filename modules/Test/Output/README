@@ -1,0 +1,37 @@
+Test/Output version 0.01
+========================
+
+Provide quick way to test code that outputs to filehandles.
+
+  output_is     { hello() } "hello world\n", STDOUT, "hello world";
+  output_isnt   { hello() } "goodbye",       STDOUT, "not goodbye";
+  output_unlike { hello() } qr/bye/,         STDOUT, "didn't print bye";
+  output_like   { hello() } qr/hello/,       STDOUT, "printed hello";
+  like(Test::Output->last, qr/world/, "... and world");
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  Fcntl
+  IO::File
+  Sub::Uplevel
+  Symbol
+  Test::Builder
+  Test::More
+
+COPYRIGHT AND LICENCE
+
+Copyright 2002 Adrian Howard, All Rights Reserved.
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.

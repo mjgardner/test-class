@@ -1,0 +1,8 @@
+Block.pm
+Changes
+MANIFEST
+Makefile.PL
+README
+t/block.t
+t/documented.t
+t/pod.t
