@@ -1,5 +1,5 @@
 package Test::Block;
-use Exporter qw();
+use base qw(Exporter);
 
 use strict;
 use warnings;
@@ -30,7 +30,7 @@ sub import {
             croak "blocks => N" unless @_ && $_[0] =~ m/^\d+$/s;
             $Expected_blocks = shift;
         } elsif ( $next eq '$Plan' ) {
-            Exporter->export_to_level( 1, $self, $next );
+            $self->export_to_level( 1, $self, $next );
         } else {
             push @plan, $next;
         };
