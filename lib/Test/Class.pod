@@ -1013,7 +1013,7 @@ You can see my current to do list at L<http://adrianh.tadalist.com/lists/show/47
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
@@ -1039,6 +1039,36 @@ Basic utilities for writing tests.
 =item L<http://qa.perl.org/test-modules.html>
 
 Overview of some of the many testing modules available on CPAN.
+
+=back
+
+The following modules use Test::Class as part of their test suite. You might want to look at them for usage examples:
+
+=over 4
+
+=item *
+
+L<Aspect>
+
+=item *
+
+Bricolage (L<http://www.bricolage.cc/>)
+
+=item *
+
+L<File::Random>
+
+=item *
+
+L<Merge::HashRef>
+
+=item *
+
+L<Pixie>
+
+=item *
+
+L<XUL::Node>
 
 =back
 

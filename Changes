@@ -1,6 +1,9 @@
 0.09
     -   Fixed bug with _test_classes spotted by Corion's cpan smoker
         (see t/test_classes.t)
+    -   Added links to tada to do list to TO DO section of POD
+    -   Added links modules that use Test::Class to SEE ALSO section of POD
+        (thanks to Terrence Brannon for suggesting this)
     
 0.08
     -   The undocumented behaviour of C<runtests> has been tweaked and
