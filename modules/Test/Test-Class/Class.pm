@@ -13,7 +13,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06_1';
 
 our	$Current_method	= undef;
 my	$Builder		= Test::Builder->new;
@@ -59,8 +59,6 @@ Test::Class - easily create test classes in an xUnit/JUnit style
 =head1 DESCRIPTION
 
 Test::Class provides a simple way of creating classes and objects to test your code in an xUnit style. 
-
-... insert summary of features here ...
 
 Built using L<Test::Builder> it is designing to work with other Test::Builder based modules (L<Test::More>, L<Test::Differences>, L<Test::Exception>, etc.)  
 

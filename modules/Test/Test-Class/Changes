@@ -1,10 +1,11 @@
 Revision history for Perl extension Test::Class.
 
 0.06_1
-    -   removed examples directory from distribution, needs rewriting
+    -   removed examples directory from distribution, needs rewrite
     -   removed .svn directories from distribution (doh!)
-    -   removed Test::Class::Tutorial from distribution - needs a rewrite
-    -   removed Test::Class::BaseTest - needs a rethink
+    -   removed Test::Class::Tutorial from distribution - needs rewrite
+    -   removed Test::Class::BaseTest - needs rethink
+    -   cleaned up Test::Class POD
 
 0.05 (not distributed on CPAN)
 	-	fixed MANIFEST and MANIFEST.SKIP
