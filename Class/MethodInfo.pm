@@ -14,7 +14,7 @@ Test::Class - Base class for mananging test methods.
 
 =head1 SYNOPSIS
 
-Please ignore the man behind the curtain.
+Implementation stuff. Please ignore for the moment...
 
 =over 4
 
