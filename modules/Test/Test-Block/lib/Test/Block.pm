@@ -13,7 +13,7 @@ use overload
     q{+0} => \&remaining, 
     fallback => 1;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 my $Last_test_in_previous_block = 0;
@@ -101,7 +101,7 @@ __END__
 
 =head1 NAME
 
-Test::Block - specify fine granularity test plans
+Test::Block - Specify fine granularity test plans
 
 =head1 SYNOPSIS
 
