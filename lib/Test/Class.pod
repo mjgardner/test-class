@@ -1,6 +1,6 @@
 =head1 NAME
 
-Test::Class - easily create test classes in an xUnit/JUnit style
+Test::Class - Easily create test classes in an xUnit/JUnit style
 
 =head1 SYNOPSIS
 
@@ -51,8 +51,6 @@ Outputs:
 
 
 =head1 DESCRIPTION
-
-B<NOTE: This is a development release. Things may change. Documentation is incomplete and inaccurate in places. Be warned.>
 
 Test::Class provides a simple way of creating classes and objects to test your code in an xUnit style. 
 
