@@ -9,7 +9,7 @@ use base qw(Exporter);
 
 use vars qw($VERSION @EXPORT @EXPORT_OK);
 
-$VERSION = '0.19';
+$VERSION = '0.20';
 @EXPORT = qw(dies_ok lives_ok throws_ok lives_and);
 
 my $Tester = Test::Builder->new;
@@ -248,8 +248,8 @@ The test name is optional, but recommended.
 
 sub lives_and (&$) {
     my ($test, $name) = @_;
-    local $Test::Builder::Level = $Test::Builder::Level+1;
     {
+        local $Test::Builder::Level = $Test::Builder::Level+1;
         my $ok = \&Test::Builder::ok;
         no warnings;
         local *Test::Builder::ok = sub {

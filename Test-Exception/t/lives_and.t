@@ -1,7 +1,6 @@
 #! /usr/bin/perl
 
 use strict;
-use warnings;
 use Test::More tests => 4;
 
 BEGIN { use_ok( 'Test::Exception' ) };

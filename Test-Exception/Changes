@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::Exception:
 
+0.20
+    -   fixed bug in lives_and where $Test::Builder::Level was
+        set to high if test in block lived
+
 0.19
     -   Added support for Module::Build
 
