@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.06_3';
+our $VERSION = '0.06_4';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -196,8 +196,11 @@ sub _run_method {
 	    no warnings;
         *Test::Builder::ok = sub {
             my ($builder, $test, $name) = @_;
-            $name = $self->current_method unless defined $name;
             local $Test::Builder::Level = $Test::Builder::Level+1;
+            unless ( defined($name) ) {
+                $name = $self->current_method;
+                $name =~ tr/_/ /;
+            };
             $original_ok->($builder, $test, $name)
         };
 	};

@@ -1,5 +1,13 @@
 Revision history for Perl extension Test::Class.
 
+0.06_4
+    -   Fixed bogus heading styles in POD
+    -   Test names that default to $self->current_method now replace all
+        "_" characters with spaces to increase readability
+    -   Documented default test name behaviour
+    -   D'oh! Fixed MANIFEST so the distribution actually included the 
+        new tests for 0.06_3 and 0.06_2
+
 0.06_3
     -   more POD tweaks
     -   all tests now compile with warnings enabled
