@@ -7,3 +7,6 @@ Makefile$
 \.old$
 ^Test-Exception-
 \.svn
+^cover_db
+^_build
+^Build$
