@@ -35,13 +35,14 @@ $Test->failure_output($io);
 
 $ENV{TEST_VERBOSE}=0;
 Object::Test->runtests;
-
 END {
 	$|=1;
 	seek $io, SEEK_SET, 0;
+    my $SEP = $^O eq "MSWin32" ? '\\' : '/';
 	while (my $actual = <$io>) {
 		chomp($actual);
 		my $expected=<DATA>; chomp($expected);
+		$expected =~ s!/!$SEP!gs;
 		ok($actual, $expected);
 	};
 
