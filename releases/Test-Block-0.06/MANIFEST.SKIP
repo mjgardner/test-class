@@ -1,0 +1,12 @@
+^Makefile$
+^blib/
+^pm_to_blib$
+^blibdirs$
+^MANIFEST.SKIP$
+^Build$
+^_build/
+^Test-Block
+\.bak$
+\.DS_Store$
+\.old$
+\.svn
