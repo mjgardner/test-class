@@ -1,9 +1,0 @@
-\.bak$
-\.DS_Store$
-blib
-pm_to_blib
-MANIFEST.SKIP
-Makefile$
-\.old$
-^Test-Exception-
-\.svn
