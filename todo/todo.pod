@@ -1,0 +1,102 @@
+
+I'm thinking about the following issues - if you want it done hassle me (or write a patch :-)
+
+=over 4
+
+=item *
+
+The teardown method should be able to introspect on whether the test method succeeded or failed, number of expected tests, number of tests run, etc.
+
+=item *
+
+Look at the issue David reported in <C85FE3B4-5D5A-11D7-B1D2-0003931A964A@kineticode.com>
+
+=item *
+
+Look at the issue with spaces and attributes that David reported in <4A5B4B14-2FD5-11D7-A166-0003931A964A@wheeler.net>
+
+=item *
+
+Add a "stage" method to find out whether you're in setup, teardown or test method stage.
+
+=item *
+
+Add David Wheeler's idea to make automatically load classes
+
+=item *
+
+An advantage of Test::Class is that test can be documented as modules
+
+=item *
+
+Add section on using self-shunt pattern with Test::Class.
+
+=item *
+
+Add comparison to L<Test::Extreme>
+
+=item *
+
+Think about whether we can report the line # of the method that failed, rather than the location of the call to runtests
+
+=item *
+
+Add other Test::Builder modules to See Also.
+
+=item *
+
+Should also allow no_plan in expected_tests, run_tests, et al.
+
+=item *
+
+Should use inside-out objects to remove -test/test restrictions
+
+=item *
+
+Give a warning if not compiling in CHECK phase. Sort out the bogus ANON messages from Attribute::Handlers. Think about moving away from A::H so it works correctly with MI and custom DESTROY handlers.
+
+=item *
+
+Make SKIP_ALL, FAIL_ALL just exit the object
+
+=item *
+
+Reserve a namespace for future T::C methods
+
+=item *
+
+Add Module::Build support.
+
+=item *
+
+Solve http://use.perl.org/~ethan/journal/14815
+
+=item *
+
+Should probably have some examples to show why setting the number of tests is better than using C<no_plan>.
+
+=item *
+
+Have the option of making test methods fail after the first failing test, for those who prefer that style.
+
+=item *
+
+Have the test name of C<Test::Builder::ok> default to L<current_method()|/"current_method">.
+
+=item *
+
+Think about making it work without attributes for older perls.
+
+=item * 
+
+Finish cleaning up up Test::Class documentation
+
+=item *
+
+Clean up Test::Class::Tutorial
+
+=item *
+
+Add an option to get a diag with the method name on a test method that contains failing tests
+
+=back

@@ -1,75 +1,8 @@
-#! /usr/bin/perl -Tw
-
-package Test::Class;
-use 5.006;
-use strict;
-use warnings;
-
-use Attribute::Handlers;
-use Carp;
-use Class::ISA;
-use Devel::Symdump;
-use Storable qw(dclone);
-use Test::Builder;
-use Test::Class::MethodInfo;
-
-our $VERSION = '0.06_1';
-
-our	$Current_method	= undef;
-my	$Builder		= Test::Builder->new;
-
-use constant NO_PLAN	=> "no_plan";
-use constant SETUP		=> "setup";
-use constant TEST		=> "test";
-use constant TEARDOWN	=> "teardown";
-use constant STARTUP	=> "startup";
-use constant SHUTDOWN	=> "shutdown";
-
-
 =head1 NAME
 
 Test::Class - easily create test classes in an xUnit/JUnit style
 
 =head1 SYNOPSIS
-
-  sub new {
-      my $class = shift;
-      my $self = $class->SUPER::new(@_);
-      my $n = $self->num_method_tests('test_method')
-      $self->num_method_tests('test_method', 4)
-      return($self);
-  };
-
-  sub test_method : Test(no_plan); {
-      my $self = shift;
-      my $n = $self->num_tests;
-      $self->num_tests(3);
-  };
-
-
-  $Tests->BAILOUT($reason)
-  $Tests->SKIP_ALL($reason)
-  $Tests->FAIL_ALL($reason)
-
-  my $expected = $Tests->expected_tests;
-
-  my $all_ok = $Tests->runtests;
-
-
-=head1 DESCRIPTION
-
-Test::Class provides a simple way of creating classes and objects to test your code in an xUnit style. 
-
-Built using L<Test::Builder> it is designing to work with other Test::Builder based modules (L<Test::More>, L<Test::Differences>, L<Test::Exception>, etc.)  
-
-I<Note:> This module will make more sense if you are already familiar with the "standard" mechanisms for testing perl code. Those unfamiliar  with L<Test::Harness>, L<Test::Simple>, L<Test::More> and friends should go take a look at them now. L<Test::Tutorial> is a good starting point.
-
-L<Test::Class::Tutorial> attempts to provide a gentle introduction to the features of Test::Class.
-
-
-=head1 A BRIEF EXAMPLE
-
-A simple test class:
 
   package Example::Test;
   use base qw(Test::Class);
@@ -78,8 +11,8 @@ A simple test class:
   # setup methods are run before every test method. 
   sub make_fixture : Test(setup) {
       my $array = [1, 2];
-      shift->{test_array} = $array;
       diag("array = (@$array) before test(s)");
+      shift->{test_array} = $array;
   };
 
   # a test method that runs 1 test
@@ -103,12 +36,10 @@ A simple test class:
       my $array = shift->{test_array};
       diag("array = (@$array) after test(s)");
   };
+  
+  Test::Class->runtests;
 
-You run the tests like this:
-
-  Example::Test->runtests;
-
-An will get the following results:
+Outputs:
 
   # array = (1 2) before test(s)
   1..5
@@ -122,12 +53,22 @@ An will get the following results:
   # array = (1 2 3) after test(s)
 
 
-=head1 INTRODUCTION
+=head1 DESCRIPTION
 
+B<NOTE: This is a development release. Things may change. Documentation is incomplete and inaccurate in places. Be warned.>
+
+Test::Class provides a simple way of creating classes and objects to test your code in an xUnit style. 
+
+Built using L<Test::Builder> it is designing to work with other Test::Builder based modules (L<Test::More>, L<Test::Differences>, L<Test::Exception>, etc.)  
+
+I<Note:> This module will make more sense if you are already familiar with the "standard" mechanisms for testing perl code. Those unfamiliar  with L<Test::Harness>, L<Test::Simple>, L<Test::More> and friends should go take a look at them now. L<Test::Tutorial> is a good starting point.
+
+
+=head1 INTRODUCTION
 
 =head2 A brief history lesson
 
-A long time ago (well in 1994) Kent Beck wrote a testing framework for Smalltalk called SUnit. It was popular. You can read a copy of his original paper at L<http://www.xprogramming.com/testfram.htm>.
+In 1994 Kent Beck wrote a testing framework for Smalltalk called SUnit. It was popular. You can read a copy of his original paper at L<http://www.xprogramming.com/testfram.htm>.
 
 Later Kent Beck and Erich Gamma created JUnit for testing Java L<http://www.junit.org/>. It was popular too.
 
@@ -146,13 +87,13 @@ Test::Class attempts to provide simple xUnit testing that integrates simply with
 
 =item *
 
-It is built with L<Test::Builder> and should co-exist happily with all other Test::Builder based modules. This makes using test classes in *.t scripts, and refactoring normal tests into test classes, much simpler because:
-
-=over 4
+All the advantages of xUnit testing. You can easily create test fixtures and isolate tests.
 
 =item *
 
-Test::Class attempts to provide the minimum of new functionality necessary to support the creation of test classes.
+It is built with L<Test::Builder> and should co-exist happily with all other Test::Builder based modules. This makes using test classes in *.t scripts, and refactoring normal tests into test classes, much simpler because:
+
+=over 4
 
 =item *
 
@@ -178,7 +119,7 @@ You can easily package your tests as classes/modules, rather than *.t scripts. T
 
 =item *
 
-You can have multiple setup/teardown methods. This is surprisingly useful (e.g. have one teardown method to clean up resources and another to check that class invarients still hold).
+You can have multiple setup/teardown methods. For example have one teardown method to clean up resources and another to check that class invariants still hold.
 
 =item *
 
@@ -201,10 +142,6 @@ If you are distributing your code it is yet another module that the user has to 
 
 =item *
 
-It probably chokes on early perls. I'm a happy v5.6.1 user and have done no testing on earlier perl versions. I'm more than willing to backport if anybody wants to donate some time on a box with other perl versions.
-
-=item *
-
 If you are used to the TestCase/Suite/Runner class structure used by JUnit and similar testing frameworks you may find Test::Unit more familiar (but try reading L</"HELP FOR CONFUSED JUNIT USERS"> before you give up).
 
 =back
@@ -223,7 +160,11 @@ Since Test::Class does not provide its own test functions, but uses those provid
 
 to import the test functions into your test class.
 
-=head1 TEST METHODS
+=head1 METHOD TYPES
+
+There are three different kinds of methods you can define using Test::Class.
+
+=head2 1) Test methods
 
 You define test methods using the L<Test|/"Test"> attribute. For example:
 
@@ -249,36 +190,17 @@ If you don't know the number of tests at compile time you use C<no_plan> like th
       isa_ok($_, "Object") foreach @$objects;
   };
 
-(you can use L<num_method_tests()|/"num_method_tests"> and L<num_tests()|/"num_tests"> to set the number of tests at run time.)
 
-You can run all the test methods in a class by doing:
+=head1 2) Setup and teardown methods
 
-  Example::Test->runtests
-
-Test methods are run in ASCII order - so the execution order of the test methods defined above would be C<addition>, C<always_pass> and finally C<check_class>.
-
-Most of the time you should not care what order tests are run in, but it can be useful. For example:
-
-  sub _check_new {
-      my $self = shift;
-      isa_ok(Object->new, "Object") or $self->BAILOUT('new fails!');
-  };
-
-The leading C<_> will force the above method to run first - allowing the entire suite to be aborted before any other test methods run.
-
-
-=head1 SETUP AND TEARDOWN METHODS
-
-Test::Class allows you to define setup and teardown methods that are run before and after every test. For example:
+Setup and teardown methods are run before and after every test. For example:
 
   sub before : Test(setup)    { diag("running before test") };
   sub after  : Test(teardown) { diag("running after test") };
 
-You can use setup and teardown methods to create objects that all your test methods use (a test I<fixture>). 
+You can use setup and teardown methods to create common objects used by all of your test methods (a test I<fixture>) and store them in your Test::Class object, treating it as a hash. For example:
 
-All setup, test and teardown methods are passed a test object which you can use to store your fixture objects. For example:
-
-  sub _make_pig : Test(setup);
+  sub pig : Test(setup);
       my $self = shift;
       $self->{test_pig} = Pig->new;
   };
@@ -297,7 +219,7 @@ All setup, test and teardown methods are passed a test object which you can use 
 
 You can also declare setup and teardown methods as running tests. For example you could check that the test pig survives each test method by doing:
 
-  sub alive : Test(teardown => 1) {
+  sub pig_alive : Test(teardown => 1) {
       my $pig = shift->{test_pig};
       ok($pig->alive, 'pig survived tests' );
   };
@@ -308,26 +230,48 @@ You can even have a method run as both a setup and a teardown. For example:
       my $pig = shift->{test_pig};
       diag("The pig is " . ($pig->hungry ? "hungry" : "full"));
   };
+  
+The above will be run before and after every test method.
 
-Just like test methods, setup and teardown methods are run in alphabetical order before/after each test method. So L<runtests()|/"runtests"> would execute the above methods in the following order.
 
-  1)  Setup methods for first test
-        _make_pig()  before()  pig_status()
+=head2 3) Startup and shutdown methods
 
-  2)  First test
-        born_hungry()
+Startup and shutdown methods are like setup and teardown methods for the whole test suite. All the startup methods are run once when you start running a test class. All the shutdown methods are run once just before a test class stops running.
 
-  3)  Teardown methods for first test
-        after()  alive()  pig_status()
+You can use these to create and destroy expensive objects that you don't want to have to create and destroy for every test - a database connection for example:
 
-  4)  Setup methods for second test
-        _make_pig()  before()  pig_status()
+  sub db_connect : Test(setup) {
+      shift->{dbi} = DBI->connect;
+  };
+  
+  sub db_disconnect : Test(shutdown) {
+      shift->{dbi}->disconnect;
+  };
 
-  5)  Second test
-        eats()
+Just like setup and teardown methods you can pass an optional number of tests to startup and shutdown methods:
 
-  6)  Teardown methods for second test
-        after()  alive()  pig_status()
+  sub example : Test(setup => 1) {
+      ok(1, 'a setup method with one test');
+  };
+
+   
+  
+=head1 RUNNING ORDER OF METHODS
+
+Methods of each type are run in ASCII order.
+
+Most of the time you should not care what order tests are run in, but it can be useful. For example:
+
+  sub _check_new {
+      my $self = shift;
+      isa_ok(Object->new, "Object") or $self->BAILOUT('new fails!');
+  };
+
+The leading C<_> will force the above method to run first - allowing the entire suite to be aborted before any other test methods run.
+
+Just like test methods, setup and teardown methods are run in alphabetical order before/after each test method.
+
+Finally startup and shutdown methods are run in alphabetical order before/after when the test suite starts/finishes.
 
 
 =head1 HANDLING EXCEPTIONS
@@ -416,9 +360,10 @@ You can create todo tests just as you do in L<Test::More> and L<Test::Builder> b
 
 See L<Test::Harness/"Todo tests"> for more information.
 
+
 =head1 EXTENDING TEST CLASSES BY INHERITANCE
 
-One of the advantages of having a test class is that you can extend them by inheritance. For example consider the following test class for a C<Pig> object.
+You can extend test methods by inheritance in the usual way. For example consider the following test class for a C<Pig> object.
 
   package Pig::Test;
   use base qw(Test::Class);
@@ -563,63 +508,9 @@ You can use the INIT method to autorun tests.
 
 =over 4
 
-=cut
-
-
-my $Tests = {};
-
-sub _test_info {
-	my $self = shift;
-	return(ref($self) ? $self->{_test} : $Tests);
-};
-
-sub _method_info {
-	my ($self, $class, $method) = @_;
-	return($self->_test_info->{$class}->{$method});
-};
-
-sub _methods_of_class {
-	my ($self, $class) = @_;
-	return(values %{$self->_test_info->{$class}});
-};
-
-
 =item B<add_method>
 
 Adds the specified method as a setup/test/teardown method.
-
-=cut
-
-sub add_method {
-	my ($class, $name, $num_tests, $types) = @_;
-	$Tests->{$class}->{$name} = 
-			Test::Class::MethodInfo->new(
-				name => $name, 
-				num_tests => $num_tests,
-				type => $types,
-			);	
-};
-
-
-sub _new_method_info {
-	my ($class, $method_name, $args) = @_;
-	$args ||= "test => 1";
-	my $num_tests = 0;
-	my @types;
-	foreach my $arg (split /\s*=>\s*/, $args) {
-		if (Test::Class::MethodInfo->is_num_tests($arg)) {
-			$num_tests = $arg;
-		} elsif (Test::Class::MethodInfo->is_method_type($arg)) {
-			push @types, $arg;
-		} else {
-			return(undef);
-		};
-	};
-	push @types, TEST unless @types;
-	$class->add_method($method_name, $num_tests, [@types]);
-	return(1);
-};
-
 
 =item B<Test>
 
@@ -663,19 +554,6 @@ If N is not specified it defaults to C<1> for test methods, and C<0> for setup a
 
 You can change the number of tests that a method runs using L<num_method_tests()|/"num_method_tests"> or L<num_tests()|/"num_tests">.
 
-=cut
-
-sub Test : ATTR(CODE,RAWDATA) {
-	my ($class, $symbol, $code_ref, $attr, $args) = @_;
-	if ($symbol eq "ANON") {
-		warn "cannot test anonymous subs\n";
-		return;
-	};
-	my $name = *{$symbol}{NAME};
-	$class->_new_method_info($name, $args)
-			|| warn "bad test definition '$args' in $class->$name\n";	
-};
-
 
 =item B<new>
 
@@ -688,8 +566,7 @@ The keys C<_test> and C<-test> are reserved for internal use and should not be u
 
 If called as an object method the existing object's key/value pairs are copied into the new object. Any key/value pairs passed to C<new> override those in the original object if duplicates occur.
 
-Since the test object is passed to every test method as it runs it is a 
-convenient place to store test fixtures. For example:
+Since the test object is passed to every test method as it runs it is a convenient place to store test fixtures. For example:
 
   sub make_fixture : Test(setup) {
       my $self = shift;
@@ -704,51 +581,6 @@ convenient place to store test fixtures. For example:
   };
 
 See L<num_method_tests()|/"num_method_tests"> for an example of overriding C<new>.
-
-=cut
-
-
-sub new {
-	my $proto = shift;
-	my $class = ref($proto) || $proto;
-	$proto = {} unless ref($proto);
-	my $self = bless {%$proto, @_}, $class;
-	$self->{_test} = dclone($Tests);
-	$self->{-test} = "the documentation says you shouldn't use this...";
-	return($self);
-};
-
-
-sub _get_methods {
-	my ($self, @types) = @_;
-	my $test_class = ref($self) || $self;
-	my %methods = ();
-	foreach my $class (Class::ISA::self_and_super_path($test_class)) {
-		foreach my $info ($self->_methods_of_class($class)) {
-			foreach my $type (@types) {
-				$methods{$info->name} = 1 if $info->is_type($type);
-			};
-		};
-	};
-	return(sort keys %methods);
-};
-
-
-sub _num_expected_tests {
-	my $self = shift;
-	my @startup_shutdown_methods = 
-			$self->_get_methods(STARTUP, SHUTDOWN);
-	my $num_startup_shutdown_methods = 
-			$self->_total_num_tests(@startup_shutdown_methods);
-	return(NO_PLAN) if $num_startup_shutdown_methods eq NO_PLAN;
-	my @fixture_methods = $self->_get_methods(SETUP, TEARDOWN);
-	my $num_fixture_tests = $self->_total_num_tests(@fixture_methods);
-	return(NO_PLAN) if $num_fixture_tests eq NO_PLAN;
-	my @test_methods = $self->_get_methods(TEST);
-	my $num_tests = $self->_total_num_tests(@test_methods);
-	return(NO_PLAN) if $num_tests eq NO_PLAN;
-	return($num_startup_shutdown_methods + $num_tests + @test_methods * $num_fixture_tests);
-};
 
 
 =item B<expected_tests>
@@ -777,105 +609,6 @@ C<expected_tests> is useful when you're integrating one or more test classes int
   ok(whatever, 'another test');
   My::Test::Class->runtests;
 
-=cut
-
-
-sub expected_tests {
-	my $total = 0;
-	foreach my $test (@_) {
-		if (UNIVERSAL::isa($test, __PACKAGE__)) {
-			my $n = $test->_num_expected_tests;
-			return(NO_PLAN) if $n eq NO_PLAN;
-			$total += $n;
-		} elsif ($test =~ m/^\d+$/) {
-			# SHOULD ALSO ALLOW NO_PLAN
-			$total += $test;
-		} else {
-			$test = 'undef' unless defined($test);
-			croak "$test is not a Test::Class or an integer";
-		};
-	};
-	return($total);
-};
-
-
-sub _total_num_tests {
-	my ($self, @methods) = @_;
-	my $class = ref($self) || $self;
-	my $total_num_tests = 0;
-	foreach my $method (@methods) {
-		foreach my $class (Class::ISA::self_and_super_path($class)) {
-			my $info = $self->_method_info($class, $method);
-			next unless $info;
-			my $num_tests = $info->num_tests;
-			return(NO_PLAN) if ($num_tests eq NO_PLAN);
-			$total_num_tests += $num_tests;
-			last unless $num_tests =~ m/^\+/
-		};
-	};
-	return($total_num_tests);
-};
-
-
-sub _all_ok_from {
-	my ($self, $start_test) = @_;
-	my $current_test = $Builder->current_test;
-	return(1) if $start_test == $current_test;
-	my @results = ($Builder->summary)[$start_test .. $current_test-1];
-	foreach my $result (@results) { return(0) unless $result };
-	return(1);
-};
-
-
-sub _exception_failure {
-	my ($self, $method, $exception, $tests) = @_;
-	local $Test::Builder::Level = 3;
-	my $message = $method;
-	$message .= " (for test method '$Current_method')"
-			if $method ne $Current_method;
-	$self->_show_header(@$tests) unless $Builder->has_plan;
-	$Builder->ok(0, "$message died ($exception)");
-};
-
-
-sub _run_method {
-	my ($self, $method, $tests) = @_;
-	my $num_start = $Builder->current_test;
-	my $skip_reason = eval {$self->$method};
-	my $exception = $@;
-	chomp($exception) if $exception;
-	my $num_done = $Builder->current_test - $num_start;
-	my $num_expected = $self->_total_num_tests($method);
-	$num_expected = $num_done if $num_expected eq NO_PLAN;
-	if ($num_done == $num_expected) {
-		$self->_exception_failure($method, $exception, $tests) 
-				unless $exception eq '';
-	} elsif ($num_done > $num_expected) {
-		$Builder->diag("expected $num_expected test(s) in $method, $num_done completed\n");
-	} else {
-		until (($Builder->current_test - $num_start) >= $num_expected) {
-			if ($exception ne '') {
-				$self->_exception_failure($method, $exception, $tests);
-				$skip_reason = "$method died";
-				$exception = '';
-			} else {
-				$Builder->skip($skip_reason || $method);
-			};
-		};
-	};
-	return($self->_all_ok_from($num_start));
-};
-
-
-sub _show_header {
-	my ($self, @tests) = @_;
-	my $num_tests = Test::Class->expected_tests(@tests);
-	if ($num_tests eq NO_PLAN) {
-		$Builder->no_plan;
-	} else {
-		$Builder->expected_tests($num_tests);
-	};
-};
 
 
 =item B<runtests>
@@ -943,97 +676,13 @@ For example, you can run all the tests in test classes A, B and C, plus one addi
 
 If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the name of each test method before it runs.
 
-=cut
-
-
-sub runtests {
-	my @tests = @_;
-	if (@tests == 1 && !ref($tests[0])) {
-		my $base_class = shift @tests;
-		@tests = $base_class->run_all_classes;
-	};
-	my $all_passed = 1;
-	foreach my $t (@tests) {
-		# SHOULD ALSO ALLOW NO_PLAN
-		next if $t =~ m/^\d+$/;
-		croak "$t not Test::Class or integer" 
-				unless UNIVERSAL::isa($t, __PACKAGE__);
-		$t = $t->new unless ref($t);
-		my $class = ref($t);
-		my @setup = $t->_get_methods(SETUP);
-		my @teardown = $t->_get_methods(TEARDOWN);
-		foreach my $method ($t->_get_methods(STARTUP)) {
-			$t->_show_header(@tests) 
-					unless $Builder->has_plan 
-					|| $t->_total_num_tests($method) eq '0';
-			my $method_passed = $t->_run_method($method, \@tests);
-			$all_passed &&= $method_passed;
-		};
-		foreach my $test ($t->_get_methods(TEST)) { 
-			local $Current_method = $test;
-		   	$Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-			foreach my $method (@setup, $test, @teardown) {
-				$t->_show_header(@tests) 
-						unless $Builder->has_plan 
-						|| $t->_total_num_tests($method) eq '0';
-				my $method_passed = $t->_run_method($method, \@tests);
-				$all_passed &&= $method_passed;
-			};
-		};
-		foreach my $method ($t->_get_methods(SHUTDOWN)) {
-			$t->_show_header(@tests) 
-					unless $Builder->has_plan 
-					|| $t->_total_num_tests($method) eq '0';
-			my $method_passed = $t->_run_method($method, \@tests);
-			$all_passed &&= $method_passed;
-		};
-
-	};
-	return($all_passed);
-};
-
-
-sub _find_calling_test_class {
-	my $level = 0;
-	while (my $class = caller(++$level)) {
-		next if $class eq __PACKAGE__;
-		return($class) if $class->isa(__PACKAGE__);
-	}; 
-	return(undef);
-};
-
-
 =item B<autorun>
 
-=cut
-
-my %AUTORUN = ();
-
-sub autorun {
-	my $class = shift;
-	$class = ref($class) if ref($class);
-	$AUTORUN{$class} = shift if @_;
-	return($AUTORUN{$class}) if defined($AUTORUN{$class});
-	foreach (Devel::Symdump->rnew->packages) {
-		return(0) if UNIVERSAL::isa($_, $class) && $class ne $_;
-	};
-	return(1);
-};
 
 =item B<run_all_classes>
 
-=cut
-
-sub run_all_classes {
-	my $class = shift;
-	grep {UNIVERSAL::isa($_, $class) && $_->autorun} 
-			Devel::Symdump->rnew->packages;
-};
-
 
 =back
-
-=cut
 
 =head2 Fetching and setting a method's test number
 
@@ -1102,19 +751,6 @@ For example, consider the creation of a subclass of Object::Test that ensures th
 
 Since the call to C<num_method_tests> in Object::Test only affects the C<test_objects> of Object::Test, the above works as you would expect.
 
-=cut
-
-
-sub num_method_tests {
-	my ($self, $method, $n) = @_;
-	my $class = $self->_find_calling_test_class;
-	croak "not called in a Test::Class" unless $class;
-	my $info = $self->_method_info($class, $method);
-	croak "$method is not a test method of class $class" unless $info;
-	$info->num_tests($n) if defined($n);
-	return($info->num_tests);
-};
-
 
 =item B<num_tests>
 
@@ -1138,17 +774,6 @@ Setting the number of expected tests at runtime, rather than just having a C<no_
 
 =back
 
-=cut
-
-
-sub num_tests {
-	my ($self, $n) = @_;
-	croak "num_tests need to be called within a test method"
-			unless defined $Current_method;
-	return($self->num_method_tests($Current_method, $n));
-};
-
-
 
 =head2 Support methods
 
@@ -1166,12 +791,6 @@ Returns the underlying L<Test::Builder> object that Test::Class uses. For exampl
       $self->builder->ok($o->close($dbh), "closed ok");
   };
 
-=cut
-
-
-sub builder { $Builder };
-
-
 =item B<current_method>
 
   $method_name = $Tests->current_method
@@ -1187,10 +806,6 @@ The method name is also available in the setup and teardown methods that run bef
       ok($self->invarient_ok, "class okay after $m");
   };
 
-=cut
-
-
-sub current_method { $Current_method };
 
 
 =item B<BAILOUT>
@@ -1203,14 +818,6 @@ Things are going so badly all testing should terminate, including running any ad
   $self->builder->BAILOUT
 
 See L<Test::Builder/"BAILOUT"> for details. Any teardown methods are I<not> run.
-
-=cut
-
-
-sub BAILOUT {
-	my ($self, $reason) = @_;
-	$Builder->BAILOUT($reason);
-};
 
 
 =item B<FAIL_ALL>
@@ -1231,17 +838,6 @@ For example, if all your tests rely on the ability to create objects then you mi
       ...
   };
 
-=cut
-
-
-sub FAIL_ALL {
-	my ($self, $reason) = @_;
-	my $expected = $Builder->expected_tests || $Builder->current_test+1;
-	$Builder->expected_tests($expected) unless $Builder->has_plan();
-	$Builder->ok(0, $reason) until $Builder->current_test >= $expected;
-	my $num_failed = grep(! $_, $Builder->summary);
-	exit($num_failed < 254 ? $num_failed : 254);
-};
 
 
 =item B<SKIP_ALL>
@@ -1259,17 +855,6 @@ For example, if you had a test script that only applied to the darwin OS you cou
       my $self = shift;
       $self->SKIP_ALL("darwin only") unless $^O eq "darwin";    
   };
-
-=cut
-
-
-sub SKIP_ALL {	
-	my ($self, $reason) = @_;
-	$Builder->skip_all($reason) unless $Builder->has_plan;
-	my $expected = $Builder->expected_tests || $Builder->current_test+1;
-	$Builder->skip($reason) until ($Builder->current_test >= $expected);
-	exit(0);
-}
 
 
 =back
@@ -1380,130 +965,15 @@ Test::Unit implements it's own testing framework separate from L<Test::Harness>.
 
 =back
 
-... summary of Test::Class advantages over other modules ...
-
-Test::Class allows you to easily isolate all the test for a module in a single file, making testing a single module easier.
-
 
 =head1 BUGS
 
-None known at the time of writing.
+Probably.
 
-If you find any bugs please let me know by e-mail, or report the problem with L<http://rt.cpan.org/>.
+If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/>.
 
 
 =head1 TO DO
-
-
-I'm thinking about the following issues - if you want it done poke away (or write a patch :-)
-
-=over 4
-
-=item *
-
-The teardown method should be able to introspect on whether the test method succeeded or failed, number of expected tests, number of tests run, etc.
-
-=item *
-
-Look at the issue David reported in <C85FE3B4-5D5A-11D7-B1D2-0003931A964A@kineticode.com>
-
-=item *
-
-Look at the issue with spaces and attributes that David reported in <4A5B4B14-2FD5-11D7-A166-0003931A964A@wheeler.net>
-
-=item *
-
-Add a "stage" method to find out whether you're in setup, teardown or test method stage.
-
-=item *
-
-Add patch to deal with extra spaces in attribute args
-
-=item *
-
-Add David Wheeler's idea to make automatically load classes
-
-=item *
-
-An advantage of Test::Class is that test can be documented as modules
-
-=item *
-
-Add section on using self-shunt pattern with Test::Class.
-
-=item *
-
-Make sure all private methods are called as functions to prevent them being overridden by subclasses
-
-=item *
-
-Add comparison to Test::Extreme
-
-=item *
-
-Think about whether we can report the line # of the method that failed, rather than the location of the call to runtests
-
-=item *
-
-Remove BAILOUT
-
-=item *
-
-Add other Test::Builder modules to See Also.
-
-=item *
-
-Should also allow no_plan in expected_tests, run_tests, et al.
-
-=item *
-
-Should use inside-out objects to remove -test/test restrictions
-
-=item *
-
-Give a warning if not compiling in CHECK phase. Sort out the bogus ANON messages from Attribute::Handlers. In fact, move completely away from A::H so it works correctly with MI and custom DESTROY handlers.
-
-=item *
-
-Make SKIP_ALL, FAIL_ALL just exit the object
-
-=item *
-
-Reserve a namespace for future T::C methods
-
-=item *
-
-Add Module::Build support.
-
-=item *
-
-Solve http://use.perl.org/~ethan/journal/14815
-
-=item *
-
-Should probably have some examples to show why setting the number of tests is better than using C<no_plan>.
-
-=item *
-
-Have the option of making test methods fail after the first failing test, for those who prefer that style.
-
-=item *
-
-Have the test name of C<Test::Builder::ok> default to L<current_method()|/"current_method">.
-
-=item *
-
-Think about making it work without attributes for older perls.
-
-=item * 
-
-Finish cleaning up up Test::Class documentation
-
-=item *
-
-Clean up Test::Class::Tutorial
-
-=back
 
 If you think this module should do something that it doesn't (or does something that it shouldn't) please let me know.
 
@@ -1528,35 +998,21 @@ If you can spare the time, please drop me a line if you find this module useful.
 
 =over 4
 
-=item L<Test::Class::Tutorial>
+=item L<Test::Builder>
 
-A gentle introduction to many of the features of Test::Class.
-
-=back
-
-L<Test::Builder> provides a consistent backend for building test libraries. The following modules are all built with L<Test::Builder>:
-
-=over 4
+Support module for building test libraries.
 
 =item L<Test::Simple> & L<Test::More>
 
 Basic utilities for writing tests.
 
-=item L<Test::Differences>
+=item L<XXXX>
 
-Test strings and data structures and show differences if not ok.
-
-=item L<Test::Exception>
-
-Convenience routines for testing exception based code.
-
-=item L<Test::Inline>
-
-Inlining your tests next to the code being tested.
+Overview of some of the many testing modules available on CPAN.
 
 =back
 
-The following are not based on Test::Builder, but may be of interest.
+The following modules are not based on L<Test::Builder>, but may be of interest as alternatives to Test::Class.
 
 =over 4
 
@@ -1572,11 +1028,6 @@ A very simple unit testing framework.
 
 =head1 LICENCE
 
-Copyright 2002 Adrian Howard, All Rights Reserved.
+Copyright 2002-2004 Adrian Howard, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
-
-=cut
-
-
-1;
