@@ -187,7 +187,7 @@ If you don't know the number of tests at compile time you use C<no_plan> like th
   };
 
 
-=head1 2) Setup and teardown methods
+=head2 2) Setup and teardown methods
 
 Setup and teardown methods are run before and after every test. For example:
 
@@ -300,6 +300,22 @@ I<Remember:> Test objects are just normal perl objects. Test classes are just no
 In particular you can override the new() method to pass parameters to your test object, or re-define the number of tests a method will run. See L<num_method_tests()|/"num_method_tests"> for an example. 
 
 
+=head1 TEST NAMES
+
+The test functions you import from L<Test::More> and other L<Test::Builder> based modules usually take an optional third argument that specifies the test name, for example:
+
+  is $something, $something_else, 'name of test';
+    
+If you do not supply a test name, and the test function does not supply its own default value, then Test::Class will use the name of the currently running test method, replacing all "_" characters with spaces so:
+
+  sub one_plus_one_is_two : Test {
+      is 1+1, 2;
+  }
+  
+will result in:
+
+  ok 1 - one plus one is two
+
 
 =head1 RUNNING ORDER OF METHODS
 
@@ -315,17 +331,17 @@ All of the startup methods in alphabetical order
 
 For each test method, in alphabetical order:
 
-=over 4
+=over 2
 
-=item 2a.
+=item *
 
 All of the setup methods in alphabetical order
 
-=item 2b.
+=item *
 
 The test method.
 
-=item 2c.
+=item *
 
 All of the teardown methods in alphabetical order
 
