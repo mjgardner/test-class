@@ -1,0 +1,25 @@
+Test::Class
+===========
+
+Test::Class provides a simple way of creating classes and objects to
+test your code in an xUnit style.
+                          
+Built using Test::Builder it is designing to work with other
+Test::Builder based modules (Test::More, Test::Differences,
+Test::Exception, etc.)    
+                          
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+COPYRIGHT AND LICENCE
+
+Copyright 2002-2004 Adrian Howard, All Rights Reserved.
+
+This program is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
