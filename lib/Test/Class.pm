@@ -200,7 +200,7 @@ sub _exception_failure {
 	local $Test::Builder::Level = 3;
 	my $message = $method;
 	$message .= " (for test method '$Current_method')"
-			if $method ne $Current_method;
+			if defined $Current_method && $method ne $Current_method;
 	_show_header($self, @$tests) unless $Builder->has_plan;
 	$Builder->ok(0, "$message died ($exception)");
 };
@@ -276,7 +276,7 @@ sub runtests {
 		@tests = _test_classes( $base_class );
 	};
 	my $all_passed = 1;
-	foreach my $t (@tests) {
+	TEST_OBJECT: foreach my $t (@tests) {
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
 		croak "$t not Test::Class or integer" 
@@ -286,16 +286,17 @@ sub runtests {
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
-            my $class = ref($t);
-            my @setup = _get_methods($t, SETUP);
-            my @teardown = _get_methods($t, TEARDOWN);
             foreach my $method (_get_methods($t, STARTUP)) {
                 _show_header($t, @tests) 
                         unless $Builder->has_plan 
                         || _total_num_tests($t, $method) eq '0';
                 my $method_passed = _run_method($t, $method, \@tests);
                 $all_passed &&= $method_passed;
+                next TEST_OBJECT unless $method_passed;
             };
+            my $class = ref($t);
+            my @setup = _get_methods($t, SETUP);
+            my @teardown = _get_methods($t, TEARDOWN);
             foreach my $test (_get_methods($t, TEST)) { 
                 local $Current_method = $test;
                 $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};

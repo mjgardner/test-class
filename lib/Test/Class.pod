@@ -251,6 +251,8 @@ Just like setup and teardown methods you can pass an optional number of tests to
   sub example : Test(setup => 1) {
       ok(1, 'a setup method with one test');
   };
+  
+If a startup method has a failing test or throws an exception then all other tests for the current test object are ignored. 
 
 =head1 RUNNING TESTS
 
@@ -387,7 +389,7 @@ The leading C<_> will force the above method to run first - allowing the entire 
 
 =head1 HANDLING EXCEPTIONS
 
-If a setup, test or teardown method dies then L<runtests()|/"runtests"> will catch the exception and fail any remaining test. For example:
+If a startup, setup, test, teardown or shutdown method dies then L<runtests()|/"runtests"> will catch the exception and fail any remaining test. For example:
 
   sub test_object : Test(2) {
       my $object = Object->new;
@@ -421,6 +423,7 @@ with:
   
 If more than one test remains after an exception then the first one is failed, and the remaining ones are skipped.
 
+Startup methods are a special case. Since startup methods will usually be creating state needed by all the other test methods an exception within a startup method will prevent all other test methods running.
 
 =head1 SKIPPED TESTS
 
