@@ -36,7 +36,13 @@ Test::Class - Easily create test classes in an xUnit/JUnit style
       diag("array = (@$array) after test(s)");
   };
   
-  Example::Test->runtests;
+later in a nearby .t file
+
+  #! /usr/bin/perl
+  use Example::Test;
+  
+  # run all the test methods in Example::Test
+  Test::Class->runtests;
 
 Outputs:
 
@@ -241,17 +247,28 @@ Just like setup and teardown methods you can pass an optional number of tests to
 
 =head1 RUNNING TESTS
 
-You have already seen that you can run all the test methods in a test class by doing:
+You run test methods with L<runtests()|"runtests">. Doing:
 
-  Example::Test->runtests
+  Test::Class->runtests
 
-This is actually a shortcut for saying:
+runs all of the test methods in every loaded test class. This allows you to easily load multiple test classes in a *.t file and run them all.
+
+  #! /usr/bin/perl
+  
+  # load all the test classes I want to run
+  use Foo::Test;
+  use Foo::Bar::Test;
+  use Foo::Fribble::Test;
+  use Foo::Ni::Test;
+  
+  # and run them all
+  Test::Class->runtests;
+
+If you need finer control you can create individual test objects with L<new()|"new">. For example to just run the tests in the test class C<Foo::Bar::Test> you can do:
 
   Example::Test->new->runtests
 
-The object created by C<Example::Test-E<gt>new> is the one passed to every method.
-
-If you want to run multiple test objects in a single script you can pass L<runtests()|/"runtests"> a list of test objects. For example:
+You can also pass L<runtests()|/"runtests"> a list of test objects to run. For example:
 
   my $o1 = Example::Test->new;
   my $o2 = Another::Test->new;
@@ -264,7 +281,7 @@ Since, by definition, the base Test::Class has no tests you could also have writ
   my $o2 = Another::Test->new;
   Test::Class->runtests($o1, $o2);
 
-Since you can pass L<runtests()|/"runtests"> class names instead of objects the above can be written more compactly as:
+If you pass L<runtests()|/"runtests"> class names it will automatically create test objects for you, so the above can be written more compactly as:
 
   Test::Class->runtests(qw( Example::Test Another::Test ))
 
@@ -272,7 +289,7 @@ In all of the above examples L<runtests()|/"runtests"> will look at the number o
 
 What happens if you run test classes and normal tests in the same script? For example:
 
-  Example::Test->runtests;
+  Test::Class->runtests;
   ok(Example->new->foo, 'a test not in the test class');
   ok(Example->new->bar, 'ditto');
 
@@ -280,7 +297,7 @@ L<Test::Harness> will complain that it saw more tests than it expected since the
 
 To overcome this problem you can pass an integer value to L<runtests()|/"runtests">. This is added to the total number of tests in the test header. So the problematic example can be rewritten as follows:
 
-  Example::Test->runtests(+2);
+  Test::Class->runtests(+2);
   ok(Example->new->foo, 'a test not in the test class');
   ok(Example->new->bar, 'ditto');
 
@@ -288,8 +305,8 @@ If you prefer to write your test plan explicitly you can use L<expected_tests()|
 
 Since L<runtests()|/"runtests"> will not output a test plan if one has already been set the previous example can be written as:
 
-  plan tests => Example::Test->expected_tests(+2);
-  Example::Test->runtests;
+  plan tests => Test::Class->expected_tests(+2);
+  Test::Class->runtests;
   ok(Example->new->foo, 'a test not in the test class');
   ok(Example->new->bar, 'ditto');
 
@@ -437,6 +454,7 @@ I<Note:> if you want to skip tests in a method with C<no_plan> tests then you ha
 
 Another way of overcoming this problem is to explicitly set the number of tests for the method at runtime using L<num_method_tests()|/"num_method_tests"> or L<"num_tests">.
 
+You can make a test class skip all of its tests by setting L<SKIP_CLASS()|SKIP_CLASS> before L<runtests()|"runtests"> is called.
 
 =head1 TO DO TESTS
 
@@ -644,9 +662,20 @@ C<expected_tests> is useful when you're integrating one or more test classes int
   $allok = $Tests->runtests(TEST, ...)
   $allok = CLASS->runtests(TEST, ...)
 
-Run the tests of the given test object. Calling C<runtests> as a class method is the same as doing C<CLASS-E<gt>new-E<gt>runtests>. Returns C<1> if all the tests pass, C<0> otherwise.
+C<runtests> is used to run test classes. At its most basic doing:
+
+  $test->runtests
+  
+will run the test methods of the test object $test, unless L<$test->SKIP_CLASS()/"SKIP_CLASS"> returns a true value. 
 
 Unless you have already specified a test plan using Test::Builder (or Test::More, et al) C<runtests> will set the test plan just before the first method that runs a test is executed. 
+
+If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the name of each test method before it runs like this:
+
+  # My::Test::Class->my_test
+  ok 1 - fribble
+  # My::Test::Class->another_test
+  ok 2 - bar
 
 Just like L<expected_tests()|/"expected_tests">, C<runtests> can take an optional list of test object/classes and integers. All of the test object/classes are run. Any integers are added to the total number of tests shown in the test header output by C<runtests>. 
 
@@ -655,18 +684,50 @@ For example, you can run all the tests in test classes A, B and C, plus one addi
     Test::Class->runtests(qw(A B C), +1);
     ok(1==1, 'non class test');
 
-If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the name of each test method before it runs.
+Finally, if you call C<runtests> on a test class without any arguments it will run all of the test methods of that class, and all subclasses of that class. For example:
 
-=begin _private
+  #! /usr/bin/perl
+  # Test all the Foo stuff
+  
+  use Foo::Test;
+  use Foo::Bar::Test;
+  use Foo::Ni::Test;
+  
+  # run all the Foo*Test modules we just loaded
+  Test::Class->runtests;
+    
 
-=item B<autorun>
+=item B<SKIP_CLASS>
 
-=item B<run_all_classes>
+  $reason = CLASS->SKIP_CLASS;
+  CLASS->SKIP_CLASS( $reason );
 
-Ignore these for the moment. Subject to change.
+Determines whether the test class CLASS should run it's tests. If SKIP_CLASS returns a true value then  L<runtests()|/"runtests"> will not run any of the test methods in CLASS.
 
-=end _private
+You can override the default on a class-by-class basis by supplying a new value to SKIP_CLASS. For example if you have an abstract base class that should not run just add the following to your module:
 
+  My::Abstract::Test->SKIP_CLASS( 1 );
+  
+This will not affect any sub-classes of C<My::Abstract::Test> which will run as normal.
+
+If the true value returned by SKIP_CLASS is anything other than "1" then a skip test is output using this value as the skip message. For example:
+
+  My::Postgres::Test->SKIP_CLASS(
+      $ENV{POSTGRES_HOME} ? 0 : '$POSTGRES_HOME needs to be set'
+  );
+
+will output something like this if C<POSTGRES_HOME> is not set
+
+	... other tests ...
+	ok 123 # skip My::Postgres::Test  - $POSTGRES_HOME needs to be set
+	... more tests ...
+
+You can also override SKIP_CLASS for a class hierarchy. For example, to prevent any subclasses of My::Postgres::Test running we could override SKIP_CLASS like this:
+
+  sub My::Postgres::Test::SKIP_CLASS {
+      $ENV{POSTGRES_HOME} ? 0 : '$POSTGRES_HOME needs to be set'
+  };
+  
 =back
 
 =head2 Fetching and setting a method's test number
@@ -950,7 +1011,7 @@ If you think this module should do something that it doesn't (or does something 
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 

@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -117,6 +117,9 @@ sub _get_methods {
 
 sub _num_expected_tests {
 	my $self = shift;
+	if (my $reason = $self->SKIP_CLASS ) {
+	   return $reason eq "1" ? 0 : 1;
+    };
 	my @startup_shutdown_methods = 
 			_get_methods($self, STARTUP, SHUTDOWN);
 	my $num_startup_shutdown_methods = 
@@ -236,11 +239,24 @@ sub _show_header {
 	};
 };
 
+my %SKIP_THIS_CLASS = ();
+
+sub SKIP_CLASS {
+	my $class = shift;
+	$SKIP_THIS_CLASS{ $class } = shift if @_;
+	return $SKIP_THIS_CLASS{ $class };
+};
+
+sub _test_classes {
+	my $class = shift;
+	grep { $_->isa( $class ) } Devel::Symdump->rnew->packages;
+};
+
 sub runtests {
 	my @tests = @_;
 	if (@tests == 1 && !ref($tests[0])) {
 		my $base_class = shift @tests;
-		@tests = $base_class->run_all_classes;
+		@tests = _test_classes( $base_class );
 	};
 	my $all_passed = 1;
 	foreach my $t (@tests) {
@@ -248,57 +264,42 @@ sub runtests {
 		next if $t =~ m/^\d+$/;
 		croak "$t not Test::Class or integer" 
 				unless UNIVERSAL::isa($t, __PACKAGE__);
-		$t = $t->new unless ref($t);
-		my $class = ref($t);
-		my @setup = _get_methods($t, SETUP);
-		my @teardown = _get_methods($t, TEARDOWN);
-		foreach my $method (_get_methods($t, STARTUP)) {
-		    _show_header($t, @tests) 
-					unless $Builder->has_plan 
-					|| _total_num_tests($t, $method) eq '0';
-			my $method_passed = _run_method($t, $method, \@tests);
-			$all_passed &&= $method_passed;
-		};
-		foreach my $test (_get_methods($t, TEST)) { 
-			local $Current_method = $test;
-		   	$Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-			foreach my $method (@setup, $test, @teardown) {
-				_show_header($t, @tests) 
-						unless $Builder->has_plan 
-						|| _total_num_tests($t, $method) eq '0';
-				my $method_passed = _run_method($t, $method, \@tests);
-				$all_passed &&= $method_passed;
-			};
-		};
-		foreach my $method (_get_methods($t, SHUTDOWN)) {
-			_show_header($t, @tests) 
-					unless $Builder->has_plan 
-					|| _total_num_tests($t, $method) eq '0';
-			my $method_passed = _run_method($t, $method, \@tests);
-			$all_passed &&= $method_passed;
-		};
-
-	};
+        if (my $reason = $t->SKIP_CLASS) {
+            _show_header($t, @tests) unless $Builder->has_plan ;
+            $Builder->skip( $reason ) unless $reason eq "1";
+        } else {
+            $t = $t->new unless ref($t);
+            my $class = ref($t);
+            my @setup = _get_methods($t, SETUP);
+            my @teardown = _get_methods($t, TEARDOWN);
+            foreach my $method (_get_methods($t, STARTUP)) {
+                _show_header($t, @tests) 
+                        unless $Builder->has_plan 
+                        || _total_num_tests($t, $method) eq '0';
+                my $method_passed = _run_method($t, $method, \@tests);
+                $all_passed &&= $method_passed;
+            };
+            foreach my $test (_get_methods($t, TEST)) { 
+                local $Current_method = $test;
+                $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
+                foreach my $method (@setup, $test, @teardown) {
+                    _show_header($t, @tests) 
+                            unless $Builder->has_plan 
+                            || _total_num_tests($t, $method) eq '0';
+                    my $method_passed = _run_method($t, $method, \@tests);
+                    $all_passed &&= $method_passed;
+                };
+            };
+            foreach my $method (_get_methods($t, SHUTDOWN)) {
+                _show_header($t, @tests) 
+                        unless $Builder->has_plan 
+                        || _total_num_tests($t, $method) eq '0';
+                my $method_passed = _run_method($t, $method, \@tests);
+                $all_passed &&= $method_passed;
+            }
+        }
+	}
 	return($all_passed);
-};
-
-my %AUTORUN = ();
-
-sub autorun {
-	my $class = shift;
-	$class = ref($class) if ref($class);
-	$AUTORUN{$class} = shift if @_;
-	return($AUTORUN{$class}) if defined($AUTORUN{$class});
-	foreach (Devel::Symdump->rnew->packages) {
-		return(0) if UNIVERSAL::isa($_, $class) && $class ne $_;
-	};
-	return(1);
-};
-
-sub run_all_classes {
-	my $class = shift;
-	grep {UNIVERSAL::isa($_, $class) && $_->autorun} 
-			Devel::Symdump->rnew->packages;
 };
 
 sub _find_calling_test_class {

@@ -1,4 +1,11 @@
-Revision history for Perl extension Test::Class.
+0.08
+    -   The undocumented behaviour of C<runtests> has been tweaked and
+        documented. You can now run all loaded test classes by doing
+        Test::Class->runtests
+    -   Removed undocumented autorun method, and replaced with SKIP_CLASS. This
+        allows you to prevent test classes being run by runtests.
+    -   Removed undocumented class method run_all_tests.
+    (thanks to David Wheeler & Ovid for helping define the above behaviour)
 
 0.07
     -   Removed Test::Class::Tutorial & Test::Class::BaseTest since
