@@ -8,6 +8,8 @@ Revision history for Perl extension Test::Class.
     -   cleaned up Test::Class POD
     -   documented.t now uses Test::Pod::Coverage if available
     -   pod.t now uses Test::Pod if available
+    -   private methods now called as functions to avoid problems
+        with subclasses accidentally overriding
 
 0.05 (not distributed on CPAN)
 	-	fixed MANIFEST and MANIFEST.SKIP

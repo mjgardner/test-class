@@ -8,46 +8,15 @@ use Carp;
 
 our $VERSION = '0.01';
 
-=head1 NAME
-
-Test::Class - Base class for mananging test methods.
-
-=head1 SYNOPSIS
-
-Implementation stuff. Please ignore for the moment...
-
-=over 4
-
-=cut 
-
-=item B<is_method_type>
-
-Returns true if arg is a method type.
-
-=cut
-
 sub is_method_type { 
 	my ($self, $type) = @_;
 	return($type =~ m/^(startup|setup|test|teardown|shutdown)$/s);
 };
 
-
-=item B<is_num_tests>
-
-Returns true if arg is a # of tests.
-
-=cut
-
 sub is_num_tests { 
 	my ($self, $num_tests) = @_;
 	return($num_tests =~ m/^(no_plan)|(\+?\d+)$/s);
 };
-
-=item B<new>
-
-Create new Test::Class::Base
-
-=cut
 
 sub new {
 	my $class = shift;
@@ -65,19 +34,7 @@ sub new {
 	return($self);
 };
 
-=item B<name>
-
-Return the name of a method
-
-=cut
-
 sub name 		{ shift->{name} };
-
-=item B<num_tests>
-
-Return the number of tests
-
-=cut
 
 sub num_tests	{ 
 	my ($self, $n) = @_;
@@ -89,19 +46,10 @@ sub num_tests	{
 	return($self->{_num_tests});
 };
 
-=item B<is_type>
-
-Is a method of the specified type.
-
-=cut
-
 sub is_type {
 	my ($self, $type) = @_;
 	return( $self->{types}->{$type} );
 };
 
-=back
-
-=cut
 
 1;

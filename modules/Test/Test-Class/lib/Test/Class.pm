@@ -13,10 +13,8 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.06_1';
 
-our	$Current_method	= undef;
-my	$Builder		= Test::Builder->new;
+our $VERSION = '0.06_1';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -27,6 +25,13 @@ use constant STARTUP	=> "startup";
 use constant SHUTDOWN	=> "shutdown";
 
 
+our	$Current_method	= undef;
+sub current_method { $Current_method };
+
+
+my $Builder = Test::Builder->new;
+sub builder { $Builder };
+
 my $Tests = {};
 
 sub _test_info {
@@ -36,25 +41,22 @@ sub _test_info {
 
 sub _method_info {
 	my ($self, $class, $method) = @_;
-	return($self->_test_info->{$class}->{$method});
+	return(_test_info($self)->{$class}->{$method});
 };
 
 sub _methods_of_class {
 	my ($self, $class) = @_;
-	return(values %{$self->_test_info->{$class}});
+	return(values %{_test_info($self)->{$class}});
 };
-
 
 sub add_method {
 	my ($class, $name, $num_tests, $types) = @_;
-	$Tests->{$class}->{$name} = 
-			Test::Class::MethodInfo->new(
-				name => $name, 
-				num_tests => $num_tests,
-				type => $types,
-			);	
+	$Tests->{$class}->{$name} = Test::Class::MethodInfo->new(
+        name => $name, 
+        num_tests => $num_tests,
+        type => $types,
+    );	
 };
-
 
 sub _new_method_info {
 	my ($class, $method_name, $args) = @_;
@@ -75,7 +77,6 @@ sub _new_method_info {
 	return(1);
 };
 
-
 sub Test : ATTR(CODE,RAWDATA) {
 	my ($class, $symbol, $code_ref, $attr, $args) = @_;
 	if ($symbol eq "ANON") {
@@ -83,10 +84,9 @@ sub Test : ATTR(CODE,RAWDATA) {
 		return;
 	};
 	my $name = *{$symbol}{NAME};
-	$class->_new_method_info($name, $args)
+    _new_method_info($class, $name, $args)
 			|| warn "bad test definition '$args' in $class->$name\n";	
 };
-
 
 sub new {
 	my $proto = shift;
@@ -98,13 +98,12 @@ sub new {
 	return($self);
 };
 
-
 sub _get_methods {
 	my ($self, @types) = @_;
 	my $test_class = ref($self) || $self;
 	my %methods = ();
 	foreach my $class (Class::ISA::self_and_super_path($test_class)) {
-		foreach my $info ($self->_methods_of_class($class)) {
+		foreach my $info (_methods_of_class($self, $class)) {
 			foreach my $type (@types) {
 				$methods{$info->name} = 1 if $info->is_type($type);
 			};
@@ -113,29 +112,27 @@ sub _get_methods {
 	return(sort keys %methods);
 };
 
-
 sub _num_expected_tests {
 	my $self = shift;
 	my @startup_shutdown_methods = 
-			$self->_get_methods(STARTUP, SHUTDOWN);
+			_get_methods($self, STARTUP, SHUTDOWN);
 	my $num_startup_shutdown_methods = 
-			$self->_total_num_tests(@startup_shutdown_methods);
+			_total_num_tests($self, @startup_shutdown_methods);
 	return(NO_PLAN) if $num_startup_shutdown_methods eq NO_PLAN;
-	my @fixture_methods = $self->_get_methods(SETUP, TEARDOWN);
-	my $num_fixture_tests = $self->_total_num_tests(@fixture_methods);
+	my @fixture_methods = _get_methods($self, SETUP, TEARDOWN);
+	my $num_fixture_tests = _total_num_tests($self, @fixture_methods);
 	return(NO_PLAN) if $num_fixture_tests eq NO_PLAN;
-	my @test_methods = $self->_get_methods(TEST);
-	my $num_tests = $self->_total_num_tests(@test_methods);
+	my @test_methods = _get_methods($self, TEST);
+	my $num_tests = _total_num_tests($self, @test_methods);
 	return(NO_PLAN) if $num_tests eq NO_PLAN;
 	return($num_startup_shutdown_methods + $num_tests + @test_methods * $num_fixture_tests);
 };
-
 
 sub expected_tests {
 	my $total = 0;
 	foreach my $test (@_) {
 		if (UNIVERSAL::isa($test, __PACKAGE__)) {
-			my $n = $test->_num_expected_tests;
+			my $n = _num_expected_tests($test);
 			return(NO_PLAN) if $n eq NO_PLAN;
 			$total += $n;
 		} elsif ($test =~ m/^\d+$/) {
@@ -149,14 +146,13 @@ sub expected_tests {
 	return($total);
 };
 
-
 sub _total_num_tests {
 	my ($self, @methods) = @_;
 	my $class = ref($self) || $self;
 	my $total_num_tests = 0;
 	foreach my $method (@methods) {
 		foreach my $class (Class::ISA::self_and_super_path($class)) {
-			my $info = $self->_method_info($class, $method);
+			my $info = _method_info($self, $class, $method);
 			next unless $info;
 			my $num_tests = $info->num_tests;
 			return(NO_PLAN) if ($num_tests eq NO_PLAN);
@@ -167,7 +163,6 @@ sub _total_num_tests {
 	return($total_num_tests);
 };
 
-
 sub _all_ok_from {
 	my ($self, $start_test) = @_;
 	my $current_test = $Builder->current_test;
@@ -177,17 +172,15 @@ sub _all_ok_from {
 	return(1);
 };
 
-
 sub _exception_failure {
 	my ($self, $method, $exception, $tests) = @_;
 	local $Test::Builder::Level = 3;
 	my $message = $method;
 	$message .= " (for test method '$Current_method')"
 			if $method ne $Current_method;
-	$self->_show_header(@$tests) unless $Builder->has_plan;
+	_show_header($self, @$tests) unless $Builder->has_plan;
 	$Builder->ok(0, "$message died ($exception)");
 };
-
 
 sub _run_method {
 	my ($self, $method, $tests) = @_;
@@ -196,17 +189,17 @@ sub _run_method {
 	my $exception = $@;
 	chomp($exception) if $exception;
 	my $num_done = $Builder->current_test - $num_start;
-	my $num_expected = $self->_total_num_tests($method);
+	my $num_expected = _total_num_tests($self, $method);
 	$num_expected = $num_done if $num_expected eq NO_PLAN;
 	if ($num_done == $num_expected) {
-		$self->_exception_failure($method, $exception, $tests) 
+		_exception_failure($self, $method, $exception, $tests) 
 				unless $exception eq '';
 	} elsif ($num_done > $num_expected) {
 		$Builder->diag("expected $num_expected test(s) in $method, $num_done completed\n");
 	} else {
 		until (($Builder->current_test - $num_start) >= $num_expected) {
 			if ($exception ne '') {
-				$self->_exception_failure($method, $exception, $tests);
+				_exception_failure($self, $method, $exception, $tests);
 				$skip_reason = "$method died";
 				$exception = '';
 			} else {
@@ -214,9 +207,8 @@ sub _run_method {
 			};
 		};
 	};
-	return($self->_all_ok_from($num_start));
+	return(_all_ok_from($self, $num_start));
 };
-
 
 sub _show_header {
 	my ($self, @tests) = @_;
@@ -227,7 +219,6 @@ sub _show_header {
 		$Builder->expected_tests($num_tests);
 	};
 };
-
 
 sub runtests {
 	my @tests = @_;
@@ -243,48 +234,37 @@ sub runtests {
 				unless UNIVERSAL::isa($t, __PACKAGE__);
 		$t = $t->new unless ref($t);
 		my $class = ref($t);
-		my @setup = $t->_get_methods(SETUP);
-		my @teardown = $t->_get_methods(TEARDOWN);
-		foreach my $method ($t->_get_methods(STARTUP)) {
-			$t->_show_header(@tests) 
+		my @setup = _get_methods($t, SETUP);
+		my @teardown = _get_methods($t, TEARDOWN);
+		foreach my $method (_get_methods($t, STARTUP)) {
+		    _show_header($t, @tests) 
 					unless $Builder->has_plan 
-					|| $t->_total_num_tests($method) eq '0';
-			my $method_passed = $t->_run_method($method, \@tests);
+					|| _total_num_tests($t, $method) eq '0';
+			my $method_passed = _run_method($t, $method, \@tests);
 			$all_passed &&= $method_passed;
 		};
-		foreach my $test ($t->_get_methods(TEST)) { 
+		foreach my $test (_get_methods($t, TEST)) { 
 			local $Current_method = $test;
 		   	$Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
 			foreach my $method (@setup, $test, @teardown) {
-				$t->_show_header(@tests) 
+				_show_header($t, @tests) 
 						unless $Builder->has_plan 
-						|| $t->_total_num_tests($method) eq '0';
-				my $method_passed = $t->_run_method($method, \@tests);
+						|| _total_num_tests($t, $method) eq '0';
+				my $method_passed = _run_method($t, $method, \@tests);
 				$all_passed &&= $method_passed;
 			};
 		};
-		foreach my $method ($t->_get_methods(SHUTDOWN)) {
-			$t->_show_header(@tests) 
+		foreach my $method (_get_methods($t, SHUTDOWN)) {
+			_show_header($t, @tests) 
 					unless $Builder->has_plan 
-					|| $t->_total_num_tests($method) eq '0';
-			my $method_passed = $t->_run_method($method, \@tests);
+					|| _total_num_tests($t, $method) eq '0';
+			my $method_passed = _run_method($t, $method, \@tests);
 			$all_passed &&= $method_passed;
 		};
 
 	};
 	return($all_passed);
 };
-
-
-sub _find_calling_test_class {
-	my $level = 0;
-	while (my $class = caller(++$level)) {
-		next if $class eq __PACKAGE__;
-		return($class) if $class->isa(__PACKAGE__);
-	}; 
-	return(undef);
-};
-
 
 my %AUTORUN = ();
 
@@ -299,62 +279,63 @@ sub autorun {
 	return(1);
 };
 
-
 sub run_all_classes {
 	my $class = shift;
 	grep {UNIVERSAL::isa($_, $class) && $_->autorun} 
 			Devel::Symdump->rnew->packages;
 };
 
+sub _find_calling_test_class {
+	my $level = 0;
+	while (my $class = caller(++$level)) {
+		next if $class eq __PACKAGE__;
+		return($class) if $class->isa(__PACKAGE__);
+	}; 
+	return(undef);
+};
 
 sub num_method_tests {
 	my ($self, $method, $n) = @_;
-	my $class = $self->_find_calling_test_class;
-	croak "not called in a Test::Class" unless $class;
-	my $info = $self->_method_info($class, $method);
-	croak "$method is not a test method of class $class" unless $info;
+	my $class = _find_calling_test_class( $self )
+	    or croak "not called in a Test::Class";
+	my $info = _method_info($self, $class, $method)
+	    or croak "$method is not a test method of class $class";
 	$info->num_tests($n) if defined($n);
-	return($info->num_tests);
+	return( $info->num_tests );
 };
-
 
 sub num_tests {
-	my ($self, $n) = @_;
+    my $self = shift;
 	croak "num_tests need to be called within a test method"
 			unless defined $Current_method;
-	return($self->num_method_tests($Current_method, $n));
+	return( $self->num_method_tests( $Current_method, @_ ) );
 };
-
-
-sub builder { $Builder };
-
-
-sub current_method { $Current_method };
-
 
 sub BAILOUT {
 	my ($self, $reason) = @_;
 	$Builder->BAILOUT($reason);
 };
 
+sub _last_test {
+    $Builder->expected_tests || $Builder->current_test+1
+};
 
 sub FAIL_ALL {
 	my ($self, $reason) = @_;
-	my $expected = $Builder->expected_tests || $Builder->current_test+1;
-	$Builder->expected_tests($expected) unless $Builder->has_plan();
-	$Builder->ok(0, $reason) until $Builder->current_test >= $expected;
-	my $num_failed = grep(! $_, $Builder->summary);
-	exit($num_failed < 254 ? $num_failed : 254);
+	my $last_test = _last_test();
+	$Builder->expected_tests( $last_test ) unless $Builder->has_plan;
+	$Builder->ok(0, $reason) until $Builder->current_test >= $last_test;
+	my $num_failed = grep( !$_, $Builder->summary );
+	exit( $num_failed < 254 ? $num_failed : 254 );
 };
-
 
 sub SKIP_ALL {	
 	my ($self, $reason) = @_;
-	$Builder->skip_all($reason) unless $Builder->has_plan;
-	my $expected = $Builder->expected_tests || $Builder->current_test+1;
-	$Builder->skip($reason) until ($Builder->current_test >= $expected);
+	$Builder->skip_all( $reason ) unless $Builder->has_plan;
+	my $last_test = _last_test();
+	$Builder->skip( $reason ) 
+	    until $Builder->current_test >= $last_test;
 	exit(0);
 }
-
 
 1;
