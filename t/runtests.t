@@ -7,10 +7,6 @@ package Foo;
 use base qw(Test::Class);
 use Test::More;
 
-sub _first : Test(setup => teardown => 1) {
-	pass("_first");
-};
-
 
 sub initialise1 :Test(setup) {
 	my $self = shift;
@@ -69,6 +65,6 @@ sub teardown1 :Test(teardown => +3) {
 };
 
 package main;
-use Test::More tests => 22;
+use Test::More tests => 18;
 
 Bar->new->runtests;

@@ -17,9 +17,12 @@ sub todo_test : Test  {
 };
 
 package main;
-use Test::Builder::Tester tests => 1;
+use Test::Builder::Tester tests => 2;
 $ENV{TEST_VERBOSE}=0;
 test_out("not ok 1 - object live # TODO unimplemented");
 test_err("#     Failed (TODO) test (t/todo.t at line 16)");
 Foo->runtests;
 test_test("todo tests work");
+
+package Foo;
+is( Foo->num_method_tests('todo_test'), 1, 'todo_test should run 1 test' );

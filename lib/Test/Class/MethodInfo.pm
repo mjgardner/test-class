@@ -19,22 +19,19 @@ sub is_num_tests {
 };
 
 sub new {
-	my $class = shift;
-	my %param = @_;
-	my $self = bless {}, $class;
-	my ($name, $types, $num_tests) = map {
-		croak "need to set $_" unless exists $param{$_};
-		$param{$_};
-	} qw(name type num_tests);
-	foreach my $type (@$types) {
-		$self->{types}->{$type} = 1;
-	};
-	$self->num_tests($num_tests);
-	$self->{name} = $name;
+    my ($class, %param) = @_;
+	my $self = bless {
+	    name => $param{name},
+	    type => $param{type} || 'test',
+	}, $class;
+	unless ( defined( $param{num_tests} ) ) {
+    	$param{num_tests} = $self->is_type('test') ? 1 : 0;
+    };
+	$self->num_tests( $param{num_tests} );
 	return($self);
 };
 
-sub name 		{ shift->{name} };
+sub name { shift->{name} };
 
 sub num_tests	{ 
 	my ($self, $n) = @_;
@@ -48,7 +45,7 @@ sub num_tests	{
 
 sub is_type {
 	my ($self, $type) = @_;
-	return( $self->{types}->{$type} );
+    $self->{type} eq $type;
 };
 
 

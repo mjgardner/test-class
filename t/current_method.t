@@ -12,9 +12,14 @@ sub test : Test {
 	is($self->current_method, "test", "current_method in method"); 
 };
 
-sub teardown : Test(setup => teardown => 1) {
+sub setup : Test(setup => 1) {
 	my $self = shift;
-	is($self->current_method, "test", "current_method in setup/teardown"); 
+	is($self->current_method, "test", "current_method in setup"); 
+};
+
+sub teardown : Test(teardown => 1) {
+	my $self = shift;
+	is($self->current_method, "test", "current_method in teardown"); 
 };
 
 __PACKAGE__->runtests;
