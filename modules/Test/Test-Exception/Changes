@@ -1,14 +1,19 @@
 Revision history for Perl extension Test::Exception:
 
+0.18
+    -   Cosmetic POD tweaks
+    -   Added Test::Warn and Test::NoWarnings to SEE ALSO (thanks to
+        Andy Lester for pointing out the lack)
+
 0.17
     -   Tests now pass with Test::Simple 0.48
 
 0.16
-	-	pod.t now uses Test::Pod
+    -   pod.t now uses Test::Pod
     -   cleaned up code a little
     -   Fixed year in copyright in POD
     -   Added import() after suggestion from Peter Scott
-    -	tidied tests a bit
+    -   tidied tests a bit
 
 0.15
     -   Removed live() and added lives_and() after an excellent 

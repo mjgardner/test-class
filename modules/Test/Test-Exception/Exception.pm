@@ -9,7 +9,7 @@ use base qw(Exporter);
 
 use vars qw($VERSION @EXPORT @EXPORT_OK);
 
-$VERSION = '0.17';
+$VERSION = '0.18';
 @EXPORT = qw(dies_ok lives_ok throws_ok lives_and);
 
 my $Tester = Test::Builder->new;
@@ -26,7 +26,7 @@ sub import {
 
 =head1 NAME
 
-Test::Exception - test functions for exception based code
+Test::Exception - Test exception based code
 
 =head1 SYNOPSIS
 
@@ -289,13 +289,7 @@ If you think this module should do something that it doesn't do at the moment pl
 
 Thanks to chromatic and Michael G Schwern for the excellent Test::Builder, without which this module wouldn't be possible.
 
-Thanks to Michael G Schwern and Mark Fowler for suggestions and comments on initial versions of this module.
-
-Thanks to Janek Schleicher, Michael G Schwern, chromatic and Mark Fowler for reporting/fixing bugs.
-
-Thanks to Aristotle for suggesting lives_and.
-
-Thanks to Peter Scott for suggesting having an import() for the module.
+Thanks to Michael G Schwern, Mark Fowler, Janek Schleicher, chromatic, Mark Fowler, Peter Scott, Aristotle and Andy Lester for suggestions, bug reports and patches.
 
 
 =head1 AUTHOR
@@ -307,32 +301,30 @@ If you can spare the time, please drop me a line if you find this module useful.
 
 =head1 SEE ALSO
 
-L<Test::Builder> provides a consistent backend for building test libraries. The following modules are all built with L<Test::Builder> and work well together.
-
 =over 4
+
+=item L<Test::Builder>
+
+Support module for building test libraries.
 
 =item L<Test::Simple> & L<Test::More>
 
 Basic utilities for writing tests.
 
-=item L<Test::Class>
+=item L<Test::Warn> & L<Test::NoWarnings>
 
-Easily create test classes in an xUnit style.
+Modules to help test warnings.
 
-=item L<Test::Differences>
+=item L<http://qa.perl.org/test-modules.html>
 
-Test strings and data structures and show differences if not ok.
-
-=item L<Test::Inline>
-
-Inlining your tests next to the code being tested.
+Overview of some of the many testing modules available on CPAN.
 
 =back
 
 
 =head1 LICENCE
 
-Copyright 2002-2003 Adrian Howard, All Rights Reserved.
+Copyright 2002-2004 Adrian Howard, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
