@@ -26,8 +26,6 @@ Solve http://use.perl.org/~ethan/journal/14815
 
 Have the option of making test methods fail after the first failing test, for those who prefer that style.
 
-Think about making it work without attributes for older perls.
-
 Finish cleaning up up Test::Class documentation
 
 Add an option to get a diag with the method name on a test method that contains failing tests
@@ -37,5 +35,3 @@ Need a simple way or running all the tests in a directory. Either by loading the
 Need a way to avoid duplication of use-ing then running tests.
 
 Talk about how to do aggregation (aka Suites)
-
-Document the global var that holds the current test name. Much easier to inline into test name strings than calling the method.

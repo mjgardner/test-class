@@ -663,8 +663,6 @@ If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the 
 
 =item B<run_all_classes>
 
-=item B<add_method>
-
 Ignore these for the moment. Subject to change.
 
 =back

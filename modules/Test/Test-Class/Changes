@@ -1,5 +1,12 @@
 Revision history for Perl extension Test::Class.
 
+0.06_5
+    -   Cleaned up internals
+    -   Having a single method be simultaniously a setup and teardown
+        method no longer supported
+    -   The undocumented add_method method, that you should not have
+        been using anyway, disappears
+
 0.06_4
     -   Fixed bogus heading styles in POD
     -   Test names that default to $self->current_method now replace all
