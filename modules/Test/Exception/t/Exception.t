@@ -2,45 +2,40 @@
 
 use strict;
 
-use Test::Builder::Tester tests => 18;
+use Test::Builder::Tester tests => 19;
+use Test::More;
 
-BEGIN { 
-	my $module = 'Test::Exception';
-    eval "use $module";
-	if ($@) {
-		print "Bail out!: Cannot find $module in (@INC)\n";
-		exit(255);
-	};
-};
-
+BEGIN { use_ok( 'Test::Exception' ) };
 
 {
 	package Local::Error::Simple;
-	sub new { return bless {}, shift };
-};
 
+	my %Exception_singleton;
+	
+	sub instance { 
+		my $class = shift;
+		return $Exception_singleton{$class} ||= bless {}, $class;
+	};
 
-{	
+	sub throw {
+		my $class = shift;
+		die $class->instance;
+	};
+
 	package Local::Error::Test;
 	use base qw(Local::Error::Simple);
-};
 
-
-{	
 	package Local::Error::Overload;
 	use base qw(Local::Error::Simple);
 	use overload q{""} => sub { "overloaded" }, fallback => 1;
-};
 
-
-{	
 	package Local::Error::NoFallback;
 	use base qw(Local::Error::Simple);
 	use overload q{""} => sub { "no fallback" };
 };
 
 
-my %Exception = map {m/([^:]+)$/; lc $1 => $_->new} qw(
+my %Exception = map {m/([^:]+)$/; lc $1 => $_->instance} qw(
 	Local::Error::Simple 
 	Local::Error::Test 
 	Local::Error::Overload 
@@ -50,69 +45,71 @@ my %Exception = map {m/([^:]+)$/; lc $1 => $_->new} qw(
 
 sub error {
 	my $type = shift;
-	return(1) if $type eq "none";
-	die "a normal die\n" if $type eq "die";
 	die $Exception{$type} if exists $Exception{$type};
 	warn "exiting: unrecognised error type $type\n";
 	exit(1);
 };
 
+sub no_exception { "this subroutine does not die" };
+
+sub normal_die { die "a normal die\n" };
+
 
 test_out("ok 1");
-dies_ok { error("die") };
+dies_ok { normal_die() };
 test_test("dies_ok: die");
 
 test_out("not ok 1 - lived. oops");
 test_fail(+1);
-dies_ok { error("none") } "lived. oops";
+dies_ok { no_exception() } "lived. oops";
 test_test("dies_ok: normal exit detected");
 
 test_out("ok 1 - lived");
-lives_ok { 1 } "lived";
+lives_ok { no_exception() } "lived";
 test_test("lives_ok: normal exit");
 
 test_out("not ok 1");
 test_fail(+2);
 test_diag("died: a normal die");
-lives_ok { error("die") };
+lives_ok { normal_die() };
 test_test("lives_ok: die detected");
 
 test_out("not ok 1");
 test_fail(+2);
 test_diag("died: Local::Error::Overload (overloaded)");
-lives_ok { error("overload") };
+lives_ok { Local::Error::Overload->throw };
 test_test("lives_ok: die detected");
 
 test_out("ok 1 - expecting normal die");
-throws_ok { error("die") } '/normal/', 'expecting normal die';
+throws_ok { normal_die() } '/normal/', 'expecting normal die';
 test_test("throws_ok: regex match");
 
 test_out("not ok 1 - should die");
 test_fail(+3);
 test_diag("expecting: /abnormal/");
 test_diag("found: a normal die");
-throws_ok { error("die") } '/abnormal/', 'should die';
+throws_ok { normal_die() } '/abnormal/', 'should die';
 test_test("throws_ok: regex bad match detected");
 
 test_out("ok 1 - threw Local::Error::Simple");
-throws_ok { error("simple") } "Local::Error::Simple";
+throws_ok { Local::Error::Simple->throw } "Local::Error::Simple";
 test_test("throws_ok: identical exception class");
 
 test_out("not ok 1 - threw Local::Error::Simple");
 test_fail(+3);
 test_diag("expecting: Local::Error::Simple");
 test_diag("found: normal exit");
-throws_ok { error("none") } "Local::Error::Simple";
+throws_ok { no_exception() } "Local::Error::Simple";
 test_test("throws_ok: exception on normal exit");
 
 test_out("ok 1 - threw Local::Error::Simple");
-throws_ok { error("test") } "Local::Error::Simple";
+throws_ok { Local::Error::Test->throw } "Local::Error::Simple";
 test_test("throws_ok: exception sub-class");
 
 test_out("not ok 1 - threw Local::Error::Test");
 test_fail(+3);
 test_diag("expecting: Local::Error::Test");
-test_diag("found: $Exception{simple}");
+test_diag("found: " . Local::Error::Simple->instance);
 throws_ok { error("simple") } "Local::Error::Test";
 test_test("throws_ok: bad sub-class match detected");
 
@@ -130,13 +127,13 @@ test_diag("found: $Exception{test}");
 throws_ok { error("test") } $Exception{overload};
 test_test("throws_ok: throws_ok found overloaded");
 
-my $e = Local::Error::Test->new("hello");
+my $e = Local::Error::Test->instance("hello");
 test_out("ok 1 - threw $e");
 throws_ok { error("test") } $e;
 test_test("throws_ok: class from object match");
 
 test_out("ok 1 - normal exit");
-throws_ok { error("none") } qr/^$/, "normal exit";
+throws_ok { no_exception() } qr/^$/, "normal exit";
 test_test("throws_ok: normal exit matched");
 
 test_out("ok 1");
@@ -155,4 +152,3 @@ test_diag("expecting: Local::Error::Test");
 test_diag("found: Local::Error::NoFallback (no fallback)");
 throws_ok { error("nofallback") } "Local::Error::Test";
 test_test("throws_ok: throws_ok overload without fallback");
-
