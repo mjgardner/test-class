@@ -3,13 +3,9 @@ Class.pm
 Class/BaseTest.pm
 Class/MethodInfo.pm
 Class/Tutorial.pod
-MANIFEST
 Makefile.PL
+MANIFEST			This list of files
 README
-examples/example.pl
-examples/ical.pl
-examples/money.pl
-examples/pig.pl
 t/_new.t
 t/bailout.t
 t/basetest.t
