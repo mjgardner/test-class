@@ -847,7 +847,7 @@ A tutorial about writing really basic tests
 
 =head1 LICENCE
 
-Copyright 2002 Adrian Howard, All Rights Reserved.
+Copyright 2002-2005 Adrian Howard, All Rights Reserved.
 
 This documentation is free; you can redistribute it and/or modify it under the same terms as Perl itself.
 
