@@ -1,15 +1,11 @@
 #! /usr/bin/perl -Tw
 
 use strict;
+use Test::Builder;
+use Test::Harness;
+use Test::More tests => 13;
 
-BEGIN {
-	use Test::Builder;
-	use Test::Harness;
-	Test::Builder->skip_all("need Test::Harness >= 2.03") 
-			unless $Test::Harness::VERSION >= 2.03;
-	use Test::More tests => 13;
-	use_ok( 'Test::Exception' );
-};
+BEGIN { use_ok( 'Test::Exception' ) };
 
 sub div {
    my ($a, $b) = @_;
