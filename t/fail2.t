@@ -34,6 +34,7 @@ $Test->output($io);
 $Test->failure_output($io);
 
 $ENV{TEST_VERBOSE}=0;
+$ENV{HARNESS_ACTIVE}=0;
 Object::Test->runtests;
 END {
 	$|=1;

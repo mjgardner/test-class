@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::Class.
 
+0.06_8
+    -   Made tests pass with Test::Simple 0.48
+    -   New signature
+
 0.06_7
     -   Added Module::Build support
 

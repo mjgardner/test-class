@@ -28,6 +28,7 @@ my $Test = Test::Builder->new;
 $Test->output($io);
 $Test->failure_output($io);
 $ENV{TEST_VERBOSE}=0;
+$ENV{HARNESS_ACTIVE}=0;
 Object::Test->runtests;
 
 plan tests => 4;
@@ -46,5 +47,5 @@ _exit(0);
 __DATA__
 1..1
 not ok 1 - setup (for test method 'test') died (died before plan set)
-#     Failed test (t/die_before_plan.t at line 31)
+#     Failed test (t/die_before_plan.t at line 32)
 ok 2 - test just here to get setup method run
