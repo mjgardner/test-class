@@ -1,7 +1,7 @@
 Revision history for Perl extension Test::Class.
 
-0.07
-    -   Some cosmetic POD changes
+0.06
+    -   Some cosmetic POD updates
 
 0.06_8
     -   Made tests pass with Test::Simple 0.48

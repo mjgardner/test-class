@@ -14,3 +14,4 @@
 \.svn
 Makefile.old
 Makefile$
+^cover_db

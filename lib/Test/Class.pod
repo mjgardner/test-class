@@ -154,7 +154,7 @@ to import the test functions into your test class.
 
 =head1 METHOD TYPES
 
-There are three different kinds of methods you can define using Test::Class.
+There are three different types of method you can define using Test::Class.
 
 =head2 1) Test methods
 
@@ -351,7 +351,7 @@ All of the shutdown methods in alphabetical order.
 
 =back
 
-Most of the time you should not care what order tests are run in, but it can occasionaly be useful to force some test methods to be run early. For example:
+Most of the time you should not care what order tests are run in, but it can occasionally be useful to force some test methods to be run early. For example:
 
   sub _check_new {
       my $self = shift;
@@ -574,7 +574,7 @@ If N is an integer with a C<+> prefix then the method is expected to call its C<
 
 =item *
 
-If N is the string C<no_plan> then the method can run an arbritary number of tests.
+If N is the string C<no_plan> then the method can run an arbitrary number of tests.
 
 =back
 
@@ -657,11 +657,15 @@ For example, you can run all the tests in test classes A, B and C, plus one addi
 
 If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the name of each test method before it runs.
 
+=begin _private
+
 =item B<autorun>
 
 =item B<run_all_classes>
 
 Ignore these for the moment. Subject to change.
+
+=end _private
 
 =back
 
@@ -932,7 +936,7 @@ Test::Unit implements it's own testing framework separate from L<Test::Harness>.
 
 =head1 BUGS
 
-Probably.
+None known at the time of writing.
 
 If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/>.
 
