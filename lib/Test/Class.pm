@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -249,7 +249,7 @@ sub SKIP_CLASS {
 
 sub _test_classes {
 	my $class = shift;
-	grep { defined $_ && $_->isa( $class ) } Devel::Symdump->rnew->packages;
+	grep { $_ ne '0' && $_->isa( $class ) } Devel::Symdump->rnew->packages;
 };
 
 sub runtests {

@@ -1,3 +1,6 @@
+0.10
+    -   Really fixed the _test_classes by (doh!)
+    
 0.09
     -   Fixed bug with _test_classes spotted by Corion's cpan smoker
         (see t/test_classes.t)
