@@ -13,7 +13,7 @@ use overload
     q{+0} => \&remaining, 
     fallback => 1;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 my $Last_test_in_previous_block = 0;

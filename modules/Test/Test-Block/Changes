@@ -1,6 +1,12 @@
 Revision history for Perl extension Test::Block.
 
-0.05 (not released on CPAN)
+0.06
+    -   Fixed incorrect comment that 0.05 wasn't released on CPAN (doh!)
+    -   Fixed incorrect README (double doh!)
+    -   Switched to Module::Build so I won't make that darn README 
+        mistake again
+
+0.05
     -   removed blocks declaration
     -   pod.t now uses Test::Pod
     -   documented.t now uses Test::Pod::Coverage
