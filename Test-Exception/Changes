@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::Exception:
 
+0.19
+    -   Added support for Module::Build
+
 0.18
     -   Cosmetic POD tweaks
     -   Added Test::Warn and Test::NoWarnings to SEE ALSO (thanks to
