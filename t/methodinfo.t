@@ -12,6 +12,7 @@ BEGIN { use_ok( CLASS) };
     is $o->num_tests, 1, 'test methods default to 1 test';
 };
 
+__END__
 {
     isa_ok my $o = CLASS->new(name=> 'foo', num_tests => 0), CLASS;
     is $o->num_tests, 0, 'test method can have zero tests';
