@@ -3,7 +3,7 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     'NAME'		=> 'Test::Class',
-    'VERSION_FROM'	=> 'Class.pm', # finds $VERSION
+    'VERSION_FROM'	=> 'lib/Test/Class.pm', # finds $VERSION
     'PREREQ_PM'		=> {
     	Attribute::Handlers		=> 0.77,
     	Class::ISA				=> 0.32,
@@ -17,6 +17,6 @@ WriteMakefile(
     	Devel::Symdump			=> 2.03,
     }, # e.g., Module::Name => 1.1
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'Class.pm', # retrieve abstract from module
+      (ABSTRACT_FROM => 'lib/Test/Class.pm', # retrieve abstract from module
        AUTHOR     => 'Adrian Howard <adrianh@quietstars.com>') : ()),
 );
