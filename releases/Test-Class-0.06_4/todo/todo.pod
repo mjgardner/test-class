@@ -1,0 +1,41 @@
+The teardown method should be able to introspect on whether the test method succeeded or failed, number of expected tests, number of tests run, etc.
+
+Look at the issue David reported in <C85FE3B4-5D5A-11D7-B1D2-0003931A964A@kineticode.com>
+
+Add David Wheeler's idea to make automatically load classes
+
+Add section on using self-shunt pattern with Test::Class.
+
+Add comparison to L<Test::Extreme>
+
+Add Test::Class::Cookbook
+
+Think about whether we can report the line # of the method that failed, rather than the location of the call to runtests
+
+Should also allow no_plan in expected_tests, run_tests, et al.
+
+Give a warning if not compiling in CHECK phase. Sort out the bogus ANON messages from Attribute::Handlers. Think about moving away from A::H so it works correctly with MI and custom DESTROY handlers.
+
+Make SKIP_ALL, FAIL_ALL just exit the object
+
+Reserve a namespace for future T::C methods
+
+Add Module::Build support.
+
+Solve http://use.perl.org/~ethan/journal/14815
+
+Have the option of making test methods fail after the first failing test, for those who prefer that style.
+
+Think about making it work without attributes for older perls.
+
+Finish cleaning up up Test::Class documentation
+
+Add an option to get a diag with the method name on a test method that contains failing tests
+
+Need a simple way or running all the tests in a directory. Either by loading them all, or by running each as individual script.
+
+Need a way to avoid duplication of use-ing then running tests.
+
+Talk about how to do aggregation (aka Suites)
+
+Document the global var that holds the current test name. Much easier to inline into test name strings than calling the method.
