@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::Class.
 
+0.06_7
+    -   Added Module::Build support
+
 0.06_6
     -   Fixed bogus test failures under MSWin32
 
