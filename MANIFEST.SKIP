@@ -1,0 +1,8 @@
+\.DS_Store$
+^examples/Account
+^MANIFEST.SKIP$
+^blib
+^pm_to_blib
+\.bak$
+Makefile$
+^Test-Class-

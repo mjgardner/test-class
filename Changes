@@ -1,0 +1,58 @@
+Revision history for Perl extension Test::Class.
+
+0.05 (not distributed on CPAN)
+	-	fixed MANIFEST and added MANIFEST.SKIP
+	-	now skips rest of tests in a test method after first failure
+		due to an exception.
+
+0.04 (not distributed on CPAN)
+    -   refactored mercylessly
+    -   Added Test::Class::MethodInfo
+    -   Added first draft of Test::Class::Tutorial. Feedback welcome.
+    -   rearranged Test::Class POD (hopefully making it clearer!)
+    -   dropped total_num_tests, teardown_methods, setup_methods and 
+        test_methods from public interface - they were implementation 
+        details that shouldn't have been public in first place. If you 
+        disagree let me know (with a rationale) and I'll probably add 
+        them back :-)
+    -   fixed bug where runtests() could blow up if supplied with a
+        non-Test::Class
+    -   fixed bug where runtests returned whether all tests had passed,
+        rather than whether all test run on test object passed
+    -   bug with runtests showing duplicate header lines fixed (thanks
+        to Michael for adding has_plan() to Test::Builder) 
+    -   FAIL_ALL now exits with the # tests failed (or 254 if
+        more than 254 tests failed) to match behaviour of Test::Simple
+        et al.
+    -   An extra exception thrown after all the tests in a method have 
+        run now causes a failed test (to better match the behaviour of a 
+        die at the end of a normal test script).
+    -   Changed diagnostic messages when exceptions occur to show
+        method exception occurred in. Makes tracking failure easier.
+    -   Added Test::Class::BaseTest - base class for creating a fixture
+        and testing it's of the correct class.
+    -   Diagnostic messages improved
+    -   Plan correctly shown when setup/teardown method without any
+        tests throws an exception
+    -   TEST_VERBOSE now outputs a newline before the method name which
+        makes reading verbose output easier.
+    -   Added startup and shutdown methods after suggestion from
+        Tony Bowden.
+    -   Added run_all_classes and autorun - inspired by comments from 
+        Tony Bowden on running multiple Test::Classes easily
+    -   Changed runtests so that it will run all of a classes 
+        autorunnable sub-classes if called as a class method with no 
+        arguments.
+
+0.03  Thu Jun 20
+    -   fixed README
+    -   fixed tests that broke now Test::Builder (quite rightly) can
+        no longer display multiple plans in v0.15
+    -   tidied up the code a little.
+
+0.02  Sat Jun 15
+    -   released to perl-qa@perl.org
+
+0.01  Fri May 10 22:36:52 2002
+    - original version; created by h2xs 1.21 with options
+        -AX -n Test::Class
