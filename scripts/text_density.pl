@@ -177,7 +177,7 @@ HERE
 
 while( my $image = shift @Names )
 	{
-	print $html qq|\t<IMG SRC="$image/@{[time]} width=500"><br><br>\n|;
+	print $html qq|\t<IMG SRC="$image" width=500><br><br>\n|;
 	}
 	
 print $html <<"HERE";
