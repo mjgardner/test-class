@@ -5,6 +5,7 @@ Revision history for Perl extension Test::Block.
     -   Fixed incorrect README (double doh!)
     -   Switched to Module::Build so I won't make that darn README 
         mistake again
+    -   Added signature tests
 
 0.05
     -   removed blocks declaration

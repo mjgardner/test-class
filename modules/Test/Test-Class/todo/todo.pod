@@ -35,3 +35,5 @@ Need a simple way or running all the tests in a directory. Either by loading the
 Need a way to avoid duplication of use-ing then running tests.
 
 Talk about how to do aggregation (aka Suites)
+
+Automate empty-subclass test
