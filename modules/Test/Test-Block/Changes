@@ -1,19 +1,21 @@
 Revision history for Perl extension Test::Block.
 
-0.05
+0.05 (not released on CPAN)
 	-	added blocks declaration
+	-   pod.t now uses Test::Pod
+	-   documented.t now uses Test::Pod::Coverage
 
-0.04
+0.04 (not released on CPAN)
 	-	Added named blocks (suggested by Fergal Daly)
 	-	Added all_in_block, builder and block_count class methods
 	-	Added $Plan (suggested by Michael G Schwern)
 	-	Renamed C<expecting> to C<plan> for consistancy
 	-	Rewrote POD
 
-0.03
+0.03 (not released on CPAN)
 	-	Rewrote as a sane object to avoid evil tie/Hook::LexWrap code :-)
 
-0.02
+0.02 (not released on CPAN)
 	-	Rewrote so that it would cope with nested blocks
 
 0.01  Mon May  5 21:28:59 2003

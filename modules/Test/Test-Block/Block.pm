@@ -1,14 +1,17 @@
 package Test::Block;
-use base qw(Exporter);
+use Exporter qw();
+
 use strict;
 use warnings;
+
 use Carp;
 use Test::Builder;
-use overload q{""} => \&remaining, q{+0} => \&remaining, fallback => 1;
+use overload 
+    q{""} => \&remaining,
+    q{+0} => \&remaining, 
+    fallback => 1;
 
 our $VERSION = '0.05';
-
-our @EXPORT_OK = qw($Plan);
 
 # use Test:Block blocks => 3, tests => 9, '$Plan';
 
@@ -17,24 +20,22 @@ sub builder { $Test };
 
 my $Expected_blocks;
 
+our @EXPORT_OK = qw($Plan);
+
 sub import {
-	my $self = shift;
-	my @import;
-	my @plan;
-	while (@_) {
-		my $next = shift;
-		if ( $next eq 'blocks' ) {
-			croak "need # blocks in import"
-					unless @_ && $_[0] =~ m/^\d+/;
-			$Expected_blocks = shift;
-		} elseif (grep {$next eq $_} @EXPORT_OK) {
-			push @import, $next;
-		} else {
-			push @plan, $next;
-		};
-	};
-	$self->SUPER::import( @import );
-	$Test->plan(@plan);
+    my $self = shift;
+    my @plan;
+    while (my $next = shift @_) {
+        if ( $next eq 'blocks' ) {
+            croak "blocks => N" unless @_ && $_[0] =~ m/^\d+$/s;
+            $Expected_blocks = shift;
+        } elsif ( $next eq '$Plan' ) {
+            Exporter->export_to_level( 1, $self, $next );
+        } else {
+            push @plan, $next;
+        };
+    };
+    $Test->plan(@plan);
 };
 
 
@@ -46,56 +47,59 @@ my $Active_blocks = 0;
 my $All_tests_in_block = 1;
 
 sub all_in_block { 
-	return unless $All_tests_in_block;
-	return 1 if $Active_blocks;
-	$All_tests_in_block = $Last_test == $Test->current_test;
+    return unless $All_tests_in_block;
+    return 1 if $Active_blocks;
+    return $All_tests_in_block = $Last_test == $Test->current_test;
 };
 
 sub plan {
-	my $class = shift;
-	unshift @_, "tests" if @_ == 1;
-	my %param = @_;
-	croak "need # tests" if $param{tests} && $param{tests} !~ /^\d+/;
-	$Active_blocks++;
-	bless {
-		name => $param{name},
-		expected_tests => $param{tests},
-		initial_test => $Test->current_test,
-	}, $class;
+    my $class = shift;
+    unshift @_, "tests" if @_ == 1;
+    my %param = @_;
+    croak "need # tests" if $param{tests} && $param{tests} !~ /^\d+/;
+    $Active_blocks++;
+    bless {
+        name => $param{name},
+        expected_tests => $param{tests},
+        initial_test => $Test->current_test,
+    }, $class;
 };
 
-sub _ran { $Test->current_test - shift->{initial_test} };
+sub _ran {
+    my $self = shift;
+    return $Test->current_test - $self->{initial_test}
+};
 
 sub remaining { 
-	my $self = shift;
-	$self->{expected_tests} - _ran($self);
+    my $self = shift;
+    $self->{expected_tests} - _ran($self);
 };
 
 sub DESTROY {
-	my $self = shift;
-	return unless my $expected = $self->{expected_tests};
-	my $ran = _ran($self);
-	my $name = defined $self->{name} 
-		? "block '$self->{name}'" : "block";
-	$Test->ok(0, "$name expected $expected test(s) and ran $ran")
-		unless $ran == $expected;
-	$Active_blocks--;
-	$Block_count++;
-	$Last_test = $Test->current_test;
+    my $self = shift;
+    return unless my $expected = $self->{expected_tests};
+    my $ran = _ran($self);
+    my $name = defined $self->{name} 
+        ? "block '$self->{name}'" : "block";
+    $Test->ok(0, "$name expected $expected test(s) and ran $ran")
+        unless $ran == $expected;
+    $Active_blocks--;
+    $Block_count++;
+    $Last_test = $Test->current_test;
 };
 
 {
-	package Test::Block::Plan;
-	use Tie::Scalar;
-	use base qw(Tie::StdScalar);
-	
-	sub STORE {
-		my ($self, $plan) = @_;
-		if ( defined($plan) && !UNIVERSAL::isa($plan, 'Test::Block') ) {
-			$plan = Test::Block->plan( ref($plan) ? %$plan : $plan );
-		};
-		$self->SUPER::STORE($plan);
-	};
+    package Test::Block::Plan;
+    use Tie::Scalar;
+    use base qw(Tie::StdScalar);
+    
+    sub STORE {
+        my ($self, $plan) = @_;
+        if ( defined($plan) && !UNIVERSAL::isa($plan, 'Test::Block') ) {
+            $plan = Test::Block->plan( ref($plan) ? %$plan : $plan );
+        };
+        $self->SUPER::STORE($plan);
+    };
 }
 
 our $Plan;
@@ -306,24 +310,24 @@ If you can spare the time, please drop me a line if you find this module useful.
 
 =over 4
 
-=item L<Test::Builder> 
+=item L<Test::Builder>
 
-Backend for building test libraries
+Support module for building test libraries.
 
 =item L<Test::Simple> & L<Test::More>
 
 Basic utilities for writing tests.
 
-=item L<Test::Class>
+=item L<http://qa.perl.org/test-modules.html>
 
-Easily create test classes in an xUnit style. Test::Class allows you to specify the number of tests on a method-by-method basis.
+Overview of some of the many testing modules available on CPAN.
 
 =back
 
 
 =head1 LICENCE
 
-Copyright 2003 Adrian Howard, All Rights Reserved.
+Copyright 2003-2004 Adrian Howard, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
