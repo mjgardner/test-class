@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.06_5';
+our $VERSION = '0.06_6';
 
 
 use constant NO_PLAN	=> "no_plan";
