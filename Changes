@@ -1,11 +1,12 @@
 0.11
-    -   A belated thank you added to the anonymous folk who send in RT bugs!
-    -   Tweaked link to XUL::Node in SEE ALSO so hopefully it will work on
-        search.cpan.org
+    -   A belated thank you added to some folk who send in RT bugs and whose
+        name I missed off the acknowledgements section
+    -   Tweaked link to XUL::Node in SEE ALSO
     -   Changed RT link so it went directly to Test::Class page
-    -   An exception in a startup method no longer gives bogus warning
-    -   An exception in a startup method now causes rest of the tests in the
-        current test object are ignored
+    -   An exception in a startup method now causes the rest of the tests in 
+        the current test object to be ignored, and no longer gives a bogus 
+        warning (reported by Emil Jansson - ta!)
+    -   Added COMMUNITY section to POD
 
 0.10
     -   Really fixed the _test_classes by (doh!)

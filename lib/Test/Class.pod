@@ -1023,6 +1023,20 @@ None known at the time of writing.
 If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-Class>.
 
 
+=head1 COMMUNITY
+
+=head2 perl-qa
+
+If you are interested in testing using Perl I recommend you visit L<http://qa.perl.org/> and join the excellent perl-qa mailing list. See L<http://lists.perl.org/showlist.cgi?name=perl-qa> for details on how to subscribe.
+
+=head2 perlmonks
+
+You can find users of Test::Class, including the module author, on  L<http://www.perlmonks.org/>. Feel free to ask questions on Test::Class there.
+
+=head2 CPAN::Forum
+
+The CPAN Forum is a web forum for discussing Perl's CPAN modules.   The Test::Class forum can be found at L<http://www.cpanforum.com/dist/Test-Class>.
+
 =head1 TO DO
 
 If you think this module should do something that it doesn't (or does something that it shouldn't) please let me know.
@@ -1034,7 +1048,7 @@ You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon, anonymous RT bug submitters and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon, Emil Jansson, William McKee, Johan Lindstrom, Murat Uenalan, anonymous RT bug submitters and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
