@@ -34,16 +34,9 @@ sub builder { $Builder };
 
 my $Tests = {};
 
-my %_Test;  # inside-out object field indexed on $self
-
-sub DESTROY {
-    my $self = shift;
-    delete $_Test{$self};
-};
-
 sub _test_info {
 	my $self = shift;
-	return(ref($self) ? $_Test{$self} : $Tests);
+	return(ref($self) ? $self->{_test} : $Tests);
 };
 
 sub _method_info {
@@ -67,11 +60,10 @@ sub add_method {
 
 sub _new_method_info {
 	my ($class, $method_name, $args) = @_;
+	$args ||= "test => 1";
 	my $num_tests = 0;
 	my @types;
-	$args ||= "test => 1";
-	$args =~ s/\s+//sg;
-	foreach my $arg (split /=>/, $args) {
+	foreach my $arg (split /\s*=>\s*/, $args) {
 		if (Test::Class::MethodInfo->is_num_tests($arg)) {
 			$num_tests = $arg;
 		} elsif (Test::Class::MethodInfo->is_method_type($arg)) {
@@ -101,7 +93,8 @@ sub new {
 	my $class = ref($proto) || $proto;
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
-	$_Test{$self} = dclone($Tests);
+	$self->{_test} = dclone($Tests);
+	$self->{-test} = "the documentation says you shouldn't use this...";
 	return($self);
 };
 

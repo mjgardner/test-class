@@ -1,0 +1,854 @@
+=head1 NAME
+
+Test::Class::Tutorial - A tutorial on testing with Test::Class.
+
+=head1 DESCRIPTION
+
+B<Note:> This is a first draft. There maybe mistakes. All feedback welcome.
+
+This tutorial provides a brief introduction to the major features of L<Test::Class>. If you are not already familiar with L<Test::Simple>, L<Test::More> and friends then you should work your way through L<Test::Tutorial> first.
+
+Test::Class can provide some advantages over traditional *.t test scripts  - see L<Test::Class/"INTRODUCTION"> for more details.
+
+We'll work through the creation of a few simple classes, along with a simple test script, and show how you can easily refactor your test script into a test class.
+
+
+=head1 THE CLIENT'S BRIEF
+
+"I need to keep track of credits and debits on an account. I need to know the current balance and keep track of the order the transactions occurred in."
+
+
+=head1 THE ACCOUNT OBJECT
+
+After a brief discussion with the client we decide to create a simple Account object to keep track of the credit and debit transactions. I start by using L<h2xs> to create a template for the module (see L<perlnewmod> if you've not used L<h2xs> before).
+
+  % h2xs -AX -n Account
+  % cd Account
+  % ls
+  Account.pm  Changes  MANIFEST  Makefile.PL  README  test.pl
+
+
+=head1 CREATING AN ACCOUNT
+
+The first thing I need to be able to do is create new Account objects. Since I tend to write my code L</"Test First"> the first thing I do is write a test to check that I can create Account objects in the new F<test.pl>. I can do this simply using L<Test::More>:
+
+  #! /usr/bin/perl -w
+
+  use Test::More tests => 1;
+  use strict;
+  use Account;
+
+  my $account = Account->new;
+  isa_ok($account, 'Account');
+
+Now if I run:
+
+  % perl Makefile.PL
+  % make test
+
+I get
+
+  Can't locate object method "new" via package "Account" (perhaps you   
+  forgot to load "Account"?) at test.pl line 7.
+
+Not much of a surprise since I haven't written the new method yet. Time to add new() to Account.pm
+
+  package Account;
+
+  use strict;
+  use warnings;
+
+  sub new {
+      my $class = shift;
+      my $self = {};
+      return bless $self, $class;
+  };
+
+  1;
+
+That should do it. I check by running make test again.
+
+  1..1
+  ok 1 - The object isa Account
+
+Success!
+
+
+=head1 INITIAL BALANCE
+
+Next I want to find out the current balance of an account. This should initially be zero - so I add another test to F<test.pl>.
+
+  is($account->balance, 0, 'initial balance zero');
+
+Unsurprisingly I get an error when I do C<make test> since I've not written the C<balance> method yet. I do the L</"Simplest Thing That Can Possibly Work"> and add the following to F<Account.pm>.
+
+  sub balance { 0 };
+
+Let's do another C<make test> to make sure everything works.
+
+  1..1
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  # Looks like you planned 1 tests but ran 1 extra.
+  make: *** [test_dynamic] Error 1
+
+Darn. I forgot to update the number of tests in F<test.pl>. I need to do:
+
+  use Test::More tests => 2;
+
+Try again.
+
+  1..2
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+
+Yay!
+
+
+=head1 CREDITING ACCOUNTS
+
+I need to credit the account, so a C<credit> method seems sensible. 
+
+I generally throw exceptions (i.e. L<die|perlfunc/"die">) to indicate errors - so I need to check that C<credit> exits normally. I can do this using  L<Test::Exception/"lives_ok">, so I add:
+
+  use Test::Exception;
+
+and:
+
+  lives_ok {$account->credit(10)} 'credit 10 worked';
+
+to F<test.pl> not forgetting to update the number of tests:
+
+  use Test::More tests => 3;
+
+Just to check that the test works I do C<make test>
+
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  not ok 3 - credit 10 worked
+
+Not very surprising since there isn't a method yet. So I add one to F<Account.pm>
+
+  sub credit {};
+
+Now I get
+
+  1..3
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+
+Excellent. 
+
+Now I need to check that the credit has updated the balance of the account appropriately. Time for another test:
+
+  is($account->balance, 10, 'new balance 10');
+
+and, of course, remember to update the number of tests:
+
+  use Test::More tests => 4;
+
+Now I get.
+
+  1..4
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  not ok 4 - new balance 10
+  #     Failed test (test.pl at line 13)
+  #          got: '0'
+  #     expected: '10'
+  # Looks like you failed 1 tests of 4.
+
+Since both balance() and credit() are stubs this result shouldn't be entirely unexpected. 
+
+Time to think about the implementation. 
+
+Since I need to track credits and debits an array of numbers seems to the the L<Simplest Thing That Can Possibly Work>. Positive for credits, negative for debits. I start re-writing F<Account.pm> with that in mind.
+
+New accounts have no transactions, so I need to start with an empty array. So C<new> becomes.
+
+  sub new {
+      my $class = shift;
+      my $self = {
+          transactions => [],
+      };
+      return bless $self, $class;
+  };
+
+Just to make sure that I've not broken anything I run C<make test>. 
+
+  1..4
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  not ok 4 - new balance 10
+  #     Failed test (test.pl at line 13)
+  #          got: '0'
+  #     expected: '10'
+  # Looks like you failed 1 tests of 4.
+
+No new bugs are introduced so I move onto the C<balance> method.
+
+  sub balance {
+      my $self = shift;
+      my $transactions = $self->{transactions};
+      my $total = 0;
+      $total += $_ foreach @$transactions;
+      return($total);
+  };
+
+Again, I run C<make test> just to double check that nothing has changed. Finally, I get to the C<credit> method and get:
+
+  sub credit {
+      my ($self, $amount) = @_;
+      my $transactions = $self->{transactions};
+      push @$transactions, $amount;
+  };
+
+Now running C<make test> gives me:
+
+  1..4
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+
+Excellent!
+
+I check that this isn't a fluke by adding another test.
+
+  lives_ok {$account->credit(32)} 'credit 32 worked';
+  is($account->balance, 42, 'new balance 42');
+
+Remembering, of course, to update the number of tests:
+
+  use Test::More tests => 6;
+
+now I get
+
+  1..6
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+
+All working. Good.
+
+
+=head1 TRACKING TRANSACTIONS
+
+I need to "keep track of the order the transactions occurred in" so I'll provide a method to return a list of the transactions. Of course, I write a test first.
+
+  my @transactions = $account->transactions;
+  is_deeply(\@transactions, [10, 32], 'transactions ok');
+
+and update the number of tests
+
+  use Test::More tests => 7;
+
+Running C<make test> tells me I need to implement the method.
+
+  sub transactions {
+      my $self = shift;
+      return(@{$self->{transactions}});
+  };
+
+Run C<make test> and I get
+
+  1..7
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - transactions ok
+
+Everything works. Good.
+
+
+=head1 DEBITING ACCOUNTS
+
+Okay. Time to implement debits. First I need some tests. 
+
+Since I'm feeling lazy I'll take the credit tests and change them to call debit and check for negative balances.
+
+  lives_ok {$account->debit(10)} 'debit 10 worked';
+  is($account->balance, -10, 'new balance -10');
+  lives_ok {$account->debit(32)} 'debit 32 worked';
+  is($account->balance, -42, 'new balance -42');
+
+and update the number of tests
+
+  use Test::More tests => 11;
+
+Running C<make test> shows that the tests fail because I haven't written a debit method yet.
+
+  sub debit {
+	  my ($self, $amount) = @_;
+	  my $transactions = $self->{transactions};
+	  push @$transactions, -$amount;
+  };
+
+Now what does C<make test> give us:
+
+  1..11
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - transactions ok
+  ok 8 - debit 10 worked
+  not ok 9 - new balance -10
+  #     Failed test (test.pl at line 22)
+  #          got: '32'
+  #     expected: '-10'
+  ok 10 - debit 32 worked
+  not ok 11 - new balance -42
+  #     Failed test (test.pl at line 24)
+  #          got: '0'
+  #     expected: '-42'
+  # Looks like you failed 2 tests of 11.
+
+Oops. Not what I expected. The balance() isn't what I expected.
+
+A quick sanity check shows that I forgot that the credit() test have left the balance() at 42, when I assumed it started at 0 in by debit() tests. 
+
+This kind of thing can be a problem when test scripts become larger. Different parts of the test script start intefering with each other making changes to the script harder. Three possible solutions come to mind:
+
+=over 4
+
+=item *
+
+I could move the debit tests into a separate test script so that the credit tests cannot affect it. This is too much work for me since I'm feeling lazy.
+
+=item *
+
+I could alter the expected values in the debit() tests to take the credit() tests into account. This is bad, since I would have to update these values every time I change the credit() tests.
+
+=item *
+
+I could run the debit() tests on a new account object, so the balance() will start at the value I expected. 
+
+=back
+
+I decide to create a new Account object so the debit() tests now look like:
+
+  $account = Account->new;
+  ok($account->debit(10), 'debit 10 worked');
+  is($account->balance, -10, 'new balance -10');
+  ok($account->debit(32), 'debit 32 worked');
+  is($account->balance, -42, 'new balance -42');
+
+Run C<make test> again and I get:
+
+  1..11
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - transactions ok
+  ok 8 - debit 10 worked
+  ok 9 - new balance -10
+  ok 10 - debit 32 worked
+  ok 11 - new balance -42
+
+Excellent - everything works!
+
+
+=head1 REFACTORING ACCOUNT
+
+Even though everything works I should spend a little time in L</"Mercyless Refactoring"> to remove redundancy from the code and make it's future maintaince easier.
+
+If I look at the credit() & debit() methods I see that they are doing almost exactly the same thing. Separate out the common elements and I get.
+
+  sub _add_transaction {
+	  my ($self, $amount) = @_;
+	  my $transactions = $self->{transactions};
+	  push @$transactions, $amount;
+  };
+
+  sub credit {
+	  my ($self, $amount) = @_;
+	  $self->_add_transaction($amount);
+  };
+
+  sub debit {
+	  my ($self, $amount) = @_;
+	  $self->_add_transaction(-$amount);
+  };
+
+Running C<make test> reassures us that the change hasn't broken anything. Everything else looks reasonable so I'll leave L<Account.pm> for now.
+
+However, I've still not quite finished.
+
+
+=head1 REFACTORING TESTS
+
+Now let's examine F<test.pl>. I have five separate test cases in F<test.pl>, using a total of 11 tests.
+
+=over 4
+
+=item 1
+
+Checking that an Account object is created (1 test)
+
+=item 2
+
+Checking that the initial balance is zero (1 test)
+
+=item 3
+
+Checking that you can credit the account (4 tests)
+
+=item 4
+
+Checking that you can see transactions (1 test)
+
+=item 5
+
+Checking that you can debit the account (4 tests)
+
+=back
+
+I can use L<Test::Class> to make the grouping of the tests much more explicit, and therefore make the test code much easier to undertand and maintain.
+
+With the exception of the transaction test each test case starts with a new Account object. In the testing world such a common object (or set of objects) is called a I<fixture>. I can use L<Test::Class> to create common test fixtures and make the test cases independent of each other, again making code maintainence easier.
+
+While the Account tests are simple enough that I don't really have problems understanding them I'll refactor it into a L<Test::Class>, anyway since this I<is> supposed to be a tutorial on L<Test::Class>!
+
+
+=head1 CREATING A TEST CLASS
+
+The first thing I need to do is declare thr new test class. A test class is just something that inherits from L<Test::Class>. I use the convention of adding the suffix C<::Test> to the name of the class I am testing. So I add:
+
+  package Account::Test;
+  use base qw(Test::Class);
+
+to the top of F<test.pl>. I quickly run C<make test> to check that I've not broken anything.
+
+
+=head1 REFACTORING TESTS INTO TEST METHODS
+
+Now I can start turning our tests into test methods. A test method is a method that has the C<Test> attribute.  I replace the test for an Account object being created:
+
+  isa_ok($account, 'Account');
+
+with the test method:
+
+  sub account_creation : Test {
+	  isa_ok($account, 'Account');
+  };
+
+  Account::Test->runtests;
+
+The L<runtests()|Test::Class/"runtests"> method will actually call the method and run the test.
+
+I now run C<make test> 
+
+  1..11
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - transactions ok
+  ok 8 - debit 10 worked
+  ok 9 - new balance -10
+  ok 10 - debit 32 worked
+  ok 11 - new balance -42
+
+and everything still works. Good.
+
+In a similar way I can replace:
+
+  is($account->balance, 0, 'initial balance zero');
+
+with:
+
+  sub balance : Test {
+	  is($account->balance, 0, 'initial balance zero');
+  };
+
+I do not have to add another call to L<runtests()|Test::Class/"runtests">, it runs all of the test methods for no wherever they are declared. I run C<make test> to double check and everything still passes.
+
+
+=head1 TEST METHODS WITH MORE THAN ONE TEST
+
+There are four separate test for the credit() method:
+
+  lives_ok {$account->credit(10)} 'credit 10 worked';
+  is($account->balance, 10, 'new balance 10');
+  lives_ok {$account->credit(32)} 'credit 32 worked';
+  is($account->balance, 42, 'new balance 42');
+
+You can have test methods that run more than one test by including the number of tests in brackets:
+
+  sub credit : Test(4) {
+	  lives_ok {$account->credit(10)} 'credit 10 worked';
+	  is($account->balance, 10, 'new balance 10');
+	  lives_ok {$account->credit(32)} 'credit 32 worked';
+	  is($account->balance, 42, 'new balance 42');
+  };
+
+Running C<make test> confirms that I've not broken anything. I can now convert the other test cases to methods.
+
+The transaction test:
+
+  my @transactions = $account->transactions;
+  is_deeply(\@transactions, [10, 32], 'transactions ok');
+
+can be written as:
+
+  sub credit_transactions : Test {
+	  my @transactions = $account->transactions;
+	  is_deeply(\@transactions, [10, 32], 'transactions ok');
+  };
+
+The debit tests:
+
+  $account = Account->new;
+  lives_ok {$account->debit(10)} 'debit 10 worked';
+  is($account->balance, -10, 'new balance -10');
+  lives_ok {$account->debit(32)} 'debit 32 worked';
+  is($account->balance, -42, 'new balance -42');
+
+Can be written as:
+
+  sub debit : Test(4) {
+	  $account = Account->new;
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  is($account->balance, -10, 'new balance -10');
+	  lives_ok {$account->debit(32)} 'debit 32 worked';
+	  is($account->balance, -42, 'new balance -42');
+  };
+
+I run C<make test> one more time and confirm that nothing has broken.
+
+
+=head1 AUTOMATIC PLANS
+
+Now that all of our tests are in test methods we can take advantage of one of the nice features of L<Test::Class> -  L<runtests()|Test::Class/"runtests"> can calculate the number of tests all the methods run and output an appropriate test header.
+
+This means we can replace:
+
+  use Test::More tests => 11;
+
+with
+
+  use Test::More;
+
+and C<make test> will still produce
+
+  1..11
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - transactions ok
+  ok 8 - debit 10 worked
+  ok 9 - new balance -10
+  ok 10 - debit 32 worked
+  ok 11 - new balance -42
+
+You can add tests to any of the methods and L<Test::Class> will automatically update the header. Since the number of tests is next to the method you are updating I find it easier to keep the numbers up to date.
+
+For example, the current credit_transactions() method doesn't check any debits. We can fix this by adding another test:
+
+For example, we can add some more tests to the debit method.
+
+  sub credit_transactions : Test(2) {
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  my @transactions = $account->transactions;
+	  is_deeply(\@transactions, [10, 32, -10], 'transactions ok');
+  };
+
+C<make test> will now give us:
+
+  1..12
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - debit 10 worked
+  ok 8 - transactions ok
+  ok 9 - debit 10 worked
+  ok 10 - new balance -10
+  ok 11 - debit 32 worked
+  ok 12 - new balance -42
+
+Note how the test header has been updated to tell L<Test::Harness> to expect 12 tests.
+
+
+=head1 REMOVING DEPENDENCIES BETWEEN TEST METHODS
+
+At the moment all of the test methods use the file scoped $account lexical to store the object they are testing. This is bad for two reasons:
+
+=over 4
+
+=item 1
+
+It makes subclassing harder since subclasses cannot see the lexical
+
+=item 2
+
+It introduces dependences between the tests.
+
+=back
+
+Consider the order the test methods are run in. 
+
+=over 4
+
+=item *
+
+The balance() test would fail if it was run after credit() or debit() - since it relies on no transactions having been made.
+
+=item *
+
+credit_transactions() would fail if it was run before credit() or after debit() - since it relies on the transactions made by the credit() tests.
+
+=back
+
+This makes maintaining tests a pain since altering one test method can cause other tests to fail. 
+
+(The curious amongst you may be asking "what order are test methods run in?" Alphabetical is the answer.)
+
+I can easily fix this by having each test method create its own Account object like this:
+
+  sub account_creation : Test {
+	  my $account = Account->new;
+	  isa_ok($account, 'Account');
+  };
+
+  sub balance : Test {
+	  my $account = Account->new;
+	  is($account->balance, 0, 'initial balance zero');
+  };
+
+  sub credit : Test(4) {
+	  my $account = Account->new;
+	  lives_ok {$account->credit(10)} 'credit 10 worked';
+	  is($account->balance, 10, 'new balance 10');
+	  lives_ok {$account->credit(32)} 'credit 32 worked';
+	  is($account->balance, 42, 'new balance 42');
+  };
+
+  sub credit_transactions : Test(4) {
+	  my $account = Account->new;
+	  lives_ok {$account->credit(10)} 'credit 10 worked';
+	  lives_ok {$account->credit(32)} 'credit 32 worked';
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  my @transactions = $account->transactions;
+	  is_deeply(\@transactions, [10, 32, -10], 'transactions ok');
+  };
+
+  sub debit : Test(4) {
+	  my $account = Account->new;
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  is($account->balance, -10, 'new balance -10');
+	  lives_ok {$account->debit(32)} 'debit 32 worked';
+	  is($account->balance, -42, 'new balance -42');
+  };
+
+Notice how we had to add a couple of calls to credit() in credit_transactions to make the test pass. The advantage is, of course, that it's now independent of the other test methods.
+
+If we run C<make test> we now get:
+
+  1..14
+  ok 1 - The object isa Account
+  ok 2 - initial balance zero
+  ok 3 - credit 10 worked
+  ok 4 - new balance 10
+  ok 5 - credit 32 worked
+  ok 6 - new balance 42
+  ok 7 - credit 10 worked
+  ok 8 - credit 32 worked
+  ok 9 - debit 10 worked
+  ok 10 - transactions ok
+  ok 11 - debit 10 worked
+  ok 12 - new balance -10
+  ok 13 - debit 32 worked
+  ok 14 - new balance -42
+
+It all works. Good.
+
+
+=head1 SETUP METHODS
+
+I now notice that every test method calls C<Account-E<gt>new>. If I ever want to change the way Account objects are created I would have to change every method. Since I like to write code L</"Once and only once"> I want to remove this duplication.
+
+L<Test::Class> allows you to define setup and teardown methods. All of a classes setup methods are run before every test method. All of a classes teardown methods are run after every test method has completed.
+
+So we can create a new Account object before every test method by creating a setup method that stores the new Account in the test object that is passed to every test method.
+
+  sub account_fixture : Test(setup) {
+	  my $self = shift;
+	  $self->{account} = Account->new;
+  };
+
+and we can access it like this.
+
+  sub account_creation : Test {
+	  my $account = shift->{account};
+	  isa_ok($account, 'Account');
+  };
+
+Running C<make test> confirms that every still works as expected.
+
+Doing this for all the other methods gives us...
+
+  package Account::Test;
+  use base qw(Test::Class);
+  use strict;
+  use Test::More;
+  use Test::Exception;
+  use Account;
+
+  sub account_fixture : Test(setup) {
+	  my $self = shift;
+	  $self->{account} = Account->new;
+  };
+
+  sub account_creation : Test {
+	  my $account = shift->{account};
+	  isa_ok($account, 'Account');
+  };
+
+  sub balance : Test {
+	  my $account = shift->{account};
+	  is($account->balance, 0, 'initial balance zero');
+  };
+
+  sub credit : Test(4) {
+	  my $account = shift->{account};
+	  lives_ok {$account->credit(10)} 'credit 10 worked';
+	  is($account->balance, 10, 'new balance 10');
+	  lives_ok {$account->credit(32)} 'credit 32 worked';
+	  is($account->balance, 42, 'new balance 42');
+  };
+
+  sub credit_transactions : Test(4) {
+	  my $account = shift->{account};
+	  lives_ok {$account->credit(10)} 'credit 10 worked';
+	  lives_ok {$account->credit(32)} 'credit 32 worked';
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  my @transactions = $account->transactions;
+	  is_deeply(\@transactions, [10, 32, -10], 'transactions ok');
+  };
+
+  sub debit : Test(4) {
+	  my $account = shift->{account};
+	  lives_ok {$account->debit(10)} 'debit 10 worked';
+	  is($account->balance, -10, 'new balance -10');
+	  lives_ok {$account->debit(32)} 'debit 32 worked';
+	  is($account->balance, -42, 'new balance -42');
+  };
+
+  Account::Test->runtests;
+
+I can now do what I like with the account object in each test method without worrying about it affecting the other methods, and I only have one piece of code to update if I ever change the way Account objects are created.
+
+Running make test again should confirm everything is still working. If you do
+
+ make test TEST_VERBOSE=1 
+
+runtests() will display the name of each test method before it runs like this:
+
+# Account::Test->account_creation
+1..13
+ok 1 - The object isa Account
+# Account::Test->balance
+ok 2 - initial balance zero
+# Account::Test->credit
+ok 3 - credit 10 worked
+ok 4 - new balance 10
+ok 5 - credit 32 worked
+ok 6 - new balance 42
+# Account::Test->credit_transactions
+ok 7 - transactions ok
+# Account::Test->debit
+ok 8 - debit 10 worked
+ok 9 - new balance -10
+ok 10 - debit 32 worked
+ok 11 - new balance -42
+ok 12 - debit 8 worked
+ok 13 - new balance -50
+
+which can help seeing what method a test failed in.
+
+
+=head1 EXTREME JARGON
+
+=over 4
+
+=item B<Test First>
+
+Write the test before you write the code.
+
+=item B<Simplest Thing That Can Possibly Work>
+
+Don't overcomplicate.
+
+=item B<Mercyless Refactoring>
+
+Improve the code.
+
+=item B<Once and only once>
+
+don't duplicatte code
+
+=back
+
+
+=head1 BUGS
+
+If you have problems with this documentation please let me know by e-mail, or report the problem with L<http://rt.cpan.org/>.
+
+
+=head1 TO DO
+
+Rationalise this tutorial. It's way too long and idiosincratic.
+
+
+=head1 AUTHOR
+
+Adrian Howard <adrianh@quietstars.com>
+
+If you can spare the time, please drop me a line if you find this documentation useful.
+
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Test::Class>
+
+Easily create test classes in an xUnit style.
+
+=item L<Test::Tutorial>
+
+A tutorial about writing really basic tests
+
+=back
+
+
+=head1 LICENCE
+
+Copyright 2002 Adrian Howard, All Rights Reserved.
+
+This documentation is free; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+=cut
