@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::Class.
 
+0.06_6
+    -   Fixed bogus test failures under MSWin32
+
 0.06_5
     -   Cleaned up internals
     -   Having a single method be simultaniously a setup and teardown

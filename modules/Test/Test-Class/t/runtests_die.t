@@ -19,10 +19,11 @@ sub test_object : Test(2) {
 package main;
 use Test::Builder::Tester tests => 1;
 $ENV{TEST_VERBOSE}=0;
+my $SEP = $^O eq "MSWin32" ? '\\' : '/';
 test_out("not ok 1 - The object isa Object");
-test_err("#     Failed test (t/runtests_die.t at line 15)");
+test_err("#     Failed test (t${SEP}runtests_die.t at line 15)");
 test_err("#     The object isn't defined");
 test_out("not ok 2 - test_object died (could not create object)");
-test_err("#     Failed test (t/runtests_die.t at line 27)");
+test_err("#     Failed test (t${SEP}runtests_die.t at line 28)");
 Foo->runtests;
 test_test("early die handled");
