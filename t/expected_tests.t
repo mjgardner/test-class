@@ -1,6 +1,7 @@
-#! /usr/bin/perl -Tw
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
 
 package Tests1; use base qw(Test::Class);
 

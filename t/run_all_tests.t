@@ -1,6 +1,7 @@
-#! /usr/bin/perl -Tw
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
 use Test::Class;
 
 my @CALLED = ();

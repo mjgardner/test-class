@@ -1,6 +1,7 @@
-#! /usr/bin/perl -Tw
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
 
 package Fail;
 use Test::More;
@@ -31,7 +32,7 @@ $ENV{TEST_VERBOSE}=0;
 my $all_ok;
 
 test_out("not ok 1 - fails");
-test_err("#     Failed test (t/runtests_result.t at line 10)");
+test_err("#     Failed test (t/runtests_result.t at line 11)");
 test_out("ok 2 - passes");
 $all_ok = Fail->runtests;
 test_test("single failure ran okay");

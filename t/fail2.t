@@ -1,6 +1,7 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
 use Test;
 use Test::Builder;
 use Fcntl;
@@ -51,9 +52,9 @@ END {
 __DATA__
 1..3
 not ok 1 - The object isa Object
-#     Failed test (t/fail2.t at line 21)
+#     Failed test (t/fail2.t at line 22)
 #     The object isn't defined
 not ok 2 - cannot create Objects
-#     Failed test (t/fail2.t at line 21)
+#     Failed test (t/fail2.t at line 22)
 not ok 3 - cannot create Objects
-#     Failed test (t/fail2.t at line 21)
+#     Failed test (t/fail2.t at line 22)

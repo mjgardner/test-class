@@ -1,6 +1,8 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
+
 use Test::Builder::Tester;
 
 package Local::Test;

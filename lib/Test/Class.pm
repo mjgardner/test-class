@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.06_2';
+our $VERSION = '0.06_3';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -191,6 +191,16 @@ sub _exception_failure {
 
 sub _run_method {
 	my ($self, $method, $tests) = @_;
+	my $original_ok = \&Test::Builder::ok;
+	{
+	    no warnings;
+        *Test::Builder::ok = sub {
+            my ($builder, $test, $name) = @_;
+            $name = $self->current_method unless defined $name;
+            local $Test::Builder::Level = $Test::Builder::Level+1;
+            $original_ok->($builder, $test, $name)
+        };
+	};
 	my $num_start = $Builder->current_test;
 	my $skip_reason = eval {$self->$method};
 	my $exception = $@;

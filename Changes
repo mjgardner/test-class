@@ -1,5 +1,10 @@
 Revision history for Perl extension Test::Class.
 
+0.06_3
+    -   more POD tweaks
+    -   all tests now compile with warnings enabled
+    -   test name now defaults to $self->current_method
+
 0.06_2
     -   now uses inside out objects so restriction on using -test and 
         _test as hash keys has been removed
