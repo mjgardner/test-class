@@ -1,6 +1,7 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl -T
 
 use strict;
+use warnings;
 use Test;
 use Fcntl;
 use IO::File;
@@ -43,5 +44,5 @@ _exit(0);
 __DATA__
 1..1
 not ok 1 - setup (for test method 'test') died (died before plan set)
-#     Failed test (t/die_before_plan.t at line 30)
+#     Failed test (t/die_before_plan.t at line 31)
 ok 2 - test just here to get setup method run

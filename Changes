@@ -1,5 +1,17 @@
 Revision history for Perl extension Test::Class.
 
+0.06_3
+    -   more POD tweaks
+    -   all tests now compile with warnings enabled
+    -   test name now defaults to $self->current_method
+
+0.06_2
+    -   now uses inside out objects so restriction on using -test and 
+        _test as hash keys has been removed
+    -   tweaked POD of Test::Class
+    -   you can now have spaces around test numbers, etc. (bug report
+        and patch from David Wheeler)
+
 0.06_1
     -   removed examples directory from distribution, needs rewrite
     -   removed .svn directories from distribution (doh!)
@@ -12,9 +24,9 @@ Revision history for Perl extension Test::Class.
         with subclasses accidentally overriding
 
 0.05 (not distributed on CPAN)
-	-	fixed MANIFEST and MANIFEST.SKIP
-	-	now skips rest of tests in a test method after first failure
-		due to an exception.
+    -   fixed MANIFEST and MANIFEST.SKIP
+    -   now skips rest of tests in a test method after first failure
+        due to an exception.
 
 0.04 (not distributed on CPAN)
     -   refactored mercylessly

@@ -84,7 +84,8 @@ Test::Class attempts to provide simple xUnit testing that integrates simply with
 
 =item *
 
-All the advantages of xUnit testing. You can easily create test fixtures and isolate tests.
+All the advantages of xUnit testing. You can easily create test fixtures and isolate tests. It provides a framework that should be familiar to people who have used other xUnit style test systems.
+
 
 =item *
 
@@ -108,11 +109,7 @@ You can have normal tests and Test::Class classes co-existing in the same *.t sc
 
 =item *
 
-It provides a framework that should be familiar to people who have used other xUnit style test systems.
-
-=item *
-
-You can easily package your tests as classes/modules, rather than *.t scripts. This simplifies reuse and distribution, encourages refactoring, and allows tests to be extended by inheritance.
+You can easily package your tests as classes/modules, rather than *.t scripts. This simplifies reuse, documentation and distribution, encourages refactoring, and allows tests to be extended by inheritance.
 
 =item *
 
@@ -579,8 +576,6 @@ You can change the number of tests that a method runs using L<num_method_tests()
 
 Creates a new test object (blessed hashref) containing the specified key/value pairs. 
 
-The keys C<_test> and C<-test> are reserved for internal use and should not be used.
-
 If called as an object method the existing object's key/value pairs are copied into the new object. Any key/value pairs passed to C<new> override those in the original object if duplicates occur.
 
 Since the test object is passed to every test method as it runs it is a convenient place to store test fixtures. For example:
@@ -939,17 +934,16 @@ If you think this module should do something that it doesn't (or does something 
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler and all the fine folk on perl-qa for their feedback and suggestions.
+Thanks to Michael G Schwern, Tony Bowden, David Wheeler and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
-This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic <chromatic@wgz.org> and Michael G Schwern <schwern@pobox.com> for creating such a useful module.
+This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
 
 =head1 AUTHOR
 
 Adrian Howard <adrianh@quietstars.com>
 
-If you can spare the time, please drop me a line if you find this module useful.
-
+If you use this module, and can spare the time please drop me an e-mail or rate it at L<http://cpanratings.perl.org/rate/?distribution=Test-Class>.
 
 =head1 SEE ALSO
 

@@ -1,9 +1,11 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl -T
+
+use strict;
+use warnings;
 
 package Local::Test;
 use base qw(Test::Class);
 
-use strict;
 use Test;
 use Test::Builder;
 use Fcntl;
@@ -41,7 +43,7 @@ END {
 
 __DATA__
 1..4
-ok 1
+ok 1 - test
 ok 2 # skip skippy
 ok 3 # skip skippy
 ok 4 # skip skippy

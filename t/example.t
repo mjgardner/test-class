@@ -1,3 +1,8 @@
+#! /usr/bin/perl -T
+
+use strict;
+use warnings;
+
 package Example;
 sub new { bless {}, shift};
 
