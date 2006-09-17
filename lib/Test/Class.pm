@@ -135,7 +135,6 @@ sub _get_methods {
 sub _num_expected_tests {
 	my $self = shift;
 	if (my $reason = $self->SKIP_CLASS ) {
-	   return 1 if $self->SKIP_CLASS;
 	   return $reason eq "1" ? 0 : 1;
     };
 	my @startup_shutdown_methods = 
@@ -284,12 +283,7 @@ sub runtests {
 				unless UNIVERSAL::isa($t, __PACKAGE__);
         if (my $reason = $t->SKIP_CLASS) {
             _show_header($t, @tests) unless $Builder->has_plan ;
-            unless ( $reason eq "1" ) {
-                my $expected_tests = $t->expected_tests;
-                my $tests_to_skip = $expected_tests eq 'no_plan' 
-                    ? 1 : $expected_tests;
-                $Builder->skip( $reason ) for ( 1 .. $tests_to_skip );
-            }
+            $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
             foreach my $method (_get_methods($t, STARTUP)) {

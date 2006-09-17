@@ -687,7 +687,7 @@ C<runtests> is used to run test classes. At its most basic doing:
 
   $test->runtests
   
-will run the test methods of the test object $test, unless $test->SKIP_CLASS returns a true value. 
+will run the test methods of the test object $test, unless C<<$test->SKIP_CLASS>> returns a true value. 
 
 Unless you have already specified a test plan using Test::Builder (or Test::More, et al) C<runtests> will set the test plan just before the first method that runs a test is executed. 
 

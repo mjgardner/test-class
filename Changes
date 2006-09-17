@@ -1,7 +1,5 @@
 0.12
     -   Added link to del.icio.us perl+testing links in POD
-    -   SKIP_CLASS now skips the number of tests that would have run, rather
-        than just a single test (requested by David Wheeler)
     -   Fixed some bad markup in the POD
     
 0.11
