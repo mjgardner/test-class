@@ -586,7 +586,7 @@ Setup and teardown methods are run before and after every test. For example:
 
 You can use setup and teardown methods to create common objects used by all of your test methods (a test I<fixture>) and store them in your Test::Class object, treating it as a hash. For example:
 
-  sub pig : Test(setup);
+  sub pig : Test(setup) {
       my $self = shift;
       $self->{test_pig} = Pig->new;
   };
@@ -772,8 +772,8 @@ If a startup, setup, test, teardown or shutdown method dies then L<runtests()|/"
 
   sub test_object : Test(2) {
       my $object = Object->new;
-      isa_ok($object, "Object") or die("could not create object\n");
-      is($object->open, "open worked");
+      isa_ok( $object, "Object" ) or die "could not create object\n";
+      ok( $object->open, "open worked" );
   };
 
 will produce the following if the first test failed:
@@ -1066,7 +1066,7 @@ C<runtests> is used to run test classes. At its most basic doing:
 
   $test->runtests
   
-will run the test methods of the test object $test, unless C<<$test->SKIP_CLASS>> returns a true value. 
+will run the test methods of the test object $test, unless C<< $test->SKIP_CLASS >> returns a true value. 
 
 Unless you have already specified a test plan using Test::Builder (or Test::More, et al) C<runtests> will set the test plan just before the first method that runs a test is executed. 
 
