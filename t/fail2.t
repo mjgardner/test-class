@@ -22,7 +22,7 @@ sub _test_new : Test(3) {
 
 package main;
 $ENV{TEST_VERBOSE}=0;
-#$ENV{HARNESS_ACTIVE}=0;
+
 
 test_out("not ok 1 - The object isa Object");
 test_out("not ok 2 - cannot create Objects");

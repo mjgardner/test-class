@@ -1427,7 +1427,37 @@ You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
-Thanks to Michael G Schwern, Tony Bowden, David Wheeler, Ovid, Corion, Terrence Brannon, Emil Jansson, William McKee, Johan Lindstrom, Murat Uenalan, anonymous RT bug submitters and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+Thanks to 
+Adam Kennedy,
+Apocalypse,
+Ask Bj¿rn Hansen,
+Chris Williams,
+Corion, 
+Dave O'Neill,
+David Wheeler, 
+Emil Jansson, 
+Hai Pham,
+imacat
+Johan Lindstrom, 
+Jonathan R. Warden,
+Joshua ben Jore,
+Jost Krieger,
+Lee Goddard,
+Mark Stosberg,
+Mart’n Ferrari,
+Mathieu Sauve-Frankel,
+Michael G Schwern, 
+Murat Uenalan, 
+Nicholas Clark,
+Ovid, 
+Scott Lanning,
+SŽbastien Aperghis-Tramoni,
+Steve Kirkup,
+Ted Carnahan,
+Terrence Brannon, 
+Tony Bowden, 
+William McKee, 
+various anonymous folk and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
