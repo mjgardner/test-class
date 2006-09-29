@@ -3,10 +3,7 @@
 use strict;
 use warnings;
 use Test;
-use Fcntl;
-use IO::File;
-use Test::Builder;
-use POSIX qw(_exit);
+use Test::Builder::Tester tests => 1;
 
 package Object::Test;
 use base 'Test::Class';
@@ -23,29 +20,10 @@ sub test : Test {
 
 package main;
 
-my $io = IO::File->new_tmpfile or die "couldn't create tmp file ($!)\n";
-my $Test = Test::Builder->new;				
-$Test->output($io);
-$Test->failure_output($io);
 $ENV{TEST_VERBOSE}=0;
-$ENV{HARNESS_ACTIVE}=0;
+
+test_out("not ok 1 - setup (for test method 'test') died (died before plan set)");
+test_fail(+2);
+test_out("ok 2 - test just here to get setup method run");
 Object::Test->runtests;
-
-plan tests => 4;
-
-seek $io, SEEK_SET, 0;
-my $SEP = $^O eq "MSWin32" ? '\\' : '/';
-while (my $actual = <$io>) {
-	chomp($actual);
-	my $expected=<DATA>; chomp($expected);
-	$expected =~ s!/!$SEP!gs;
-	ok($actual, $expected);
-};
-
-_exit(0);
-
-__DATA__
-1..1
-not ok 1 - setup (for test method 'test') died (died before plan set)
-#     Failed test (t/die_before_plan.t at line 32)
-ok 2 - test just here to get setup method run
+test_test("die before plan");
