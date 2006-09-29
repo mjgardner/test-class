@@ -129,7 +129,16 @@ sub _get_methods {
 			};
 		};
 	};
-	return(sort keys %methods);
+    if (exists $ENV{TEST_METHOD}) {
+        eval { '' =~ /\A$ENV{TEST_METHOD}\z/ };
+        if (my $error = $@) {
+            die "TEST_METHOD ($ENV{TEST_METHOD}) is not a valid regular expression: $error";
+        }
+        return grep { /\A$ENV{TEST_METHOD}\z/ } sort keys %methods;
+    }
+    else {
+        return(sort keys %methods);
+    }
 };
 
 sub _num_expected_tests {
@@ -917,6 +926,49 @@ Test::Class allows us to state explicitly that we are adding tests to an existin
   };
 
 With the above definition you can add tests to C<check_fields> in C<Pig::Test> without affecting C<NamedPig::Test>.
+
+
+=head1 RUNNING INDIVIDUAL TESTS
+
+B<NOTE:> The exact mechanism for running individual tests is likely to change in 
+the future. 
+
+Sometimes you just want to run a single test.  Commenting out other tests or
+writing code to skip them can be a hassle, so you can specify the
+C<TEST_METHOD> environment variable.  The value is expected to be a valid
+regular expression and, if present, only runs tests whose names match the
+regular expression.  Setup and teardown tests will still be run.  One easy way
+of doing this is by specifying the environment variable I<before> the
+C<runtests> method is called.
+
+Running a test named C<customer_profile>:
+
+ #! /usr/bin/perl
+ use Example::Test;
+      
+ $ENV{TEST_METHOD} = 'customer_profile';
+ Test::Class->runtests;
+
+Running all tests with C<customer> in their name:
+
+ #! /usr/bin/perl
+ use Example::Test;
+      
+ $ENV{TEST_METHOD} = '.*customer.*';
+ Test::Class->runtests;
+
+If you specify an invalid regular expression, your tests will not be run:
+
+ #! /usr/bin/perl
+ use Example::Test;
+      
+ $ENV{TEST_METHOD} = 'C++';
+ Test::Class->runtests;
+
+And when you run it:
+
+ TEST_METHOD (C++) is not a valid regular expression: Search pattern \
+ not terminated at (eval 17) line 1.
 
 
 =head1 ORGANISING YOUR TEST CLASSES

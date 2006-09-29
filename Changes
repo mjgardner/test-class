@@ -1,6 +1,10 @@
-0.13 - or the "just to make Ovid happy" release
+0.13 - or the "just to make Ovid & David happy" release
     -   Added Test::Class::Load (thanks Ovid) to allow you to easily load
         test classes
+    -   Added ability to run a specific test or set of tests based upon a
+        regular expression specified in the TEST_METHOD environment variable
+        (thanks to Ovid again). This mechanism is likely to change in the future
+        but it's useful enough to go in now.
     -   Fixed some broken code in the POD (thanks Jeff Deifik)
 
 0.12 - or the "to avoid public mocking" release
