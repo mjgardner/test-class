@@ -1,3 +1,7 @@
+0.13 - or the "just to make Ovid happy" release
+    -   Added Test::Class::Load (thanks Ovid) to allow you to easily load
+        test classes
+
 0.12 - or the "to avoid public mocking" release
     -   Fixed the installation errors that everybody has been rightly 
         complaining about for the last year:
