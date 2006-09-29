@@ -7,6 +7,7 @@
         with people asking what it was for (it's internal - don't use it)_
     -   Tests no longer rely on hard coded test output (thanks Mart’n 
         Ferrari and XXX for patches). This should fix all the install problems everybody has been rightfully complaining about for the last year.
+    -   Added a whole bunch of people to the acknowledgements section
     
 0.11
     -   A belated thank you added to some folk who send in RT bugs and whose
