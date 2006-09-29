@@ -1,12 +1,16 @@
 0.12 - or the "to avoid public mocking" release
+    -   Fixed the installation errors that everybody has been rightly 
+        complaining about for the last year:
+        -   Prerequisities in requires, not build_requires
+        -   Tests no longer rely on hard coded test output (thanks Mart’n 
+            Ferrari and Nicholas Clark for patches)
+        -   Require appropriate version of Test::Exception
     -   Added link to del.icio.us perl+testing links in POD
     -   Fixed some bad markup in the POD
     -   Stuck distribution related tests under t/developer
     -   Added Perl::Critic tests under t/developer
     -   Added some documentation for Test::Class::MethodInfo since I was bored
-        with people asking what it was for (it's internal - don't use it)_
-    -   Tests no longer rely on hard coded test output (thanks Mart’n 
-        Ferrari and XXX for patches). This should fix all the install problems everybody has been rightfully complaining about for the last year.
+        with people asking what it was for (it's internal - don't use it)
     -   Added a whole bunch of people to the acknowledgements section
     
 0.11

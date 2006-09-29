@@ -376,6 +376,7 @@ sub SKIP_ALL {
 1;
 
 __END__
+
 =head1 NAME
 
 Test::Class - Easily create test classes in an xUnit/JUnit style
@@ -1430,7 +1431,7 @@ This is yet another implementation of the ideas from Kent Beck's Testing Framewo
 Thanks to 
 Adam Kennedy,
 Apocalypse,
-Ask Bj¿rn Hansen,
+Ask Bjorn Hansen,
 Chris Williams,
 Corion, 
 Dave O'Neill,
@@ -1438,7 +1439,7 @@ David Wheeler,
 Daniel Berger,
 Emil Jansson, 
 Hai Pham,
-imacat
+imacat,
 Johan Lindstrom, 
 Jonathan R. Warden,
 Joshua ben Jore,
@@ -1447,7 +1448,7 @@ John West,
 Lee Goddard,
 Mark Reynolds,
 Mark Stosberg,
-Mart’n Ferrari,
+Martin Ferrari,
 Mathieu Sauve-Frankel,
 Michael G Schwern, 
 Murat Uenalan, 
@@ -1456,13 +1457,18 @@ Ovid,
 Piers Cawley,
 Scott Lanning,
 Stray Toaster,
-SŽbastien Aperghis-Tramoni,
+Jochen Stenzel,
+Sebastien Aperghis-Tramoni,
 Steve Kirkup,
 Ted Carnahan,
 Terrence Brannon, 
+Matt Trout,
+Rob Kinyon,
+Tom Metro,
+Jeff Deifik,
 Tony Bowden, 
 William McKee, 
-various anonymous folk and all the fine folk on perl-qa for their feedback, patches, suggestions and nagging.
+various anonymous folk and all the fine people on perl-qa for their feedback, patches, suggestions and nagging.
 
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
