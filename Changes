@@ -1,6 +1,10 @@
 0.12
     -   Added link to del.icio.us perl+testing links in POD
     -   Fixed some bad markup in the POD
+    -   Stuck distribution related tests under t/developer
+    -   Added Perl::Critic tests under t/developer
+    -   Added some documentation for Test::Class::MethodInfo since I was bored
+        with people asking what it was for (it's internal - don't use it)_
     
 0.11
     -   A belated thank you added to some folk who send in RT bugs and whose
