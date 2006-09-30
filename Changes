@@ -6,6 +6,7 @@
         (thanks to Ovid again). This mechanism is likely to change in the future
         but it's useful enough to go in now.
     -   Fixed some broken code in the POD (thanks Jeff Deifik)
+    -   Removed Cwd from prerequisites - it's core
 
 0.12 - or the "to avoid public mocking" release
     -   Fixed the installation errors that everybody has been rightly 

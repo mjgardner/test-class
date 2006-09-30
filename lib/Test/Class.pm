@@ -895,7 +895,6 @@ You can extend test methods by inheritance in the usual way. For example conside
       is($pig->age, 3, "age accessed");
   };
 
-
 Next consider C<NamedPig> a subclass of C<Pig> where you can give your pig a name.
 
 We want to make sure that all the tests for the C<Pig> object still work for C<NamedPig>. We can do this by subclassing C<Pig::Test> and overriding the C<testing_class> and C<new_args> methods.
@@ -993,7 +992,6 @@ Place all test classes in F<t/lib>.
 =head2 Creating and running tests
 
 =over 4
-
 
 =item B<Test>
 
@@ -1183,6 +1181,7 @@ You can also override SKIP_CLASS for a class hierarchy. For example, to prevent 
 =back
 
 =head2 Fetching and setting a method's test number
+
 
 =over 4
 
