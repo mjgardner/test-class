@@ -1,3 +1,8 @@
+0.14 - or the "for the Windows folk" release
+    -   Test::Class::Load now works on Windows (thanks Kenichi Ishigaki for the 
+        patch)
+    -   Tests should now pass on Windows (thanks Kenichi Ishigaki again!)
+
 0.13 - or the "just to make Ovid & David happy" release
     -   Added Test::Class::Load (thanks Ovid) to allow you to easily load
         test classes

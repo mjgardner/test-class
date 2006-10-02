@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -1485,38 +1485,39 @@ Apocalypse,
 Ask Bjorn Hansen,
 Chris Williams,
 Corion, 
+Daniel Berger,
 Dave O'Neill,
 David Wheeler,
-Daniel Berger,
 Emil Jansson, 
 Hai Pham,
 imacat,
+Jeff Deifik,
+Jochen Stenzel,
 Johan Lindstrom, 
+John West,
 Jonathan R. Warden,
 Joshua ben Jore,
 Jost Krieger,
-John West,
+Kenichi Ishigaki
 Lee Goddard,
 Mark Reynolds,
 Mark Stosberg,
 Martin Ferrari,
 Mathieu Sauve-Frankel,
+Matt Trout,
 Michael G Schwern, 
 Murat Uenalan, 
 Nicholas Clark,
 Ovid, 
 Piers Cawley,
+Rob Kinyon,
 Scott Lanning,
-Stray Toaster,
-Jochen Stenzel,
 Sebastien Aperghis-Tramoni,
 Steve Kirkup,
+Stray Toaster,
 Ted Carnahan,
 Terrence Brannon, 
-Matt Trout,
-Rob Kinyon,
 Tom Metro,
-Jeff Deifik,
 Tony Bowden, 
 William McKee, 
 various anonymous folk and all the fine people on perl-qa for their feedback, patches, suggestions and nagging.

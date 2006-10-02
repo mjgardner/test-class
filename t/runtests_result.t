@@ -29,7 +29,7 @@ package main;
 use Test::Builder::Tester tests => 4;
 use Test::More;
 $ENV{TEST_VERBOSE}=0;
-my $SEP = $^O eq "MSWin32" ? '\\' : '/';
+my $SEP = '/'; # use forward slash even on Win32
 
 my $all_ok;
 

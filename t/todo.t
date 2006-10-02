@@ -20,7 +20,7 @@ package main;
 use Test::Builder::Tester tests => 2;
 $ENV{TEST_VERBOSE}=0;
 
-my $SEP = $^O eq "MSWin32" ? '\\' : '/';
+my $SEP = '/'; # use forward slash even on Win32
 
 test_out("not ok 1 - object live # TODO unimplemented");
 test_err("#     Failed (TODO) test (t${SEP}todo.t at line 16)");
