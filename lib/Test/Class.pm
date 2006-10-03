@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -275,7 +275,8 @@ sub SKIP_CLASS {
 
 sub _test_classes {
 	my $class = shift;
-	grep { $_ && $_->isa( $class ) } Devel::Symdump->rnew->packages;
+	return grep { eval { $_->isa( $class ) and $_->can( 'runtests' ) } } 
+	    Devel::Symdump->rnew->packages;
 };
 
 sub runtests {
@@ -288,7 +289,7 @@ sub runtests {
 	TEST_OBJECT: foreach my $t (@tests) {
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
-		croak "$t not Test::Class or integer" 
+		croak "$t not Test::Class or integer"
 				unless UNIVERSAL::isa($t, __PACKAGE__);
         if (my $reason = $t->SKIP_CLASS) {
             _show_header($t, @tests) unless $Builder->has_plan ;
