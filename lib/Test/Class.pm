@@ -1573,9 +1573,25 @@ Bricolage (L<http://www.bricolage.cc/>)
 
 L<File::Random>
 
+=item * 
+
+L<Geography::JapanesePrefectures>
+
+=item * 
+
+L<Geography::JapanesePrefectures::Walker>
+
+=item *
+
+L<Google::Adwords>
+
 =item *
 
 L<Merge::HashRef>
+
+=item *
+
+L<PerlBuildSystem>
 
 =item *
 

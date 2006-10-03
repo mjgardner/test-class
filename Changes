@@ -1,3 +1,6 @@
+0.14
+    -   Added some more modules that use Test::Class to SEE ALSO
+
 0.14 - or the "for the Windows folk" release
     -   Test::Class::Load now works on Windows (thanks Kenichi Ishigaki for the 
         patch)
