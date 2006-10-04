@@ -187,7 +187,7 @@ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-Class-Load>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
-=head1 ACKNOWLEDGEMENTS
+=head1 ACKNOWLEDGMENTS
 
 Thanks to David Wheeler for the idea and Adrian Howard for C<Test::Class>.
 

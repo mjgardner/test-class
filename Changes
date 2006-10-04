@@ -1,3 +1,7 @@
+0.16 - or the "sepling mist" release
+    -   Added (optional) spelling tests for the POD in t/developer
+    -   Fixed a whole bunch of spelling mistakes
+
 0.15 - or the "down. down. deeper and down" release
     -   Now works with Test::Deep, which annoyingly defines its own isa() 
         subroutine. This no longer confuses Test::Class into thinking Test::Deep

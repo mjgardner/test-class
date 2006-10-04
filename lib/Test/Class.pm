@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -510,7 +510,7 @@ You can have multiple setup/teardown methods. For example have one teardown meth
 
 =item *
 
-It can make running tests faster. Once you have refactored your *.t scripts into classes they can be easily run from a single script. This gains you the (often considerable) startup time that each separate *.t script takes.
+It can make running tests faster. Once you have refactored your *.t scripts into classes they can be easily run from a single script. This gains you the (often considerable) start up time that each separate *.t script takes.
 
 =back
 
@@ -851,13 +851,13 @@ I<Note:> if you want to skip tests in a method with C<no_plan> tests then you ha
       };
   };
 
-Another way of overcoming this problem is to explicitly set the number of tests for the method at runtime using L<num_method_tests()|/"num_method_tests"> or L<"num_tests">.
+Another way of overcoming this problem is to explicitly set the number of tests for the method at run time using L<num_method_tests()|/"num_method_tests"> or L<"num_tests">.
 
 You can make a test class skip all of its tests by setting L<SKIP_CLASS()|SKIP_CLASS> before L<runtests()|"runtests"> is called.
 
 =head1 TO DO TESTS
 
-You can create todo tests just as you do in L<Test::More> and L<Test::Builder> by localising the C<$TODO> variable. For example:
+You can create todo tests just as you do in L<Test::More> and L<Test::Builder> using the C<$TODO> variable. For example:
 
   sub live_test : Test  {
       local $TODO = "live currently unimplemented";
@@ -915,7 +915,7 @@ Now we need to test the name method. We could write another test method, but we 
       is($self->{pig}->name, 'Porky', 'name accessed');
   };
 
-While the above works, the total number of tests for the method is dependant on the number of tests in its C<SUPER::check_fields>. If we add a test to C<Pig::Test-E<gt>check_fields> we will also have to update the number of tests of C<NamedPig::test-E<gt>check_fields>.
+While the above works, the total number of tests for the method is dependent on the number of tests in its C<SUPER::check_fields>. If we add a test to C<Pig::Test-E<gt>check_fields> we will also have to update the number of tests of C<NamedPig::test-E<gt>check_fields>.
 
 Test::Class allows us to state explicitly that we are adding tests to an existing method by using the C<+> prefix. Since we are adding a single test to C<check_fields> it can be rewritten as:
 
@@ -1089,7 +1089,7 @@ Returns the total number of tests that L<runtests()|/"runtests"> will run on the
 
 Will return C<no_plan> if the exact number of tests is undetermined (i.e. if any setup, test or teardown method has an undetermined number of tests).
 
-The C<expected_tests> of an object after L<runtests()|/"runtests"> has been executed will include any runtime changes to the expected number of tests made by L<num_tests()|/"num_tests"> or L<num_method_tests()|/"num_method_tests">.
+The C<expected_tests> of an object after L<runtests()|/"runtests"> has been executed will include any run time changes to the expected number of tests made by L<num_tests()|/"num_tests"> or L<num_method_tests()|/"num_method_tests">.
 
 C<expected_tests> can also take an optional list of test objects, test classes and integers. In this case the result is the total number of expected tests for all the test/object classes (including the one the method was applied to) plus any integer values.
 
@@ -1268,7 +1268,7 @@ For example:
       ok(-r $_, "$_ readable") foreach (@files);
   };
 
-Setting the number of expected tests at runtime, rather than just having a C<no_plan> test method, allows L<runtests()|/"runtests"> to display appropriate diagnostic messages if the method runs a different number of tests.
+Setting the number of expected tests at run time, rather than just having a C<no_plan> test method, allows L<runtests()|/"runtests"> to display appropriate diagnostic messages if the method runs a different number of tests.
 
 =back
 
@@ -1476,7 +1476,7 @@ If you think this module should do something that it doesn't (or does something 
 You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/4798>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/4798>.
 
 
-=head1 ACKNOWLEGEMENTS
+=head1 ACKNOWLEDGMENTS
 
 This is yet another implementation of the ideas from Kent Beck's Testing Framework paper L<http://www.xprogramming.com/testfram.htm>.
 
@@ -1610,7 +1610,7 @@ The following modules are not based on L<Test::Builder>, but may be of interest 
 
 =item L<Test::Unit>
 
-Perl unit testing framework closely modelled on JUnit. 
+Perl unit testing framework closely modeled on JUnit. 
 
 =item L<Test::SimpleUnit>
 
