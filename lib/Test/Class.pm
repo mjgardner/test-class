@@ -1562,45 +1562,7 @@ The following modules use Test::Class as part of their test suite. You might wan
 
 =over 4
 
-=item *
-
-L<Aspect>
-
-=item *
-
-Bricolage (L<http://www.bricolage.cc/>)
-
-=item *
-
-L<File::Random>
-
-=item * 
-
-L<Geography::JapanesePrefectures>
-
-=item * 
-
-L<Geography::JapanesePrefectures::Walker>
-
-=item *
-
-L<Google::Adwords>
-
-=item *
-
-L<Merge::HashRef>
-
-=item *
-
-L<PerlBuildSystem>
-
-=item *
-
-L<Pixie>
-
-=item *
-
-L<XUL-Node>
+L<Aspect>, L<Bundle::Bricolage> (L<http://www.bricolage.cc/>), L<Class::StorageFactory>, L<CGI::Application::Search>, L<DBIx::Romani>, L<Xmldoom>, L<Object::Relational>, L<File::Random>, L<Geography::JapanesePrefectures>, L<Geography::JapanesePrefectures::Walker>, L<Google::Adwords>, L<Merge::HashRef>, L<PerlBuildSystem>, L<Pixie>, L<Yahoo::Marketing>, and L<XUL-Node>
 
 =back
 
