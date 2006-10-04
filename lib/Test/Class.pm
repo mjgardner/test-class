@@ -661,6 +661,8 @@ runs all of the test methods in every loaded test class. This allows you to easi
   
   # and run them all
   Test::Class->runtests;
+  
+You can use L<Test::Class::Load> to automatically load all the test classes in a given set of directories.
 
 If you need finer control you can create individual test objects with L<new()|"new">. For example to just run the tests in the test class C<Foo::Bar::Test> you can do:
 
@@ -930,16 +932,9 @@ With the above definition you can add tests to C<check_fields> in C<Pig::Test> w
 
 =head1 RUNNING INDIVIDUAL TESTS
 
-B<NOTE:> The exact mechanism for running individual tests is likely to change in 
-the future. 
+B<NOTE:> The exact mechanism for running individual tests is likely to change in the future. 
 
-Sometimes you just want to run a single test.  Commenting out other tests or
-writing code to skip them can be a hassle, so you can specify the
-C<TEST_METHOD> environment variable.  The value is expected to be a valid
-regular expression and, if present, only runs tests whose names match the
-regular expression.  Setup and teardown tests will still be run.  One easy way
-of doing this is by specifying the environment variable I<before> the
-C<runtests> method is called.
+Sometimes you just want to run a single test.  Commenting out other tests or writing code to skip them can be a hassle, so you can specify the C<TEST_METHOD> environment variable.  The value is expected to be a valid regular expression and, if present, only runs tests whose names match the regular expression.  Setup and teardown tests will still be run.  One easy way of doing this is by specifying the environment variable I<before> the C<runtests> method is called.
 
 Running a test named C<customer_profile>:
 
@@ -987,6 +982,7 @@ Place all test classes in F<t/lib>.
 
 =back
 
+The L<Test::Class::Load> provides a simple mechanism for easily loading all of the test classes in a given set of directories.
 
 =head1 METHODS
 
@@ -1535,6 +1531,10 @@ If you use this module, and can spare the time please drop me an e-mail or rate 
 =head1 SEE ALSO
 
 =over 4
+
+=item L<Test::Class::Load>
+
+Simple way to load "Test::Class" classes automatically.
 
 =item L<Test::Builder>
 

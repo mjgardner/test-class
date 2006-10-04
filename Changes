@@ -1,6 +1,7 @@
-0.16 - or the "sepling mist" release
+0.16 - or the "sepling mist ook!" release
     -   Added (optional) spelling tests for the POD in t/developer
     -   Fixed a whole bunch of spelling mistakes
+    -   Added some references to Test::Class::Load in the main Test::Class POD
 
 0.15 - or the "down. down. deeper and down" release
     -   Now works with Test::Deep, which annoyingly defines its own isa() 
