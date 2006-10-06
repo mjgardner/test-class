@@ -1,10 +1,9 @@
-0.17 - or the "" release
+0.17 - or the "wot I did on the train" release
+    -   Removed pointless uses of UNIVERSAL::isa
     -   We rename "test name" to "test description" to confirm with current TAP
         nomenclature
-    -   Added some pointers to third party documentation in SEE ALSO
-    -   Removed pointless uses of UNIVERSAL::isa
+    -   Added some pointers to third party documentation
     -   Added references to Test::Object, Test::Group and Test::Block
-        in SEE ALSO
 
 0.16 - or the "sepling mist ook!" release
     -   Added (optional) spelling tests for the POD in t/developer
