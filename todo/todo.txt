@@ -15,7 +15,6 @@
 * Vary the order of test methods / classes easily
 * Separate out Test::Class::Tutorial
 * Check whether we can reduce the prerequisites
-* Look at how the Aspect modules use T::C
 * Refactor test suite
 * See whether the bizarre L<> syntax is still needed in POD
 * Refactor runtests... lord is it ugly
@@ -28,7 +27,6 @@
 * Make sure exit code logic matches that in the latest Test::Builder
 * Have a ponder about how Test::Class and Test::Base might interact
 * Consider renaming startup/teardown before/after like JUnit4
-* Add link to PTDN book's T::C chapter
 * Use JUnit 4.0's inheritance model for before/after running order?
 * Add diag to failing tests that shows the object / class / method that failed
 * Have option to automatically add runtests to classes
