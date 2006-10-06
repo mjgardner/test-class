@@ -4,6 +4,7 @@
         nomenclature
     -   Added some pointers to third party documentation
     -   Added references to Test::Object, Test::Group and Test::Block
+    -   Actually added spelling.t to the distro (sigh)
 
 0.16 - or the "sepling mist ook!" release
     -   Added (optional) spelling tests for the POD in t/developer
