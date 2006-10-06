@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -220,13 +220,13 @@ sub _run_method {
 	{
 	    no warnings;
         *Test::Builder::ok = sub {
-            my ($builder, $test, $name) = @_;
+            my ($builder, $test, $description) = @_;
             local $Test::Builder::Level = $Test::Builder::Level+1;
-            unless ( defined($name) ) {
-                $name = $self->current_method;
-                $name =~ tr/_/ /;
+            unless ( defined($description) ) {
+                $description = $self->current_method;
+                $description =~ tr/_/ /;
             };
-            $original_ok->($builder, $test, $name)
+            $original_ok->($builder, $test, $description)
         };
 	};
 	my $num_start = $Builder->current_test;
@@ -715,13 +715,13 @@ I<Remember:> Test objects are just normal perl objects. Test classes are just no
 In particular you can override the new() method to pass parameters to your test object, or re-define the number of tests a method will run. See L<num_method_tests()|/"num_method_tests"> for an example. 
 
 
-=head1 TEST NAMES
+=head1 TEST DESCRIPTIONS
 
-The test functions you import from L<Test::More> and other L<Test::Builder> based modules usually take an optional third argument that specifies the test name, for example:
+The test functions you import from L<Test::More> and other L<Test::Builder> based modules usually take an optional third argument that specifies the test description, for example:
 
-  is $something, $something_else, 'name of test';
+  is $something, $something_else, 'a description of my test';
     
-If you do not supply a test name, and the test function does not supply its own default value, then Test::Class will use the name of the currently running test method, replacing all "_" characters with spaces so:
+If you do not supply a test description, and the test function does not supply its own default, then Test::Class will use the name of the currently running test method, replacing all "_" characters with spaces so:
 
   sub one_plus_one_is_two : Test {
       is 1+1, 2;
