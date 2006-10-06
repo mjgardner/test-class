@@ -2,6 +2,7 @@
     -   We rename "test name" to "test description" to confirm with current TAP
         nomenclature
     -   Added some pointers to third party documentation in SEE ALSO
+    -   Removed pointless uses of UNIVERSAL::isa
 
 0.16 - or the "sepling mist ook!" release
     -   Added (optional) spelling tests for the POD in t/developer
