@@ -163,7 +163,7 @@ sub _num_expected_tests {
 sub expected_tests {
 	my $total = 0;
 	foreach my $test (@_) {
-		if (UNIVERSAL::isa($test, __PACKAGE__)) {
+		if ( eval { $test->isa( __PACKAGE__ ) } ) {
 			my $n = _num_expected_tests($test);
 			return(NO_PLAN) if $n eq NO_PLAN;
 			$total += $n;
@@ -290,7 +290,7 @@ sub runtests {
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
 		croak "$t not Test::Class or integer"
-				unless UNIVERSAL::isa($t, __PACKAGE__);
+				unless eval { $t->isa( __PACKAGE__ ) };
         if (my $reason = $t->SKIP_CLASS) {
             _show_header($t, @tests) unless $Builder->has_plan ;
             $Builder->skip( $reason ) unless $reason eq "1";
