@@ -1,3 +1,7 @@
+0.18 - or the "damn multiple inheritence" release
+    -   You now get a sensible error message if Test::Class's new() gets
+        overridden badly via a subclass or multiple inheritance
+
 0.17 - or the "wot I did on the train" release
     -   Removed pointless uses of UNIVERSAL::isa
     -   We rename "test name" to "test description" to confirm with current TAP

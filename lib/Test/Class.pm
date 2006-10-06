@@ -14,7 +14,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 
 use constant NO_PLAN	=> "no_plan";
@@ -45,7 +45,7 @@ sub DESTROY {
 
 sub _test_info {
 	my $self = shift;
-	return(ref($self) ? $_Test{$self} : $Tests);
+	return ref($self) ? $_Test{$self} : $Tests;
 };
 
 sub _method_info {
@@ -54,8 +54,11 @@ sub _method_info {
 };
 
 sub _methods_of_class {
-	my ($self, $class) = @_;
-	return(values %{_test_info($self)->{$class}});
+	my ( $self, $class ) = @_;
+    my $test_info = _test_info($self) 
+        or die "Test::Class internals seem confused. Did you override "
+            . "new() in a sub-class or via multiple inheritence?\n";
+	return values %{ $test_info->{$class} };
 };
 
 sub _parse_attribute_args {
