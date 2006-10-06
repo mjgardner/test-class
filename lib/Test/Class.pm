@@ -1568,6 +1568,14 @@ Overview of some of the many testing modules available on CPAN.
 
 Delicious links on perl testing.
 
+=item L<Test::Object>
+
+Another approach to object oriented testing.
+
+=item L<Test::Group> and L<Test::Block>
+
+Alternatives to grouping sets of tests together.
+
 =back
 
 The following modules use Test::Class as part of their test suite. You might want to look at them for usage examples:

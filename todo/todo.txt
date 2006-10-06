@@ -37,7 +37,6 @@
 * add ability to tag all methods in a class
 * add more flexible approach to setting fixtures for a class
 * look at integrating with role/trait modules
-* Add references to Test::Object and Test::Group
 
 You can view, modify, and add to the list at:
 http://adrianh.tadalist.com/lists/show/4798

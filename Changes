@@ -3,6 +3,8 @@
         nomenclature
     -   Added some pointers to third party documentation in SEE ALSO
     -   Removed pointless uses of UNIVERSAL::isa
+    -   Added references to Test::Object, Test::Group and Test::Block
+        in SEE ALSO
 
 0.16 - or the "sepling mist ook!" release
     -   Added (optional) spelling tests for the POD in t/developer
