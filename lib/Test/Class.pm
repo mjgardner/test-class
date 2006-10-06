@@ -1536,17 +1536,21 @@ If you use this module, and can spare the time please drop me an e-mail or rate 
 
 Simple way to load "Test::Class" classes automatically.
 
+=item L<http://del.icio.us/tag/Test::Class>
+
+Delicious links on Test::Class.
+
 =item Perl Testing: A Developer's Notebook by Ian Langworth and chromatic
 
 Chapter 8 covers using Test::Class.
 
-=item Advanced Perl Programming, 2nd edition by Simon Cozens
+=item Advanced Perl Programming, second edition by Simon Cozens
 
 Chapter 8 has a few pages on using Test::Class.
 
-=item L<http://del.icio.us/tag/Test::Class>
+=item The Perl Journal, April 2003
 
-Delicious links on Test::Class.
+Includes the article "Test-Driven Development in Perl" by Piers Cawley that uses Test::Class.
 
 =item L<Test::Builder>
 
@@ -1570,7 +1574,7 @@ The following modules use Test::Class as part of their test suite. You might wan
 
 =over 4
 
-L<Aspect>, L<Bundle::Bricolage> (L<http://www.bricolage.cc/>), L<Class::StorageFactory>, L<CGI::Application::Search>, L<DBIx::Romani>, L<Xmldoom>, L<Object::Relational>, L<File::Random>, L<Geography::JapanesePrefectures>, L<Geography::JapanesePrefectures::Walker>, L<Google::Adwords>, L<Merge::HashRef>, L<PerlBuildSystem>, L<Pixie>, L<Yahoo::Marketing>, and L<XUL-Node>
+L<Aspect>, Bricolage (L<http://www.bricolage.cc/>), L<Class::StorageFactory>, L<CGI::Application::Search>, L<DBIx::Romani>, L<Xmldoom>, L<Object::Relational>, L<File::Random>, L<Geography::JapanesePrefectures>, L<Google::Adwords>, L<Merge::HashRef>, L<PerlBuildSystem>, L<Pixie>, L<Yahoo::Marketing>, and L<XUL-Node>
 
 =back
 
