@@ -14,7 +14,6 @@
 * Use the class variable style of test class in docs?
 * Vary the order of test methods / classes easily
 * Separate out Test::Class::Tutorial
-* Add to do items from the subversion repository
 * Check whether we can reduce the prerequisites
 * Look at how the Aspect modules use T::C
 * Refactor test suite
@@ -32,7 +31,6 @@
 * Add link to PTDN book's T::C chapter
 * Use JUnit 4.0's inheritance model for before/after running order?
 * Add diag to failing tests that shows the object / class / method that failed
-* Add link to Advanced Perl, 2nd edition Testing chapter
 * Have option to automatically add runtests to classes
 * See what we can steal from TestNG
 * You can't run classes just consisting of setup/teardown methods with tests coz it thinks there are no tests. Bug? Feature?
