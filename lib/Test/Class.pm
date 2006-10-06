@@ -1536,6 +1536,18 @@ If you use this module, and can spare the time please drop me an e-mail or rate 
 
 Simple way to load "Test::Class" classes automatically.
 
+=item Perl Testing: A Developer's Notebook by Ian Langworth and chromatic
+
+Chapter 8 covers using Test::Class.
+
+=item Advanced Perl Programming, 2nd edition by Simon Cozens
+
+Chapter 8 has a few pages on using Test::Class.
+
+=item L<http://del.icio.us/tag/Test::Class>
+
+Delicious links on Test::Class.
+
 =item L<Test::Builder>
 
 Support module for building test libraries.
@@ -1547,10 +1559,6 @@ Basic utilities for writing tests.
 =item L<http://qa.perl.org/test-modules.html>
 
 Overview of some of the many testing modules available on CPAN.
-
-=item L<http://del.icio.us/tag/Test::Class>
-
-Delicious links on Test::Class.
 
 =item L<http://del.icio.us/tag/perl+testing>
 
