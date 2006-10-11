@@ -19,7 +19,6 @@
 * See whether the bizarre L<> syntax is still needed in POD
 * Refactor runtests... lord is it ugly
 * Mail out about the 1.0 release to perl-qa, tdd, agile-testing, etc.
-* Look at using T::C with pperl & Test::Harness
 * Look at using pperl/Module::Refresh and T::C together for faster startup times
 * Look at rationalising the object/class behaviour
 * Have another go on getting it on module list
