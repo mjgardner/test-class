@@ -22,7 +22,7 @@ sub foo : Test(foo) {print "ok\n"};
 
 END {
 	seek $stderr, SEEK_SET, 0;
-	is(<$stderr>, "cannot test anonymous subs\n", 
+	like(<$stderr>, qr/cannot test anonymous subs/, 
 			"cannot test anon sub");
 	is(<$stderr>, "bad test definition 'foo' in main->foo\n",
 			"bad number detected");

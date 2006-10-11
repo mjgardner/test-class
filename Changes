@@ -1,3 +1,9 @@
+0.19 - or the "last RT bug crushed" release
+    -   You now get a sensible error message if you load Test::Class after the
+        CHECK phase where the :Test attribute gets applied.
+    -   Added "A NOTE ON LOADING TEST CLASSES" section that describes the issue
+        of the :Test attribute being applied at CHECK time
+
 0.18 - or the "damn multiple inheritence" release
     -   You now get a sensible error message if Test::Class's new() gets
         overridden badly via a subclass or multiple inheritance

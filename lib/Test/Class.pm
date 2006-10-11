@@ -1,9 +1,8 @@
-#! /usr/bin/perl -Tw
-
-package Test::Class;
-use 5.006;
 use strict;
 use warnings;
+use 5.006;
+
+package Test::Class;
 
 use Attribute::Handlers;
 use Carp;
@@ -14,8 +13,13 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
+my $Check_block_has_run;
+{
+    no warnings 'void';
+    CHECK { $Check_block_has_run = 1 };
+}
 
 use constant NO_PLAN	=> "no_plan";
 use constant SETUP		=> "setup";
@@ -40,7 +44,7 @@ my %_Test;  # inside-out object field indexed on $self
 
 sub DESTROY {
     my $self = shift;
-    delete $_Test{$self};
+    delete $_Test{ $self };
 };
 
 sub _test_info {
@@ -90,7 +94,7 @@ sub _is_public_method {
 sub Test : ATTR(CODE,RAWDATA) {
 	my ($class, $symbol, $code_ref, $attr, $args) = @_;
 	if ($symbol eq "ANON") {
-		warn "cannot test anonymous subs\n";
+		warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
 	} else {
         my $name = *{$symbol}{NAME};
         warn "overriding public method $name with a test method in $class\n"
@@ -283,6 +287,7 @@ sub _test_classes {
 };
 
 sub runtests {
+    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details" unless $Check_block_has_run;
 	my @tests = @_;
 	if (@tests == 1 && !ref($tests[0])) {
 		my $base_class = shift @tests;
@@ -986,6 +991,21 @@ Place all test classes in F<t/lib>.
 =back
 
 The L<Test::Class::Load> provides a simple mechanism for easily loading all of the test classes in a given set of directories.
+
+
+=head1 A NOTE ON LOADING TEST CLASSES
+
+Due to its use of subroutine attributes Test::Class based modules must be loaded at compile rather than run time. This is because the :Test attribute is applied by a CHECK block.
+
+This can be problematic if you want to dynamically load Test::Class modules. Basically while:
+
+  require $some_test_class;
+  
+won't work, doing:
+
+  BEGIN { require $some_test_class };
+  
+will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">. 
 
 =head1 METHODS
 
