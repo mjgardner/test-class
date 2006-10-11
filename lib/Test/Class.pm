@@ -287,7 +287,7 @@ sub _test_classes {
 };
 
 sub runtests {
-    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details" unless $Check_block_has_run;
+    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n" unless $Check_block_has_run;
 	my @tests = @_;
 	if (@tests == 1 && !ref($tests[0])) {
 		my $base_class = shift @tests;
