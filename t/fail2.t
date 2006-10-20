@@ -27,8 +27,10 @@ $ENV{TEST_VERBOSE}=0;
 test_out("not ok 1 - The object isa Object");
 test_out("not ok 2 - cannot create Objects");
 test_fail(-11);
+test_err( "#   (in Object::Test->_test_new)" );
 test_err(qr/#\s+The object isn't defined\n/);
-test_fail(-13);
+test_fail(-14);
+test_err( "#   (in Object::Test->_test_new)" );
 
 Object::Test->runtests;
 END {

@@ -22,8 +22,9 @@ $ENV{TEST_VERBOSE}=0;
 
 my $SEP = '/'; # use forward slash even on Win32
 
-test_out("not ok 1 - object live # TODO unimplemented");
-test_err("#     Failed (TODO) test (t${SEP}todo.t at line 16)");
+test_out( "not ok 1 - object live # TODO unimplemented" );
+test_err( "#     Failed (TODO) test (t${SEP}todo.t at line 16)" );
+test_err( "#   (in Foo->todo_test)" );
 Foo->runtests;
 test_test("todo tests work");
 

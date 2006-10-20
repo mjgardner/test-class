@@ -19,6 +19,7 @@ use Test::Builder::Tester tests => 1;
 $ENV{TEST_VERBOSE}=0;
 test_out("ok 1 - successful test");
 test_out("not ok 2 - trailing_exception died (died)");
-test_fail(+1);
+test_fail(+2);
+test_err( "#   (in Foo->trailing_exception)" );
 Foo->runtests;
 test_test("trailing expection detected");

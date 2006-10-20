@@ -233,7 +233,12 @@ sub _run_method {
                 $description = $self->current_method;
                 $description =~ tr/_/ /;
             };
-            $original_ok->($builder, $test, $description)
+            my $is_ok = $original_ok->($builder, $test, $description);
+            unless ( $is_ok ) {
+                my $class = ref $self;
+                $Builder->diag( "  (in $class->$method)" );
+            };
+            return $is_ok;
         };
 	};
 	my $num_start = $Builder->current_test;

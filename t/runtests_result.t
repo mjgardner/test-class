@@ -33,8 +33,9 @@ my $SEP = '/'; # use forward slash even on Win32
 
 my $all_ok;
 
-test_out("not ok 1 - fails");
-test_err("#     Failed test (t${SEP}runtests_result.t at line 11)");
+test_out( "not ok 1 - fails" );
+test_err( "#     Failed test (t${SEP}runtests_result.t at line 11)" );
+test_err( "#   (in Fail->test1)" );
 test_out("ok 2 - passes");
 $all_ok = Fail->runtests;
 test_test("single failure ran okay");
