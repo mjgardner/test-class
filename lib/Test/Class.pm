@@ -13,7 +13,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 my $Check_block_has_run;
 {
@@ -804,10 +804,14 @@ If a startup, setup, test, teardown or shutdown method dies then L<runtests()|/"
 will produce the following if the first test failed:
 
   not ok 1 - The object isa Object
-  #     Failed test (t/runtests_die.t at line 15)
+  #   Failed test 'The object isa Object'
+  #   at /Users/adrianh/Desktop/foo.pl line 14.
+  #   (in MyTest->test_object)
   #     The object isn't defined
-  not ok 2 - test_object failed (could not create object)
-  #     Failed test (t/runtests_die.t at line 27)
+  not ok 2 - test_object died (could not create object)
+  #   Failed test 'test_object died (could not create object)'
+  #   at /Users/adrianh/Desktop/foo.pl line 19.
+  #   (in MyTest->test_object)
 
 This can considerably simplify testing code that throws exceptions. 
 
@@ -1006,7 +1010,7 @@ This can be problematic if you want to dynamically load Test::Class modules. Bas
 
   require $some_test_class;
   
-won't work, doing:
+will break, doing:
 
   BEGIN { require $some_test_class };
   

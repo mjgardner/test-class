@@ -1,4 +1,3 @@
-* Resolve rest of outstanding RT bugs
 * Should SKIP_CLASS should skip all the tests or just one 
 * $object->SKIP_ALL should just skip tests in current object
 * Write some cookbook POD
@@ -27,7 +26,6 @@
 * Have a ponder about how Test::Class and Test::Base might interact
 * Consider renaming startup/teardown before/after like JUnit4
 * Use JUnit 4.0's inheritance model for before/after running order?
-* Add diag to failing tests that shows the object / class / method that failed
 * Have option to automatically add runtests to classes
 * See what we can steal from TestNG
 * You can't run classes just consisting of setup/teardown methods with tests coz it thinks there are no tests. Bug? Feature?
@@ -36,7 +34,3 @@
 * add ability to tag all methods in a class
 * add more flexible approach to setting fixtures for a class
 * look at integrating with role/trait modules
-
-You can view, modify, and add to the list at:
-http://adrianh.tadalist.com/lists/show/4798
-

@@ -1,3 +1,10 @@
+0.20 - or the "you failed where?" release
+    -   Added an extra diagnostic line on test failures that list the method
+        that failed and the class being tested. Makes locating test failures in
+        test class hierarchies much simpler.
+    -   Added some tests for plan math for startup/shutdown methods (phew they
+        worked!)
+
 0.19 - or the "last RT bug crushed" release
     -   You now get a sensible error message if you load Test::Class after the
         CHECK phase where the :Test attribute gets applied.
