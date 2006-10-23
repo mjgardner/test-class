@@ -40,7 +40,7 @@ sub test : Test(1) {};
 sub shutdown :Test( shutdown => no_plan ) {};
 
 package main;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 
 is(Tests1->expected_tests, 3, 'all set');
@@ -55,3 +55,4 @@ my $o2 = Tests1->new;
 is(Test::Class->expected_tests($o1, $o2, 1), 7, 'expected_test_of');
 is(Test::Class->expected_tests($o1, 'Tests3'), 'no_plan', 'no_plan expected_test_of');
 dies_ok {Test::Class->expected_tests('foo')} 'bad test class';
+dies_ok {Test::Class->expected_tests( undef )} 'undef test class';

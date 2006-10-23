@@ -1,3 +1,7 @@
+0.21 - or the "we're all growed up" release
+    -   check that expected_tests gives a sensible error when given undef as an
+        argument
+
 0.20 - or the "you failed where?" release
     -   Added an extra diagnostic line on test failures that list the method
         that failed and the class being tested. Makes locating test failures in

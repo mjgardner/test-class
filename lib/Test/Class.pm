@@ -13,7 +13,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 my $Check_block_has_run;
 {
@@ -172,17 +172,16 @@ sub expected_tests {
 	foreach my $test (@_) {
 		if ( eval { $test->isa( __PACKAGE__ ) } ) {
 			my $n = _num_expected_tests($test);
-			return(NO_PLAN) if $n eq NO_PLAN;
+			return NO_PLAN if $n eq NO_PLAN;
 			$total += $n;
-		} elsif ($test =~ m/^\d+$/) {
-			# SHOULD ALSO ALLOW NO_PLAN
+		} elsif ( $test =~ m/^\d+$/ ) {
 			$total += $test;
 		} else {
-			$test = 'undef' unless defined($test);
+			$test = 'undef' unless defined $test;
 			croak "$test is not a Test::Class or an integer";
 		};
 	};
-	return($total);
+	return $total;
 };
 
 sub _total_num_tests {
