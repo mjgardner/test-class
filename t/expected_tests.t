@@ -1,7 +1,7 @@
 #! /usr/bin/perl -T
 
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 
 package Tests1; use base qw(Test::Class);
 

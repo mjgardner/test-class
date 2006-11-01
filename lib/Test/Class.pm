@@ -174,7 +174,7 @@ sub expected_tests {
 			my $n = _num_expected_tests($test);
 			return NO_PLAN if $n eq NO_PLAN;
 			$total += $n;
-		} elsif ( $test =~ m/^\d+$/ ) {
+		} elsif ( defined $test && $test =~ m/^\d+$/ ) {
 			$total += $test;
 		} else {
 			$test = 'undef' unless defined $test;
@@ -222,7 +222,7 @@ sub _exception_failure {
 
 sub _run_method {
 	my ($self, $method, $tests) = @_;
-	my $original_ok = \&Test::Builder::ok;
+    my $original_ok = \&Test::Builder::ok;
 	{
 	    no warnings;
         *Test::Builder::ok = sub {
