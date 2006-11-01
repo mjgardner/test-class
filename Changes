@@ -1,6 +1,7 @@
 0.21 - or the "we're all growed up" release
-    -   check that expected_tests gives a sensible error when given undef as an
-        argument
+    -   expected_tests() gives a sensible info when given undef as an argument
+    -   fixed bug when we repeatedly wrapped Test::Builder::ok with extra
+        Test::Class functionality every time we run a test method
 
 0.20 - or the "you failed where?" release
     -   Added an extra diagnostic line on test failures that list the method

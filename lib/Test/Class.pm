@@ -222,26 +222,25 @@ sub _exception_failure {
 
 sub _run_method {
 	my ($self, $method, $tests) = @_;
-    my $original_ok = \&Test::Builder::ok;
-	{
-	    no warnings;
-        *Test::Builder::ok = sub {
-            my ($builder, $test, $description) = @_;
-            local $Test::Builder::Level = $Test::Builder::Level+1;
-            unless ( defined($description) ) {
-                $description = $self->current_method;
-                $description =~ tr/_/ /;
-            };
-            my $is_ok = $original_ok->($builder, $test, $description);
-            unless ( $is_ok ) {
-                my $class = ref $self;
-                $Builder->diag( "  (in $class->$method)" );
-            };
-            return $is_ok;
-        };
-	};
 	my $num_start = $Builder->current_test;
-	my $skip_reason = eval {$self->$method};
+    my $skip_reason;
+    my $original_ok = \&Test::Builder::ok;
+    no warnings;
+    local *Test::Builder::ok = sub {
+        my ($builder, $test, $description) = @_;
+        local $Test::Builder::Level = $Test::Builder::Level+1;
+        unless ( defined($description) ) {
+            $description = $self->current_method;
+            $description =~ tr/_/ /;
+        };
+        my $is_ok = $original_ok->($builder, $test, $description);
+        unless ( $is_ok ) {
+            my $class = ref $self;
+            $Builder->diag( "  (in $class->$method)" );
+        };
+        return $is_ok;
+    };
+    $skip_reason = eval {$self->$method};
 	my $exception = $@;
 	chomp($exception) if $exception;
 	my $num_done = $Builder->current_test - $num_start;
