@@ -9,7 +9,7 @@ use File::Spec;
 
 our $VERSION = '0.02';
 
-my %dirs;
+my %Added_to_INC;
 
 sub _load {
     my ( $file, $dir ) = @_;
@@ -21,17 +21,15 @@ sub _load {
 
     # untaint that puppy!
     my ($package) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
-    $dirs{$dir} = 1;
-    unshift @INC => $dir;
+    
+    unshift @INC => $dir unless $Added_to_INC{ $dir }++;
     eval "require $package"; ## no critic
     die $@ if $@;
-    return $package;
 }
 
 sub import {
-    shift;
-    foreach (@_) {
-        my $dir = $_;    # avoid the 'modification of read-only value' problem
+    my ( $class, @directories ) = @_;
+    foreach my $dir ( @directories ) {
         $dir = File::Spec->catdir( split '/', $dir );
         find(
             {   no_chdir => 1,
@@ -44,7 +42,7 @@ sub import {
 
 1;
 
-
+__END__
 =head1 NAME
 
 Test::Class::Load - Load C<Test::Class> classes automatically.
