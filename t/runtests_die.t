@@ -19,13 +19,13 @@ sub test_object : Test(2) {
 package main;
 use Test::Builder::Tester tests => 1;
 $ENV{TEST_VERBOSE}=0;
-my $SEP = '/'; # use forward slash even on Win32. '\\' would cause regex failure
+
 test_out( "not ok 1 - The object isa Object");
-test_err( "#     Failed test (t${SEP}runtests_die.t at line 15)");
+test_err( "#     Failed test (t/runtests_die.t at line 15)");
 test_err( "#   (in Foo->test_object)" );
 test_err( "#     The object isn't defined");
 test_out( "not ok 2 - test_object died (could not create object)");
-test_err( "#     Failed test (t${SEP}runtests_die.t at line 30)");
+test_err( "#     Failed test (t/runtests_die.t at line 30)");
 test_err( "#   (in Foo->test_object)" );
 Foo->runtests;
 test_test("early die handled");
