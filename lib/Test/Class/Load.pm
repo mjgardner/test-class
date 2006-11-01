@@ -1,8 +1,49 @@
+use strict;
+use warnings;
+
 package Test::Class::Load;
 
-use warnings;
-use strict;
 use Test::Class;
+use File::Find;
+use File::Spec;
+
+our $VERSION = '0.02';
+
+my %dirs;
+
+sub _load {
+    my ( $file, $dir ) = @_;
+    $file =~ s/\.pm$// || return;    # we only care about .pm files
+    $file =~ s{\\}{/}g;              # to make win32 happy
+    $dir  =~ s{\\}{/}g;              # to make win32 happy
+    $file =~ s/^$dir//;
+    my $_package = join '::' => grep $_ => File::Spec->splitdir($file);
+
+    # untaint that puppy!
+    my ($package) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
+    $dirs{$dir} = 1;
+    unshift @INC => $dir;
+    eval "require $package"; ## no critic
+    die $@ if $@;
+    return $package;
+}
+
+sub import {
+    shift;
+    foreach (@_) {
+        my $dir = $_;    # avoid the 'modification of read-only value' problem
+        $dir = File::Spec->catdir( split '/', $dir );
+        find(
+            {   no_chdir => 1,
+                wanted   => sub { _load( $File::Find::name, $dir ) },
+            },
+            $dir
+        );
+    }
+}
+
+1;
+
 
 =head1 NAME
 
@@ -10,11 +51,7 @@ Test::Class::Load - Load C<Test::Class> classes automatically.
 
 =head1 VERSION
 
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
+Version 0.02
 
 =head1 SYNOPSIS
 
@@ -108,44 +145,6 @@ Of course, you can still run your helper script with C<prove>, C<make test> or C
 
 If you do that, you'll have to make sure that the C<-I> switches point to your test class directories.
 
-=cut
-
-use strict;
-use File::Find;
-use File::Spec;
-
-my %dirs;
-
-sub _load {
-    my ( $file, $dir ) = @_;
-    $file =~ s/\.pm$// || return;    # we only care about .pm files
-    $file =~ s{\\}{/}g;              # to make win32 happy
-    $dir  =~ s{\\}{/}g;              # to make win32 happy
-    $file =~ s/^$dir//;
-    my $_package = join '::' => grep $_ => File::Spec->splitdir($file);
-
-    # untaint that puppy!
-    my ($package) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
-    $dirs{$dir} = 1;
-    unshift @INC => $dir;
-    eval "require $package"; ## no critic
-    die $@ if $@;
-    return $package;
-}
-
-sub import {
-    shift;
-    foreach (@_) {
-        my $dir = $_;    # avoid the 'modification of read-only value' problem
-        $dir = File::Spec->catdir( split '/', $dir );
-        find(
-            {   no_chdir => 1,
-                wanted   => sub { _load( $File::Find::name, $dir ) },
-            },
-            $dir
-        );
-    }
-}
 
 =head1 SECURITY
 
@@ -170,7 +169,3 @@ Thanks to David Wheeler for the idea and Adrian Howard for C<Test::Class>.
 Copyright 2006 Curtis "Ovid" Poe, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
-
-=cut
-
-1;
