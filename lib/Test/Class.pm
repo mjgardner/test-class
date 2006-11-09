@@ -116,9 +116,14 @@ sub Tests : ATTR(CODE,RAWDATA) {
     Test( $class, $symbol, $code_ref, $attr, $args );
 };
 
+sub _class_of {
+    my $self = shift;
+    return ref $self ? ref $self : $self;
+}
+
 sub new {
 	my $proto = shift;
-	my $class = ref($proto) || $proto;
+	my $class = _class_of( $proto );
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
 	$_Test{$self} = dclone($Tests);
@@ -127,7 +132,7 @@ sub new {
 
 sub _get_methods {
 	my ($self, @types) = @_;
-	my $test_class = ref($self) || $self;
+	my $test_class = _class_of( $self );
 	my %methods = ();
 	foreach my $class (Class::ISA::self_and_super_path($test_class)) {
 		foreach my $info (_methods_of_class($self, $class)) {
@@ -170,7 +175,7 @@ sub _num_expected_tests {
 sub expected_tests {
 	my $total = 0;
 	foreach my $test (@_) {
-		if ( eval { $test->isa( __PACKAGE__ ) } ) {
+		if ( _isa_class( __PACKAGE__, $test ) ) {
 			my $n = _num_expected_tests($test);
 			return NO_PLAN if $n eq NO_PLAN;
 			$total += $n;
@@ -186,7 +191,7 @@ sub expected_tests {
 
 sub _total_num_tests {
 	my ($self, @methods) = @_;
-	my $class = ref($self) || $self;
+	my $class = _class_of( $self );
 	my $total_num_tests = 0;
 	foreach my $method (@methods) {
 		foreach my $class (Class::ISA::self_and_super_path($class)) {
@@ -216,7 +221,7 @@ sub _exception_failure {
 	my $message = $method;
 	$message .= " (for test method '$Current_method')"
 			if defined $Current_method && $method ne $Current_method;
-	_show_header($self, @$tests) unless $Builder->has_plan;
+	_show_header($self, @$tests);
 	$Builder->ok(0, "$message died ($exception)");
 };
 
@@ -241,6 +246,7 @@ sub _run_method {
         return $is_ok;
     };
     $skip_reason = eval {$self->$method};
+    $skip_reason = $method unless $skip_reason;
 	my $exception = $@;
 	chomp($exception) if $exception;
 	my $num_done = $Builder->current_test - $num_start;
@@ -258,7 +264,7 @@ sub _run_method {
 				$skip_reason = "$method died";
 				$exception = '';
 			} else {
-				$Builder->skip($skip_reason || $method);
+				$Builder->skip( $skip_reason );
 			};
 		};
 	};
@@ -267,6 +273,7 @@ sub _run_method {
 
 sub _show_header {
 	my ($self, @tests) = @_;
+	return if $Builder->has_plan;
 	my $num_tests = Test::Class->expected_tests(@tests);
 	if ($num_tests eq NO_PLAN) {
 		$Builder->no_plan;
@@ -283,14 +290,19 @@ sub SKIP_CLASS {
 	return $SKIP_THIS_CLASS{ $class };
 };
 
+sub _isa_class {
+    my ( $class, $object ) = @_;
+    return eval { $object->isa( $class ) and $object->can( 'runtests' ) };
+}
+
 sub _test_classes {
 	my $class = shift;
-	return grep { eval { $_->isa( $class ) and $_->can( 'runtests' ) } } 
-	    Devel::Symdump->rnew->packages;
+	return grep { _isa_class( $class, $_ ) } Devel::Symdump->rnew->packages;
 };
 
 sub runtests {
-    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n" unless $Check_block_has_run;
+    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
+        unless $Check_block_has_run;
 	my @tests = @_;
 	if (@tests == 1 && !ref($tests[0])) {
 		my $base_class = shift @tests;
@@ -301,18 +313,16 @@ sub runtests {
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
 		croak "$t not Test::Class or integer"
-				unless eval { $t->isa( __PACKAGE__ ) };
+		    unless _isa_class( __PACKAGE__, $t );
         if (my $reason = $t->SKIP_CLASS) {
-            _show_header($t, @tests) unless $Builder->has_plan ;
+            _show_header($t, @tests);
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
             foreach my $method (_get_methods($t, STARTUP)) {
-                _show_header($t, @tests) 
-                        unless $Builder->has_plan 
-                        || _total_num_tests($t, $method) eq '0';
+                _show_header($t, @tests) unless _total_num_tests($t, $method) eq '0';
                 my $method_passed = _run_method($t, $method, \@tests);
-                $all_passed &&= $method_passed;
+                $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
             };
             my $class = ref($t);
@@ -322,19 +332,15 @@ sub runtests {
                 local $Current_method = $test;
                 $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
                 foreach my $method (@setup, $test, @teardown) {
-                    _show_header($t, @tests) 
-                            unless $Builder->has_plan 
-                            || _total_num_tests($t, $method) eq '0';
-                    my $method_passed = _run_method($t, $method, \@tests);
-                    $all_passed &&= $method_passed;
+                    _show_header($t, @tests)
+                        unless _total_num_tests($t, $method) eq '0';
+                    $all_passed = 0 unless _run_method($t, $method, \@tests);
                 };
             };
             foreach my $method (_get_methods($t, SHUTDOWN)) {
                 _show_header($t, @tests) 
-                        unless $Builder->has_plan 
-                        || _total_num_tests($t, $method) eq '0';
-                my $method_passed = _run_method($t, $method, \@tests);
-                $all_passed &&= $method_passed;
+                    unless _total_num_tests($t, $method) eq '0';
+                $all_passed = 0 unless _run_method($t, $method, \@tests);;
             }
         }
 	}
@@ -345,7 +351,7 @@ sub _find_calling_test_class {
 	my $level = 0;
 	while (my $class = caller(++$level)) {
 		next if $class eq __PACKAGE__;
-		return($class) if $class->isa(__PACKAGE__);
+		return $class if _isa_class( __PACKAGE__, $class );
 	}; 
 	return(undef);
 };

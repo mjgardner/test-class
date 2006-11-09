@@ -2,8 +2,8 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
-use Test::Class::Load 't/lib';
+use Test::More tests => 14;
+use Test::Class::Load 't/test-libs/lib1';
 
 ok exists $INC{'Tests/Foo.pm'},
   'Classes in top level directories should be loaded';
@@ -23,7 +23,7 @@ $SIG{__WARN__} = sub {
     warn @_
       unless $_[0] =~ /^Subroutine \w+ redefined/;
 };
-eval "use Test::Class::Load qw(t/lib t/tlib)";
+eval "use Test::Class::Load qw(t/test-libs/lib1 t/test-libs/lib2)";
 ok !$@, 'Trying to load multiple lib paths should succeed';
 
 ok exists $INC{'Tests/Foo.pm'},
@@ -39,3 +39,5 @@ ok exists $INC{'MyTest/Baz.pm'}, 'And secondary libs should be loaded';
 is +MyTest::Baz->baz, 23,
   '... and their methods should also work correctly';
 
+eval "use Test::Class::Load qw( t/test-libs/fail )";
+ok $@, "Trying to load a bad module fails";
