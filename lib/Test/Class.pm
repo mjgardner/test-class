@@ -13,7 +13,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 my $Check_block_has_run;
 {
