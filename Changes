@@ -1,7 +1,10 @@
-0.22 - or the "dotting the eyes and crossing the tees" release
+0.22 - or the "++ becomes a legal regex" release
     -   Factored out some common code
-    -   Added test for Test::Class::Load not loading modules successfully
+    -   Added test for Test::Class::Load not loading modules 
+        successfully
     -   Tidied up all the T::C::L test libraries into t/test-libs
+    -   Added patch from Nicholas Clark to make T::C work with blead 
+        perl
 
 0.21 - or the "we're all growed up" release
     -   expected_tests() gives a sensible info when given undef as an argument

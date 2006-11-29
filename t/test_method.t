@@ -58,9 +58,9 @@ use Test::More tests => 16;
 $ENV{TEST_COUNT} = 3;
 Foo->new->runtests;
 
-$ENV{TEST_METHOD} = '++';
+$ENV{TEST_METHOD} = '+++';
 eval { Foo->new->runtests };
-like $@, qr/\A\QTEST_METHOD (++) is not a valid regular expression/,
+like $@, qr/\A\QTEST_METHOD (+++) is not a valid regular expression/,
   '$ENV{TEST_METHOD} with an invalid regex should die';
 
 $ENV{TEST_METHOD} = 'customer1';
