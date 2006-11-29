@@ -206,6 +206,11 @@ sub _total_num_tests {
 	return($total_num_tests);
 };
 
+sub _has_no_tests {
+    my ( $self, $method ) = @_;
+    return _total_num_tests( $self, $method ) eq '0';
+}
+
 sub _all_ok_from {
 	my ($self, $start_test) = @_;
 	my $current_test = $Builder->current_test;
@@ -320,7 +325,7 @@ sub runtests {
         } else {
             $t = $t->new unless ref($t);
             foreach my $method (_get_methods($t, STARTUP)) {
-                _show_header($t, @tests) unless _total_num_tests($t, $method) eq '0';
+                _show_header($t, @tests) unless _has_no_tests($t, $method);
                 my $method_passed = _run_method($t, $method, \@tests);
                 $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
@@ -332,15 +337,13 @@ sub runtests {
                 local $Current_method = $test;
                 $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
                 foreach my $method (@setup, $test, @teardown) {
-                    _show_header($t, @tests)
-                        unless _total_num_tests($t, $method) eq '0';
+                    _show_header($t, @tests) unless _has_no_tests($t, $method);
                     $all_passed = 0 unless _run_method($t, $method, \@tests);
                 };
             };
             foreach my $method (_get_methods($t, SHUTDOWN)) {
-                _show_header($t, @tests) 
-                    unless _total_num_tests($t, $method) eq '0';
-                $all_passed = 0 unless _run_method($t, $method, \@tests);;
+                _show_header($t, @tests) unless _has_no_tests($t, $method);
+                $all_passed = 0 unless _run_method($t, $method, \@tests);
             }
         }
 	}
