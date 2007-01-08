@@ -13,7 +13,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 my $Check_block_has_run;
 {
@@ -1541,6 +1541,7 @@ Mark Stosberg,
 Martin Ferrari,
 Mathieu Sauve-Frankel,
 Matt Trout,
+Matt Williamson,
 Michael G Schwern, 
 Murat Uenalan, 
 Nicholas Clark,
