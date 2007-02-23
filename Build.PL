@@ -10,6 +10,7 @@ my $build = Module::Build->new(
         'Devel::Symdump'        => '2.03',
         'IO::File'              => '1.14',
         'Storable'              => '2.04',
+        'Test::Simple'          => '0.62',
         'Test::Builder'         => '0.33',
         'Test::Builder::Tester' => '1.04',
         'Test::More'            => '0.44',
