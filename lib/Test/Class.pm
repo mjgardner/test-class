@@ -296,8 +296,12 @@ sub SKIP_CLASS {
 };
 
 sub _isa_class {
-    my ( $class, $object ) = @_;
-    return eval { $object->isa( $class ) and $object->can( 'runtests' ) };
+    my ( $class, $object_or_class ) = @_;
+    return unless defined $object_or_class;
+    return if $object_or_class eq 'Contextual::Return::Value';
+    return eval { 
+        $object_or_class->isa( $class ) and $object_or_class->can( 'runtests' )
+    };
 }
 
 sub _test_classes {
