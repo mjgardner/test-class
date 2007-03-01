@@ -4,13 +4,16 @@ use strict;
 use warnings;
 use Test::More;
 
-my $aspell_path = eval q{
+## no critic
+my $spell_checker = eval q{
     use Test::Spelling; 
     use File::Which;
-    which('aspell') || die 'no aspell'
+    which('ispell') || die 'no spell checker'
 };
-plan skip_all => 'Optional Test::Spelling, File::Which and aspell program required to spellcheck POD' if $@;
-set_spell_cmd("$aspell_path list");
+## use critic
+
+plan skip_all => 'Optional Test::Spelling, File::Which and aspell or ispell required to spellcheck POD' if $@;
+set_spell_cmd("$spell_checker -l");
 add_stopwords( <DATA> );
 all_pod_files_spelling_ok();
 
@@ -75,3 +78,24 @@ et
 imacat
 qa
 Langworth
+Adrian
+BAILOUT
+Beck's
+Bjorn
+Cantrell
+Cozens
+Emil
+Ferrari
+Frankel
+Goddard
+Ian
+Johan
+Murat
+O'Neill
+Sebastien
+Smalltalk
+Terrence
+agianni
+co
+Curtis
+gnarly

@@ -1,3 +1,7 @@
+0.24 - or the "hating perl's broken object model" release
+    -   Stopped throwing Contextual::Return returning warnings due to the 
+        AUTOLOADING of isa() (thank's agianni)
+
 0.23 - or the "damn David and his smoke testing" release
     -   Added explicit dependency on Test::Simple for those odd folk who have 
         old Test::Simple releases running with a recent Test::Builder::Tester 

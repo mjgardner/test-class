@@ -13,7 +13,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 my $Check_block_has_run;
 {
@@ -1517,6 +1517,7 @@ This is yet another implementation of the ideas from Kent Beck's Testing Framewo
 
 Thanks to 
 Adam Kennedy,
+agianni,
 Apocalypse,
 Ask Bjorn Hansen,
 Chris Williams,
