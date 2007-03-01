@@ -1,6 +1,8 @@
 0.24 - or the "hating perl's broken object model" release
     -   Stopped throwing warnings when Contextual::Return was loaded due to the 
-        AUTOLOADING of isa() (thank's agianni)
+        AUTOLOADING of isa() (thank's to agianni)
+    -   If you are filtering with TEST_METHOD your startup/shutdown methods 
+        still get executed (thanks Chris Dolan)
 
 0.23 - or the "damn David and his smoke testing" release
     -   Added explicit dependency on Test::Simple for those odd folk who have 

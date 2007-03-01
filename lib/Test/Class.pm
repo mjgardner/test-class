@@ -12,7 +12,6 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-
 our $VERSION = '0.24';
 
 my $Check_block_has_run;
@@ -131,26 +130,27 @@ sub new {
 };
 
 sub _get_methods {
-	my ($self, @types) = @_;
+	my ( $self, @types ) = @_;
 	my $test_class = _class_of( $self );
+	
+	my $test_method_regexp = $ENV{ TEST_METHOD } || '.*';
+    my $method_regexp = eval { qr/\A$test_method_regexp\z/ };
+    die "TEST_METHOD ($test_method_regexp) is not a valid regexp: $@" if $@;
+	
 	my %methods = ();
-	foreach my $class (Class::ISA::self_and_super_path($test_class)) {
-		foreach my $info (_methods_of_class($self, $class)) {
-			foreach my $type (@types) {
-				$methods{$info->name} = 1 if $info->is_type($type);
+	foreach my $class ( Class::ISA::self_and_super_path( $test_class ) ) {
+		foreach my $info ( _methods_of_class( $self, $class ) ) {
+		    my $name = $info->name;
+			foreach my $type ( @types ) {
+			    if ( $info->is_type( $type ) ) {
+    				$methods{ $name } = 1 
+    				    unless $type eq TEST && $name !~ $method_regexp;
+                }
 			};
 		};
 	};
-    if (exists $ENV{TEST_METHOD}) {
-        eval { '' =~ /\A$ENV{TEST_METHOD}\z/ };
-        if (my $error = $@) {
-            die "TEST_METHOD ($ENV{TEST_METHOD}) is not a valid regular expression: $error";
-        }
-        return grep { /\A$ENV{TEST_METHOD}\z/ } sort keys %methods;
-    }
-    else {
-        return(sort keys %methods);
-    }
+
+    return sort keys %methods;
 };
 
 sub _num_expected_tests {
@@ -962,7 +962,9 @@ With the above definition you can add tests to C<check_fields> in C<Pig::Test> w
 
 B<NOTE:> The exact mechanism for running individual tests is likely to change in the future. 
 
-Sometimes you just want to run a single test.  Commenting out other tests or writing code to skip them can be a hassle, so you can specify the C<TEST_METHOD> environment variable.  The value is expected to be a valid regular expression and, if present, only runs tests whose names match the regular expression.  Setup and teardown tests will still be run.  One easy way of doing this is by specifying the environment variable I<before> the C<runtests> method is called.
+Sometimes you just want to run a single test.  Commenting out other tests or writing code to skip them can be a hassle, so you can specify the C<TEST_METHOD> environment variable.  The value is expected to be a valid regular expression and, if present, only runs test methods whose names match the regular expression.  Startup, setup, teardown and shutdown tests will still be run.
+
+One easy way of doing this is by specifying the environment variable I<before> the C<runtests> method is called.
 
 Running a test named C<customer_profile>:
 
@@ -1524,6 +1526,7 @@ Adam Kennedy,
 agianni,
 Apocalypse,
 Ask Bjorn Hansen,
+Chris Dolan,
 Chris Williams,
 Corion, 
 Daniel Berger,
