@@ -1,3 +1,5 @@
+0.25 - or the "idiotic platform specific tests fixed" release
+
 0.24 - or the "hating perl's broken object model" release
     -   Stopped throwing warnings when Contextual::Return was loaded due to the 
         AUTOLOADING of isa() (thank's to agianni)

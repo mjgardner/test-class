@@ -29,12 +29,11 @@ package main;
 use Test::Builder::Tester tests => 4;
 use Test::More;
 $ENV{TEST_VERBOSE}=0;
-my $SEP = '/'; # use forward slash even on Win32
 
 my $all_ok;
 
 test_out( "not ok 1 - fails" );
-test_err( "#     Failed test (t${SEP}runtests_result.t at line 11)" );
+test_err( "#     Failed test ($0 at line 11)" );
 test_err( "#   (in Fail->test1)" );
 test_out("ok 2 - passes");
 $all_ok = Fail->runtests;
