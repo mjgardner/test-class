@@ -1,4 +1,6 @@
 0.25 - or the "idiotic platform specific tests fixed" release
+    -   Fixed RT#31122 that was failing tests on Strawberry Perl
+        (thanks to Chris Dolan)
 
 0.24 - or the "hating perl's broken object model" release
     -   Stopped throwing warnings when Contextual::Return was loaded due to the 
