@@ -3,6 +3,7 @@
 		to get the filename - just like Test::Builder. So hopefully everything 
 		should work on all platforms this time.
 	-	Updated the Test::* version dependencies to something vaguely modern
+	-	Fixed runtests_die.t, which still had platform-specific paths in
 
 0.25 - or the "idiotic platform specific tests fixed" release
     -   Fixed RT#31122 that was failing tests on Strawberry Perl
