@@ -1,0 +1,6 @@
+Revision history for Perl extension Account.
+
+0.01  Thu Jun 27 22:58:36 2002
+	- original version; created by h2xs 1.21 with options
+		-AX -n Account
+

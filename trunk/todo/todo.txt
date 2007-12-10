@@ -1,0 +1,36 @@
+* Should SKIP_CLASS should skip all the tests or just one 
+* $object->SKIP_ALL should just skip tests in current object
+* Write some cookbook POD
+* Look at David's patch to load Test::Classes on request
+* Clarify why/where the xUnit style is useful in the docs
+* See if we can steal anything neat from NUnit and Ruby's Test::Unit
+* Annotate test description with the method name ?
+* Clean up documentation for running multiple classes
+* Consider using Test::Tester instead of Test::Builder::Tester
+* Comment on http://martinfowler.com/bliki/JunitNewInstance.html
+* See if there is anything new to steal in recent JUnit releases
+* Think about ways to support multiple fixtures in a single class.
+* Use the class variable style of test class in docs?
+* Vary the order of test methods / classes easily
+* Separate out Test::Class::Tutorial
+* Check whether we can reduce the prerequisites
+* Refactor test suite
+* See whether the bizarre L<> syntax is still needed in POD
+* Refactor runtests... lord is it ugly
+* Mail out about the 1.0 release to perl-qa, tdd, agile-testing, etc.
+* Look at using pperl/Module::Refresh and T::C together for faster startup times
+* Look at rationalising the object/class behaviour
+* Have another go on getting it on module list
+* Add link to annocpan.org
+* Make sure exit code logic matches that in the latest Test::Builder
+* Have a ponder about how Test::Class and Test::Base might interact
+* Consider renaming startup/teardown before/after like JUnit4
+* Use JUnit 4.0's inheritance model for before/after running order?
+* Have option to automatically add runtests to classes
+* See what we can steal from TestNG
+* You can't run classes just consisting of setup/teardown methods with tests coz it thinks there are no tests. Bug? Feature?
+* ability to time test methods so we can run them in fastest-test order
+* add ability to tag methods
+* add ability to tag all methods in a class
+* add more flexible approach to setting fixtures for a class
+* look at integrating with role/trait modules
