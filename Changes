@@ -1,3 +1,9 @@
+0.26 - or the "really working on windows this time (fingers crossed)" release
+	-	Tests that look at test_err from Test::Builder::Tester now use caller() 
+		to get the filename - just like Test::Builder. So hopefully everything 
+		should work on all platforms this time.
+	-	Updated the Test::* version dependencies to something vaguely modern
+
 0.25 - or the "idiotic platform specific tests fixed" release
     -   Fixed RT#31122 that was failing tests on Strawberry Perl
         (thanks to Chris Dolan)

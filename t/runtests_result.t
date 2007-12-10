@@ -32,8 +32,10 @@ $ENV{TEST_VERBOSE}=0;
 
 my $all_ok;
 
+my $filename = sub { return (caller)[1] }->();
+
 test_out( "not ok 1 - fails" );
-test_err( "#     Failed test ($0 at line 11)" );
+test_err( "#     Failed test ($filename at line 11)" );
 test_err( "#   (in Fail->test1)" );
 test_out("ok 2 - passes");
 $all_ok = Fail->runtests;

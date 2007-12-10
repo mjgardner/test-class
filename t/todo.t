@@ -20,8 +20,10 @@ package main;
 use Test::Builder::Tester tests => 2;
 $ENV{TEST_VERBOSE}=0;
 
+my $filename = sub { return (caller)[1] }->();
+
 test_out( "not ok 1 - object live # TODO unimplemented" );
-test_err( "#     Failed (TODO) test ($0 at line 16)" );
+test_err( "#     Failed (TODO) test ($filename at line 16)" );
 
 test_err( "#   (in Foo->todo_test)" );
 Foo->runtests;
