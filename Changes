@@ -1,3 +1,6 @@
+0.27 - or the "Adrian cannot write in English" release
+    -   Fixed a couple of typos/grammar stupidities (thank Jim Brandt)
+
 0.26 - or the "really working on windows this time (fingers crossed)" release
 	-	Tests that look at test_err from Test::Builder::Tester now use caller() 
 		to get the filename - just like Test::Builder. So hopefully everything 

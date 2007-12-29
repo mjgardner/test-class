@@ -12,7 +12,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 my $Check_block_has_run;
 {
@@ -486,7 +486,7 @@ In 1994 Kent Beck wrote a testing framework for Smalltalk called SUnit. It was p
 
 Later Kent Beck and Erich Gamma created JUnit for testing Java L<http://www.junit.org/>. It was popular too.
 
-Now there xUnit frameworks for every language from Ada to XSLT. You can find a list at L<http://www.xprogramming.com/software.htm>.
+Now there are xUnit frameworks for every language from Ada to XSLT. You can find a list at L<http://www.xprogramming.com/software.htm>.
 
 While xUnit frameworks are traditionally associated with unit testing they are also useful in the creation of functional/acceptance tests.
 
@@ -659,10 +659,10 @@ You can use these to create and destroy expensive objects that you don't want to
       shift->{dbi}->disconnect;
   };
 
-Just like setup and teardown methods you can pass an optional number of tests to startup and shutdown methods:
+Just like setup and teardown methods you can pass an optional number of tests to startup and shutdown methods. For example:
 
-  sub example : Test(setup => 1) {
-      ok(1, 'a setup method with one test');
+  sub example : Test(startup => 1) {
+      ok(1, 'a startup method with one test');
   };
   
 If a startup method has a failing test or throws an exception then all other tests for the current test object are ignored. 
