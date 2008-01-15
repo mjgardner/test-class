@@ -12,7 +12,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 
 my $Check_block_has_run;
 {
@@ -1534,7 +1534,9 @@ Dave O'Neill,
 David Cantrell,
 David Wheeler,
 Emil Jansson, 
+Gunnar Wolf,
 Hai Pham,
+Hynek,
 imacat,
 Jeff Deifik,
 Jim Brandt,

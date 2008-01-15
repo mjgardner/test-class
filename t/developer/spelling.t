@@ -100,3 +100,5 @@ co
 Curtis
 gnarly
 Dolan
+Brandt
+Hynek
