@@ -1,3 +1,7 @@
+0.29 - or the "for the old folks" release
+    -   Described minimum perl as '5.006001' rather than '5.6.1' so old perls
+        understand what we're talking about.
+
 0.28 - or the "just for the debian folk" release
     -   Downgraded some dependencies to avoid some bogus warnings on Debian
         (thanks Gunnar Wolf & Hynek)
