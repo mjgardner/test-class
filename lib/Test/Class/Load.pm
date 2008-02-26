@@ -83,7 +83,7 @@ C<Test::Class::Load> automatically finds and loads your test classes for you. Th
 
 =head1 BASIC USAGE
 
-Using C<Test::More::Load> is as simple as this:
+Using C<Test::Load::Load> is as simple as this:
 
  #!/usr/bin/perl -T
 
