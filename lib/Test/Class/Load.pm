@@ -7,7 +7,7 @@ use Test::Class;
 use File::Find;
 use File::Spec;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 my %Added_to_INC;
 
