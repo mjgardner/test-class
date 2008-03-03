@@ -1568,6 +1568,7 @@ Ted Carnahan,
 Terrence Brannon, 
 Tom Metro,
 Tony Bowden, 
+Tony Edwardson,
 William McKee, 
 various anonymous folk and all the fine people on perl-qa for their feedback, patches, suggestions and nagging.
 
