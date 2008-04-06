@@ -335,7 +335,7 @@ sub runtests {
                 next TEST_OBJECT unless $method_passed;
             };
             my $class = ref($t);
-            my @setup = _get_methods($t, SETUP);
+            my @setup    = _get_methods($t, SETUP);
             my @teardown = _get_methods($t, TEARDOWN);
             foreach my $test (_get_methods($t, TEST)) { 
                 local $Current_method = $test;

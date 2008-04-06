@@ -9,19 +9,28 @@ use File::Spec;
 
 our $VERSION = '0.03';
 
-my %Added_to_INC;
+# Override to get your own filter
+sub is_test_class {
+    my ( $class, $file, $dir ) = @_;
+    # By default, we only care about .pm files
+    if ($file =~ /\.pm$/) {
+        return 1;
+    }
+    return;
+}
 
+my %Added_to_INC;
 sub _load {
-    my ( $file, $dir ) = @_;
-    $file =~ s/\.pm$// || return;    # we only care about .pm files
+    my ( $class, $file, $dir ) = @_;
+    $file =~ s{\.pm$}{};             # remove .pm extension
     $file =~ s{\\}{/}g;              # to make win32 happy
     $dir  =~ s{\\}{/}g;              # to make win32 happy
     $file =~ s/^$dir//;
-    my $_package = join '::' => grep $_ => File::Spec->splitdir($file);
+    my $_package = join '::' => grep $_ => File::Spec->splitdir( $file );
 
     # untaint that puppy!
-    my ($package) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
-    
+    my ( $package ) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
+
     unshift @INC => $dir unless $Added_to_INC{ $dir }++;
     eval "require $package"; ## no critic
     die $@ if $@;
@@ -29,11 +38,18 @@ sub _load {
 
 sub import {
     my ( $class, @directories ) = @_;
+    my @test_classes;
+
     foreach my $dir ( @directories ) {
         $dir = File::Spec->catdir( split '/', $dir );
         find(
             {   no_chdir => 1,
-                wanted   => sub { _load( $File::Find::name, $dir ) },
+                wanted   => sub {
+                    my @args = ($File::Find::name, $dir);
+                    if ($class->is_test_class(@args)) {
+                        $class->_load(@args);
+                    }
+                },
             },
             $dir
         );
@@ -43,6 +59,7 @@ sub import {
 1;
 
 __END__
+
 =head1 NAME
 
 Test::Class::Load - Load C<Test::Class> classes automatically.
@@ -94,7 +111,7 @@ Using C<Test::Load::Load> is as simple as this:
 
  Test::Class->runtests;
  
-That will search through all files in the C<t/tests> directory and automatically load anything which ends in C<.pm>.  You should only put test classes in those directories.
+That will search through all files in the C<t/tests> directory and automatically load anything which ends in C<.pm>. You should only put test classes in those directories.
 
 If you have test classes in more than one directory, that's OK. Just list all of them in the import list.
 
@@ -106,6 +123,50 @@ If you have test classes in more than one directory, that's OK. Just list all of
  Test::Class->runtests;
 
 =head1 ADVANCED USAGE
+
+Here's some examples of advanced usage of C<Test::Class::Load>.
+
+=head2 FILTER LOADED CLASSES
+
+You can redefine the filtering criteria, that is, decide what classes are picked
+up and what others are not. You do this simply by subclassing
+C<Test::Class::Load> overriding the C<is_test_class()> method. You might want to
+do this to only load modules which inherit from C<Test::Class>, or anything else
+for that matter. 
+
+=over 4
+
+=item B<is_test_class>
+
+  $is_test_class = $class->is_test_class( $file, $directory )
+  
+Returns true if C<$file> in C<$directory> should be considered a test class and be loaded by L<Test::Class::Load>. The default filter simply returns true if C<$file> ends with C<.pm>
+
+=back
+
+For example:
+
+  use strict;
+  use warnings;
+
+  package My::Loader;
+  use base qw( Test::Class::Load );
+
+  # Overriding this selects what test classes
+  # are considered by T::C::Load
+  sub is_test_class {
+      my ( $class, $file, $dir ) = @_;
+
+      # return unless it's a .pm (the default)
+      return unless $class->SUPER:is_test_class( $file, $dir );
+    
+      # and only allow .pm files with "Good" in their filename
+      return $file =~ m{Good};
+  }
+
+  1;
+
+=head2 CUSTOMIZING TEST RUNS
 
 One problem with this style of testing is that you run I<all> of the tests every time you need to test something.  If you want to run only one test class, it's problematic.  The easy way to do this is to change your helper script by deleting the C<runtests> call:
  
@@ -142,7 +203,6 @@ Then you can just type C<,t> ('comma', 'tee') and it will run the tests for your
 Of course, you can still run your helper script with C<prove>, C<make test> or C<./Build test> to run all of your test classes.
 
 If you do that, you'll have to make sure that the C<-I> switches point to your test class directories.
-
 
 =head1 SECURITY
 
