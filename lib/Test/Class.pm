@@ -321,7 +321,7 @@ sub runtests {
 	TEST_OBJECT: foreach my $t (@tests) {
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
-		croak "$t not Test::Class or integer"
+		croak "$t is not Test::Class or integer"
 		    unless _isa_class( __PACKAGE__, $t );
         if (my $reason = $t->SKIP_CLASS) {
             _show_header($t, @tests);

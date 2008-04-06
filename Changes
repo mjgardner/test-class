@@ -1,4 +1,6 @@
 0.29 - or the "Oslo QA 2008" release
+    -   Fixed some broken edge cases where you didn't get a plan when you had
+        tests in a shutdown method, and no tests in the rest of your class
     -   Test::Class::Load can now be subclassed so you can add your own filters
         for what is considered a test class (patch from Cosimo Streppone)
     -   Described minimum perl as '5.006001' rather than '5.6.1' so old perls
