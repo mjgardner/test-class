@@ -103,3 +103,5 @@ Dolan
 Brandt
 Hynek
 Edwardson
+Cosimo
+Streppone
