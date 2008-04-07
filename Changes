@@ -1,3 +1,6 @@
+0.30 - or the "Oslo QA 2008 #2" release
+    -   Move up to depend on Test::Simple 0.78 to stomp on RT##33809
+
 0.29 - or the "Oslo QA 2008" release
     -   Fixed some broken edge cases where you didn't get a plan when you had
         tests in a shutdown method, and no tests in the rest of your class
