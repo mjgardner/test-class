@@ -1,3 +1,6 @@
+0.31 - or the "good god adrian is still alive" release
+    -   Downgraded IO::File dependancy to 1.09 (RT#38424 - thanks Mark Stosberg)
+
 0.30 - or the "Oslo QA 2008 #2" release
     -   Move up to depend on Test::Simple 0.78 to stomp on RT##33809
 
