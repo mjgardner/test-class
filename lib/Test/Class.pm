@@ -9,10 +9,10 @@ use Carp;
 use Class::ISA;
 use Devel::Symdump;
 use Storable qw(dclone);
-use Test::Builder;
+use Test::Builder 0.86;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.32_1';
+our $VERSION = '0.32_2';
 
 my $Check_block_has_run;
 {
