@@ -9,7 +9,7 @@ use lib dir( file($0)->parent->parent->parent, 'test-more', 'lib' )->stringify;
 
 use Test::Class '0.32_2';
 
-{   package NestingTest;
+{   package SimplePassAndFail;
     use base qw( Test::Class );
     use Test::More;
     
@@ -23,6 +23,28 @@ use Test::Class '0.32_2';
         pass "a";
         fail "b";
         pass "c";
+    }
+    
+}
+
+{   package SetupAndTeardownWithTests;
+    use base qw( Test::Class );
+    use Test::More;
+    
+    sub setup :Test( setup ) {
+        diag "in setup";
+    }
+    
+    sub teardown :Test( teardown ) {
+        diag "in teardown";
+    }
+    
+    sub this_should_pass :Test {
+        pass "alpha";
+    }
+    
+    sub this_should_fail :Test {
+        fail "beta";
     }
     
 }

@@ -164,15 +164,19 @@ sub _num_expected_tests {
 	my @startup_shutdown_methods = 
 			_get_methods($self, STARTUP, SHUTDOWN);
 	my $num_startup_shutdown_methods = 
-			_total_num_tests($self, @startup_shutdown_methods);
+			_total_num_test_methods($self, @startup_shutdown_methods);
+
 	return(NO_PLAN) if $num_startup_shutdown_methods eq NO_PLAN;
+
 	my @fixture_methods = _get_methods($self, SETUP, TEARDOWN);
-	my $num_fixture_tests = _total_num_tests($self, @fixture_methods);
+	my $num_fixture_tests = _total_num_test_methods($self, @fixture_methods);
 	return(NO_PLAN) if $num_fixture_tests eq NO_PLAN;
+
 	my @test_methods = _get_methods($self, TEST);
-	my $num_tests = _total_num_tests($self, @test_methods);
+	my $num_tests = _total_num_test_methods($self, @test_methods);
 	return(NO_PLAN) if $num_tests eq NO_PLAN;
-	return($num_startup_shutdown_methods + $num_tests + @test_methods * $num_fixture_tests);
+
+	return($num_startup_shutdown_methods + $num_tests );
 };
 
 sub expected_tests {
@@ -193,6 +197,23 @@ sub expected_tests {
 };
 
 sub _total_num_tests {
+        my ($self, @methods) = @_;
+        my $class = _class_of( $self );
+        my $total_num_tests = 0;
+        foreach my $method (@methods) {
+                foreach my $class (Class::ISA::self_and_super_path($class)) {
+                        my $info = _method_info($self, $class, $method);
+                        next unless $info;
+                        my $num_tests = $info->num_tests;
+                        return(NO_PLAN) if ($num_tests eq NO_PLAN);
+                        $total_num_tests += $num_tests;
+                        last unless $num_tests =~ m/^\+/
+                };
+        };
+        return($total_num_tests);
+};
+
+sub _total_num_test_methods {
 	my ($self, @methods) = @_;
 	my $class = _class_of( $self );
 	my $total_num_tests = 0;
@@ -201,17 +222,17 @@ sub _total_num_tests {
 			my $info = _method_info($self, $class, $method);
 			next unless $info;
 			my $num_tests = $info->num_tests;
-			return(NO_PLAN) if ($num_tests eq NO_PLAN);
-			$total_num_tests += $num_tests;
-			last unless $num_tests =~ m/^\+/
+			return(NO_PLAN)     if      $num_tests eq NO_PLAN;
+			$total_num_tests++  if      $num_tests =~ m/^\d/;
+			last                unless  $num_tests =~ m/^\+/
 		};
 	};
 	return($total_num_tests);
 };
 
 sub _has_no_tests {
-    my ( $self, $method ) = @_;
-    return _total_num_tests( $self, $method ) eq '0';
+    my ( $self, @methods ) = @_;
+    return _total_num_tests( $self, @methods ) eq '0';
 }
 
 sub _all_ok_from {
@@ -225,7 +246,7 @@ sub _all_ok_from {
 
 sub _exception_failure {
 	my ($self, $method, $exception, $tests) = @_;
-	local $Test::Builder::Level = 3;
+    local $Test::Builder::Level = $Test::Builder::Level+1;
 	my $message = $method;
 	$message .= " (for test method '$Current_method')"
 			if defined $Current_method && $method ne $Current_method;
@@ -233,50 +254,36 @@ sub _exception_failure {
 	$Builder->ok(0, "$message died ($exception)");
 };
 
+sub _display_method_name {
+    my $self = shift;
+    my $description = $self->current_method;
+    $description =~ tr/_/ /;
+    return $description;
+}
+
 sub _run_method {
-	my ($self, $method, $tests) = @_;
-	my $num_start = $Builder->current_test;
-    my $skip_reason;
-    my $original_ok = \&Test::Builder::ok;
-    no warnings;
-    local *Test::Builder::ok = sub {
-        my ($builder, $test, $description) = @_;
-        local $Test::Builder::Level = $Test::Builder::Level+1;
-        unless ( defined($description) ) {
-            $description = $self->current_method;
-            $description =~ tr/_/ /;
-        };
-        my $is_ok = $original_ok->($builder, $test, $description);
-        unless ( $is_ok ) {
-            my $class = ref $self;
-            $Builder->diag( "  (in $class->$method)" );
-        };
-        return $is_ok;
+	my ($self, $setup, $method, $teardown, $tests) = @_;
+
+    my $child = $Builder->child( _display_method_name( $self ) );
+    local $Test::Builder::Test = $child;
+    local $Test::Builder::Level = $Test::Builder::Level+2;
+    my @methods = ( @$setup, $method, @$teardown );
+    eval { 
+        local $Test::Builder::Level = $Test::Builder::Level+2;
+    	my $num_expected = _total_num_tests($self, @methods);
+        $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
+        $self->$_ foreach @methods;;
     };
-    $skip_reason = eval {$self->$method};
-    $skip_reason = $method unless $skip_reason;
-	my $exception = $@;
-	chomp($exception) if $exception;
-	my $num_done = $Builder->current_test - $num_start;
-	my $num_expected = _total_num_tests($self, $method);
-	$num_expected = $num_done if $num_expected eq NO_PLAN;
-	if ($num_done == $num_expected) {
-		_exception_failure($self, $method, $exception, $tests) 
-				unless $exception eq '';
-	} elsif ($num_done > $num_expected) {
-		$Builder->diag("expected $num_expected test(s) in $method, $num_done completed\n");
-	} else {
-		until (($Builder->current_test - $num_start) >= $num_expected) {
-			if ($exception ne '') {
-				_exception_failure($self, $method, $exception, $tests);
-				$skip_reason = "$method died";
-				$exception = '';
-			} else {
-				$Builder->skip( $skip_reason );
-			};
-		};
-	};
-	return(_all_ok_from($self, $num_start));
+    _exception_failure($self, $method, $@, $tests) unless $@ eq '';
+    $child->finalize;
+    
+    my $last_test_passed = ($Builder->summary)[-1];
+    unless ( $last_test_passed ) {
+        my $class = ref $self;
+        $Builder->diag( "  (in $class->$method)" );
+    };
+    
+    return $last_test_passed;
 };
 
 sub _show_header {
@@ -330,28 +337,33 @@ sub runtests {
             _show_header($t, @tests);
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
+
             $t = $t->new unless ref($t);
+            my $class = ref($t);
+
             foreach my $method (_get_methods($t, STARTUP)) {
                 _show_header($t, @tests) unless _has_no_tests($t, $method);
                 my $method_passed = _run_method($t, $method, \@tests);
                 $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
             };
-            my $class = ref($t);
+
             my @setup    = _get_methods($t, SETUP);
             my @teardown = _get_methods($t, TEARDOWN);
+
             foreach my $test (_get_methods($t, TEST)) { 
                 local $Current_method = $test;
                 $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-                foreach my $method (@setup, $test, @teardown) {
-                    _show_header($t, @tests) unless _has_no_tests($t, $method);
-                    $all_passed = 0 unless _run_method($t, $method, \@tests);
-                };
+                my @test_methods = ( @setup, $test, @teardown );
+                _show_header($t, @tests) unless _has_no_tests($t, @test_methods);
+                $all_passed = 0 unless _run_method($t, \@setup, $test, \@teardown, \@tests);
             };
+            
             foreach my $method (_get_methods($t, SHUTDOWN)) {
                 _show_header($t, @tests) unless _has_no_tests($t, $method);
                 $all_passed = 0 unless _run_method($t, $method, \@tests);
             }
+            
         }
 	}
 	return($all_passed);
