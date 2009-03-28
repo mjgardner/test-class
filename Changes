@@ -1,5 +1,5 @@
-0.32 - or the "Birmingham QA 2009" release
-    -   Removed pointless use of Test::Exception in t/bad-autoloads.t to remove
+0.32_1 - or the "Birmingham QA 2009" release
+    -   Removed pointless use of Test::Exception in t/bad-autoloads.t to stop
         bogus warnings that were confusing some folk
 
 0.31 - or the "good god adrian is still alive" release

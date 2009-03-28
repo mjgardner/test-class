@@ -12,7 +12,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.32';
+our $VERSION = '0.32_1';
 
 my $Check_block_has_run;
 {
