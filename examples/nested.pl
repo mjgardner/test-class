@@ -9,6 +9,8 @@ use lib dir( file($0)->parent->parent->parent, 'test-more', 'lib' )->stringify;
 
 use Test::Class '0.32_2';
 
+$ENV{ TEST_VERBOSE } = 1;
+
 {   package SimplePassAndFail;
     use base qw( Test::Class );
     use Test::More;
@@ -27,7 +29,7 @@ use Test::Class '0.32_2';
     
 }
 
-{   package SetupAndTeardownWithTests;
+{   package SetupAndTeardownWithoutTests;
     use base qw( Test::Class );
     use Test::More;
     
@@ -37,6 +39,28 @@ use Test::Class '0.32_2';
     
     sub teardown :Test( teardown ) {
         diag "in teardown";
+    }
+    
+    sub this_should_pass :Test {
+        pass "alpha";
+    }
+    
+    sub this_should_fail :Test {
+        fail "beta";
+    }
+    
+}
+
+{   package SetupAndTeardownWithTests;
+    use base qw( Test::Class );
+    use Test::More;
+    
+    sub setup :Test( setup => 1 ) {
+        pass "in setup";
+    }
+    
+    sub teardown :Test( teardown => 1 ) {
+        pass "in teardown";
     }
     
     sub this_should_pass :Test {
