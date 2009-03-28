@@ -98,14 +98,8 @@ sub Test : ATTR(CODE,RAWDATA) {
         my $name = *{$symbol}{NAME};
         warn "overriding public method $name with a test method in $class\n"
                 if _is_public_method( $class, $name );
-        eval { 
-            my ($type, $num_tests) = _parse_attribute_args($args);        
-            $Tests->{$class}->{$name} = Test::Class::MethodInfo->new(
-                name => $name, 
-                num_tests => $num_tests,
-                type => $type,
-            );	
-        } || warn "bad test definition '$args' in $class->$name\n";	
+        eval { $class->add_testinfo($name, _parse_attribute_args($args)) } 
+            || warn "bad test definition '$args' in $class->$name\n";	
     };
 };
 
@@ -114,6 +108,15 @@ sub Tests : ATTR(CODE,RAWDATA) {
     $args ||= 'no_plan';
     Test( $class, $symbol, $code_ref, $attr, $args );
 };
+
+sub add_testinfo {
+    my($class, $name, $type, $num_tests) = @_;
+    $Tests->{$class}->{$name} = Test::Class::MethodInfo->new(
+        name => $name,
+        num_tests => $num_tests,
+        type => $type,
+    );
+}
 
 sub _class_of {
     my $self = shift;
@@ -1027,7 +1030,17 @@ will break, doing:
 
   BEGIN { require $some_test_class };
   
-will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">. 
+will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">.
+
+If you still can't arrange for your classes to be loaded at runtime, you could use an alternative mechanism for adding your tests:
+
+  # sub test_something : Test(3) {...}
+  # becomes
+  sub test_something {...}
+  __PACKAGE__->add_testinfo('test_something', test => 3);
+
+See the L<add_testinfo|/"add_testinfo"> method for more details.
+
 
 =head1 METHODS
 
@@ -1394,6 +1407,15 @@ For example, if you had a test script that only applied to the darwin OS you cou
       my $self = shift;
       $self->SKIP_ALL("darwin only") unless $^O eq "darwin";    
   };
+
+
+=item B<add_testinfo>
+
+  CLASS->add_test($name, $type, $num_tests)
+
+Chiefly for use by libraries like L<Test::Class::Sugar>, which can't use the C<:Test(...)> interfaces make test methods. C<add_testinfo> informs the class about a test method that has been defined without a C<Test>, C<Tests> or other attribute.
+
+C<$name> is the name of the method, C<$type> must be one of C<startup>, C<setup>, C<test>, C<teardown> or C<shutdown>, and C<$num_tests> has the same meaning as C<N> in the description of the L<Test|/"Test"> attribute.
 
 
 =back

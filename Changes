@@ -1,6 +1,7 @@
 0.32_1 - or the "Birmingham QA 2009" release
     -   Removed pointless use of Test::Exception in t/bad-autoloads.t to stop
         bogus warnings that were confusing some folk
+    -   Added add_testinfo for Test::Class::Sugar (thanks Piers Cawley)
 
 0.31 - or the "good god adrian is still alive" release
     -   Downgraded IO::File dependancy to 1.09 (RT#38424 - thanks Mark Stosberg)
