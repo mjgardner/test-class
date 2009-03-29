@@ -37,19 +37,20 @@ my $Builder = Test::Builder->new;
 sub builder { $Builder };
 
 
-my $Tests = {};
+my $Method_info = {};
 
 
-my %_Test;  # inside-out object field indexed on $self
+my %_Fields;  # inside-out object field indexed on $self
+
 
 sub DESTROY {
     my $self = shift;
-    delete $_Test{ Scalar::Util::refaddr $self };
+    delete $_Fields{ Scalar::Util::refaddr $self };
 };
 
 sub _test_info {
 	my $self = shift;
-	return ref($self) ? $_Test{ Scalar::Util::refaddr $self } : $Tests;
+	return ref($self) ? $_Fields{ Scalar::Util::refaddr $self }->{ method_info } : $Method_info;
 };
 
 sub _method_info {
@@ -93,7 +94,7 @@ sub _is_public_method {
 
 sub add_testinfo {
     my ( $class, $name, $type, $num_tests ) = @_;
-    $Tests->{ $class }{ $name } = Test::Class::MethodInfo->new(
+    $Method_info->{ $class }{ $name } = Test::Class::MethodInfo->new(
         name => $name,
         num_tests => $num_tests,
         type => $type,
@@ -129,7 +130,7 @@ sub new {
 	my $class = _class_of( $proto );
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
-	$_Test{ Scalar::Util::refaddr $self } = Storable::dclone( $Tests );
+	$_Fields{ Scalar::Util::refaddr $self }->{ method_info } = Storable::dclone( $Method_info );
 	return $self;
 };
 
