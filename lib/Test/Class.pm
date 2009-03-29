@@ -40,17 +40,22 @@ sub builder { $Builder };
 my $Method_info = {};
 
 
-my %_Fields;  # inside-out object field indexed on $self
+my %Private_fields;  # inside-out object field indexed on $self
 
 
 sub DESTROY {
     my $self = shift;
-    delete $_Fields{ Scalar::Util::refaddr $self };
+    delete $Private_fields{ Scalar::Util::refaddr $self };
 };
+
+sub _private_fields {
+    my $self = shift;
+    return $Private_fields{ Scalar::Util::refaddr $self } ||= {};
+}
 
 sub _test_info {
 	my $self = shift;
-	return ref($self) ? $_Fields{ Scalar::Util::refaddr $self }->{ method_info } : $Method_info;
+	return ref($self) ? _private_fields( $self )->{ method_info } : $Method_info;
 };
 
 sub _method_info {
@@ -130,7 +135,7 @@ sub new {
 	my $class = _class_of( $proto );
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
-	$_Fields{ Scalar::Util::refaddr $self }->{ method_info } = Storable::dclone( $Method_info );
+	_private_fields( $self )->{ method_info } = Storable::dclone( $Method_info );
 	return $self;
 };
 
@@ -252,7 +257,7 @@ sub _exception_failure {
 	my $message = $method;
 	$message .= " (for test method '$Current_method')"
 			if defined $Current_method && $method ne $Current_method;
-	_show_header($self, @$tests);
+	_show_header( $self );
 	$Builder->ok(0, "$message died ($exception)");
 };
 
@@ -264,9 +269,10 @@ sub _display_method_name {
 }
 
 sub _show_header {
-	my ($self, @tests) = @_;
+	my $self = shift;
 	return if $Builder->has_plan;
-	my $num_tests = Test::Class->expected_tests(@tests);
+	my $running_tests = _private_fields( $self )->{ running_tests };
+	my $num_tests = Test::Class->expected_tests( @$running_tests );
 	if ($num_tests eq NO_PLAN) {
 		$Builder->no_plan;
 	} else {
@@ -297,7 +303,7 @@ sub _test_classes {
 };
 
 sub _run_methods {
-	my ($self, $methods, $tests) = @_;
+	my ( $self, $methods ) = @_;
 
     my $class = ref $self;
     $Builder->diag( "$class->" . $self->current_method ) if $ENV{TEST_VERBOSE};
@@ -307,7 +313,7 @@ sub _run_methods {
     local $Test::Builder::Test = $child;
     local $Test::Builder::Level = $Test::Builder::Level+2;
 
-    _show_header($self, @$tests) unless _has_no_tests($self, @$methods);
+    _show_header( $self ) unless _has_no_tests($self, @$methods);
 
     eval { 
         local $Test::Builder::Level = $Test::Builder::Level+2;
@@ -315,7 +321,7 @@ sub _run_methods {
         $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
         $self->$_ foreach @$methods;;
     };
-    _exception_failure($self, $Current_method, $@, $tests) unless $@ eq '';
+    _exception_failure( $self, $Current_method, $@ ) unless $@ eq '';
     $child->finalize;
     
     my $last_test_passed = ($Builder->summary)[-1];
@@ -328,14 +334,14 @@ sub _run_methods {
 };
 
 sub _run_test_methods {
-    my ( $self, $tests ) = @_;
+    my $self = shift;
     my @setup    = _get_methods($self, SETUP);
     my @teardown = _get_methods($self, TEARDOWN);
     my $all_passed = 1;
     foreach my $test (_get_methods($self, TEST)) { 
         local $Current_method = $test;
         my @test_methods = ( @setup, $test, @teardown );
-        $all_passed = 0 unless _run_methods($self, [ @setup, $test, @teardown ], $tests);
+        $all_passed = 0 unless _run_methods($self, [ @setup, $test, @teardown ] );
     };
     return $all_passed;
 }
@@ -358,24 +364,26 @@ sub runtests {
 		Carp::croak "$t is not Test::Class or integer"
 		    unless _isa_class( __PACKAGE__, $t );
 
+        $t = $t->new unless ref($t);
+        _private_fields( $t )->{ running_tests } = \@tests;
+
         if (my $reason = $t->SKIP_CLASS) {
-            _show_header($t, @tests);
+
+            _show_header( $t );
             $Builder->skip( $reason ) unless $reason eq "1";
+
         } else {
 
-            $t = $t->new unless ref($t);
-            my $class = ref($t);
-
             foreach my $method (_get_methods($t, STARTUP)) {
-                my $method_passed = _run_methods($t, [ $method ], \@tests);
+                my $method_passed = _run_methods($t, [ $method ] );
                 $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
             };
                         
-            $all_passed = 0 unless _run_test_methods( $t, \@tests );
+            $all_passed = 0 unless _run_test_methods( $t );
             
             foreach my $method (_get_methods($t, SHUTDOWN)) {
-                $all_passed = 0 unless _run_method($t, [$method], \@tests);
+                $all_passed = 0 unless _run_method($t, [$method] );
             }
             
         }
