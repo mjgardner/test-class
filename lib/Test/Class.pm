@@ -4,11 +4,12 @@ use 5.006;
 
 package Test::Class;
 
-use Attribute::Handlers;
-use Carp;
-use Class::ISA;
-use Devel::Symdump;
-use Storable qw(dclone);
+use Attribute::Handlers ();
+use Carp                ();
+use Class::ISA          ();
+use Devel::Symdump      ();
+use Storable            ();
+use Scalar::Util        ();
 use Test::Builder 0.86;
 use Test::Class::MethodInfo;
 
@@ -43,25 +44,25 @@ my %_Test;  # inside-out object field indexed on $self
 
 sub DESTROY {
     my $self = shift;
-    delete $_Test{ $self };
+    delete $_Test{ Scalar::Util::refaddr $self };
 };
 
 sub _test_info {
 	my $self = shift;
-	return ref($self) ? $_Test{$self} : $Tests;
+	return ref($self) ? $_Test{ Scalar::Util::refaddr $self } : $Tests;
 };
 
 sub _method_info {
-	my ($self, $class, $method) = @_;
-	return( _test_info($self)->{$class}->{$method} );
+	my ( $self, $class, $method ) = @_;
+	return _test_info( $self )->{ $class }{ $method };
 };
 
 sub _methods_of_class {
 	my ( $self, $class ) = @_;
-    my $test_info = _test_info($self) 
+    my $test_info = _test_info( $self ) 
         or die "Test::Class internals seem confused. Did you override "
             . "new() in a sub-class or via multiple inheritence?\n";
-	return values %{ $test_info->{$class} };
+	return values %{ $test_info->{ $class } };
 };
 
 sub _parse_attribute_args {
@@ -90,12 +91,21 @@ sub _is_public_method {
     return 1;
 }
 
+sub add_testinfo {
+    my ( $class, $name, $type, $num_tests ) = @_;
+    $Tests->{ $class }{ $name } = Test::Class::MethodInfo->new(
+        name => $name,
+        num_tests => $num_tests,
+        type => $type,
+    );
+}
+
 sub Test : ATTR(CODE,RAWDATA) {
-	my ($class, $symbol, $code_ref, $attr, $args) = @_;
-	if ($symbol eq "ANON") {
+	my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
+	if ( $symbol eq "ANON" ) {
 		warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
 	} else {
-        my $name = *{$symbol}{NAME};
+        my $name = *{ $symbol }{ NAME };
         warn "overriding public method $name with a test method in $class\n"
                 if _is_public_method( $class, $name );
         eval { $class->add_testinfo($name, _parse_attribute_args($args)) } 
@@ -104,19 +114,10 @@ sub Test : ATTR(CODE,RAWDATA) {
 };
 
 sub Tests : ATTR(CODE,RAWDATA) {
-	my ($class, $symbol, $code_ref, $attr, $args) = @_;
+	my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
     $args ||= 'no_plan';
     Test( $class, $symbol, $code_ref, $attr, $args );
 };
-
-sub add_testinfo {
-    my($class, $name, $type, $num_tests) = @_;
-    $Tests->{$class}->{$name} = Test::Class::MethodInfo->new(
-        name => $name,
-        num_tests => $num_tests,
-        type => $type,
-    );
-}
 
 sub _class_of {
     my $self = shift;
@@ -128,8 +129,8 @@ sub new {
 	my $class = _class_of( $proto );
 	$proto = {} unless ref($proto);
 	my $self = bless {%$proto, @_}, $class;
-	$_Test{$self} = dclone($Tests);
-	return($self);
+	$_Test{ Scalar::Util::refaddr $self } = Storable::dclone( $Tests );
+	return $self;
 };
 
 sub _get_methods {
@@ -190,7 +191,7 @@ sub expected_tests {
 			$total += $test;
 		} else {
 			$test = 'undef' unless defined $test;
-			croak "$test is not a Test::Class or an integer";
+			Carp::croak "$test is not a Test::Class or an integer";
 		};
 	};
 	return $total;
@@ -261,31 +262,6 @@ sub _display_method_name {
     return $description;
 }
 
-sub _run_method {
-	my ($self, $setup, $method, $teardown, $tests) = @_;
-
-    my $child = $Builder->child( _display_method_name( $self ) );
-    local $Test::Builder::Test = $child;
-    local $Test::Builder::Level = $Test::Builder::Level+2;
-    my @methods = ( @$setup, $method, @$teardown );
-    eval { 
-        local $Test::Builder::Level = $Test::Builder::Level+2;
-    	my $num_expected = _total_num_tests($self, @methods);
-        $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
-        $self->$_ foreach @methods;;
-    };
-    _exception_failure($self, $method, $@, $tests) unless $@ eq '';
-    $child->finalize;
-    
-    my $last_test_passed = ($Builder->summary)[-1];
-    unless ( $last_test_passed ) {
-        my $class = ref $self;
-        $Builder->diag( "  (in $class->$method)" );
-    };
-    
-    return $last_test_passed;
-};
-
 sub _show_header {
 	my ($self, @tests) = @_;
 	return if $Builder->has_plan;
@@ -319,6 +295,51 @@ sub _test_classes {
 	return grep { _isa_class( $class, $_ ) } Devel::Symdump->rnew->packages;
 };
 
+sub _run_methods {
+	my ($self, $methods, $tests) = @_;
+
+    my $class = ref $self;
+    $Builder->diag( "$class->" . $self->current_method ) if $ENV{TEST_VERBOSE};
+    
+    my $child = $Builder->child( _display_method_name( $self ) );
+
+    local $Test::Builder::Test = $child;
+    local $Test::Builder::Level = $Test::Builder::Level+2;
+
+    _show_header($self, @$tests) unless _has_no_tests($self, @$methods);
+
+    eval { 
+        local $Test::Builder::Level = $Test::Builder::Level+2;
+    	my $num_expected = _total_num_tests($self, @$methods);
+        $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
+        $self->$_ foreach @$methods;;
+    };
+    _exception_failure($self, $Current_method, $@, $tests) unless $@ eq '';
+    $child->finalize;
+    
+    my $last_test_passed = ($Builder->summary)[-1];
+    unless ( $last_test_passed ) {
+        my $class = ref $self;
+        $Builder->diag( "  (in $class->$Current_method)" );
+    };
+    
+    return $last_test_passed;
+};
+
+sub _run_test_methods {
+    my ( $self, $tests ) = @_;
+    my @setup    = _get_methods($self, SETUP);
+    my @teardown = _get_methods($self, TEARDOWN);
+    my $all_passed = 1;
+    foreach my $test (_get_methods($self, TEST)) { 
+        local $Current_method = $test;
+        my @test_methods = ( @setup, $test, @teardown );
+        $all_passed = 0 unless _run_methods($self, [ @setup, $test, @teardown ], $tests);
+    };
+    return $all_passed;
+}
+
+
 sub runtests {
     die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
         unless $Check_block_has_run;
@@ -329,10 +350,13 @@ sub runtests {
 	};
 	my $all_passed = 1;
 	TEST_OBJECT: foreach my $t (@tests) {
+
 		# SHOULD ALSO ALLOW NO_PLAN
 		next if $t =~ m/^\d+$/;
-		croak "$t is not Test::Class or integer"
+
+		Carp::croak "$t is not Test::Class or integer"
 		    unless _isa_class( __PACKAGE__, $t );
+
         if (my $reason = $t->SKIP_CLASS) {
             _show_header($t, @tests);
             $Builder->skip( $reason ) unless $reason eq "1";
@@ -342,31 +366,20 @@ sub runtests {
             my $class = ref($t);
 
             foreach my $method (_get_methods($t, STARTUP)) {
-                _show_header($t, @tests) unless _has_no_tests($t, $method);
-                my $method_passed = _run_method($t, $method, \@tests);
+                my $method_passed = _run_methods($t, [ $method ], \@tests);
                 $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
             };
-
-            my @setup    = _get_methods($t, SETUP);
-            my @teardown = _get_methods($t, TEARDOWN);
-
-            foreach my $test (_get_methods($t, TEST)) { 
-                local $Current_method = $test;
-                $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-                my @test_methods = ( @setup, $test, @teardown );
-                _show_header($t, @tests) unless _has_no_tests($t, @test_methods);
-                $all_passed = 0 unless _run_method($t, \@setup, $test, \@teardown, \@tests);
-            };
+                        
+            $all_passed = 0 unless _run_test_methods( $t, \@tests );
             
             foreach my $method (_get_methods($t, SHUTDOWN)) {
-                _show_header($t, @tests) unless _has_no_tests($t, $method);
-                $all_passed = 0 unless _run_method($t, $method, \@tests);
+                $all_passed = 0 unless _run_method($t, [$method], \@tests);
             }
             
         }
 	}
-	return($all_passed);
+	return $all_passed;
 };
 
 sub _find_calling_test_class {
@@ -381,16 +394,16 @@ sub _find_calling_test_class {
 sub num_method_tests {
 	my ($self, $method, $n) = @_;
 	my $class = _find_calling_test_class( $self )
-	    or croak "not called in a Test::Class";
+	    or Carp::croak "not called in a Test::Class";
 	my $info = _method_info($self, $class, $method)
-	    or croak "$method is not a test method of class $class";
+	    or Carp::croak "$method is not a test method of class $class";
 	$info->num_tests($n) if defined($n);
 	return( $info->num_tests );
 };
 
 sub num_tests {
     my $self = shift;
-	croak "num_tests need to be called within a test method"
+	Carp::croak "num_tests need to be called within a test method"
 			unless defined $Current_method;
 	return( $self->num_method_tests( $Current_method, @_ ) );
 };
