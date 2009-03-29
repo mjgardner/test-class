@@ -303,7 +303,7 @@ sub _test_classes {
 };
 
 sub _run_methods {
-	my ( $self, $methods ) = @_;
+	my ( $self, @methods ) = @_;
 
     my $class = ref $self;
     $Builder->diag( "$class->" . $self->current_method ) if $ENV{TEST_VERBOSE};
@@ -313,13 +313,13 @@ sub _run_methods {
     local $Test::Builder::Test = $child;
     local $Test::Builder::Level = $Test::Builder::Level+2;
 
-    _show_header( $self ) unless _has_no_tests($self, @$methods);
+    _show_header( $self ) unless _has_no_tests($self, @methods);
 
     eval { 
         local $Test::Builder::Level = $Test::Builder::Level+2;
-    	my $num_expected = _total_num_tests($self, @$methods);
+    	my $num_expected = _total_num_tests($self, @methods);
         $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
-        $self->$_ foreach @$methods;;
+        $self->$_ foreach @methods;;
     };
     _exception_failure( $self, $Current_method, $@ ) unless $@ eq '';
     $child->finalize;
@@ -341,7 +341,7 @@ sub _run_test_methods {
     foreach my $test (_get_methods($self, TEST)) { 
         local $Current_method = $test;
         my @test_methods = ( @setup, $test, @teardown );
-        $all_passed = 0 unless _run_methods($self, [ @setup, $test, @teardown ] );
+        $all_passed = 0 unless _run_methods($self, @setup, $test, @teardown );
     };
     return $all_passed;
 }
@@ -375,7 +375,7 @@ sub runtests {
         } else {
 
             foreach my $method (_get_methods($t, STARTUP)) {
-                my $method_passed = _run_methods($t, [ $method ] );
+                my $method_passed = _run_methods($t, $method );
                 $all_passed = 0 unless $method_passed;
                 next TEST_OBJECT unless $method_passed;
             };
@@ -383,7 +383,7 @@ sub runtests {
             $all_passed = 0 unless _run_test_methods( $t );
             
             foreach my $method (_get_methods($t, SHUTDOWN)) {
-                $all_passed = 0 unless _run_method($t, [$method] );
+                $all_passed = 0 unless _run_methods($t, $method );
             }
             
         }
