@@ -21,7 +21,8 @@ $ENV{ TEST_VERBOSE } = 1;
         pass "gamma";
     }
     
-    sub this_should_fail :Tests(3) {
+    sub todo_test :Tests(3) {
+        local $TODO = "to do tests";
         pass "a";
         fail "b";
         pass "c";
