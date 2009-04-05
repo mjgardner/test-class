@@ -21,15 +21,15 @@ my $Check_block_has_run;
     CHECK { $Check_block_has_run = 1 };
 }
 
-use constant NO_PLAN	=> "no_plan";
-use constant SETUP		=> "setup";
-use constant TEST		=> "test";
-use constant TEARDOWN	=> "teardown";
-use constant STARTUP	=> "startup";
-use constant SHUTDOWN	=> "shutdown";
+use constant NO_PLAN    => "no_plan";
+use constant SETUP      => "setup";
+use constant TEST       => "test";
+use constant TEARDOWN   => "teardown";
+use constant STARTUP    => "startup";
+use constant SHUTDOWN   => "shutdown";
 
 
-our	$Current_method	= undef;
+our $Current_method = undef;
 sub current_method { $Current_method };
 
 
@@ -54,38 +54,38 @@ sub _private_fields {
 }
 
 sub _test_info {
-	my $self = shift;
-	return ref($self) ? _private_fields( $self )->{ method_info } : $Method_info;
+    my $self = shift;
+    return ref($self) ? _private_fields( $self )->{ method_info } : $Method_info;
 };
 
 sub _method_info {
-	my ( $self, $class, $method ) = @_;
-	return _test_info( $self )->{ $class }{ $method };
+    my ( $self, $class, $method ) = @_;
+    return _test_info( $self )->{ $class }{ $method };
 };
 
 sub _methods_of_class {
-	my ( $self, $class ) = @_;
+    my ( $self, $class ) = @_;
     my $test_info = _test_info( $self ) 
         or die "Test::Class internals seem confused. Did you override "
             . "new() in a sub-class or via multiple inheritence?\n";
-	return values %{ $test_info->{ $class } };
+    return values %{ $test_info->{ $class } };
 };
 
 sub _parse_attribute_args {
     my $args = shift || '';
-	my $num_tests;
-	my $type;
-	$args =~ s/\s+//sg;
-	foreach my $arg (split /=>/, $args) {
-		if (Test::Class::MethodInfo->is_num_tests($arg)) {
-			$num_tests = $arg;
-		} elsif (Test::Class::MethodInfo->is_method_type($arg)) {
-			$type = $arg;
-		} else {
-			die 'bad attribute args';
-		};
-	};
-	return( $type, $num_tests );
+    my $num_tests;
+    my $type;
+    $args =~ s/\s+//sg;
+    foreach my $arg (split /=>/, $args) {
+        if (Test::Class::MethodInfo->is_num_tests($arg)) {
+            $num_tests = $arg;
+        } elsif (Test::Class::MethodInfo->is_method_type($arg)) {
+            $type = $arg;
+        } else {
+            die 'bad attribute args';
+        };
+    };
+    return( $type, $num_tests );
 };
 
 sub _is_public_method {
@@ -107,20 +107,20 @@ sub add_testinfo {
 }
 
 sub Test : ATTR(CODE,RAWDATA) {
-	my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
-	if ( $symbol eq "ANON" ) {
-		warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
-	} else {
+    my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
+    if ( $symbol eq "ANON" ) {
+        warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
+    } else {
         my $name = *{ $symbol }{ NAME };
         warn "overriding public method $name with a test method in $class\n"
                 if _is_public_method( $class, $name );
         eval { $class->add_testinfo($name, _parse_attribute_args($args)) } 
-            || warn "bad test definition '$args' in $class->$name\n";	
+            || warn "bad test definition '$args' in $class->$name\n";   
     };
 };
 
 sub Tests : ATTR(CODE,RAWDATA) {
-	my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
+    my ( $class, $symbol, $code_ref, $attr, $args ) = @_;
     $args ||= 'no_plan';
     Test( $class, $symbol, $code_ref, $attr, $args );
 };
@@ -131,110 +131,109 @@ sub _class_of {
 }
 
 sub new {
-	my $proto = shift;
-	my $class = _class_of( $proto );
-	$proto = {} unless ref($proto);
-	my $self = bless {%$proto, @_}, $class;
-	_private_fields( $self )->{ method_info } = Storable::dclone( $Method_info );
-	return $self;
+    my $proto = shift;
+    my $class = _class_of( $proto );
+    $proto = {} unless ref($proto);
+    my $self = bless {%$proto, @_}, $class;
+    _private_fields( $self )->{ method_info } = Storable::dclone( $Method_info );
+    return $self;
 };
 
 sub _get_methods {
-	my ( $self, @types ) = @_;
-	my $test_class = _class_of( $self );
-	
-	my $test_method_regexp = $ENV{ TEST_METHOD } || '.*';
+    my ( $self, @types ) = @_;
+    my $test_class = _class_of( $self );
+    
+    my $test_method_regexp = $ENV{ TEST_METHOD } || '.*';
     my $method_regexp = eval { qr/\A$test_method_regexp\z/ };
     die "TEST_METHOD ($test_method_regexp) is not a valid regexp: $@" if $@;
-	
-	my %methods = ();
-	foreach my $class ( Class::ISA::self_and_super_path( $test_class ) ) {
-		foreach my $info ( _methods_of_class( $self, $class ) ) {
-		    my $name = $info->name;
-			foreach my $type ( @types ) {
-			    if ( $info->is_type( $type ) ) {
-    				$methods{ $name } = 1 
-    				    unless $type eq TEST && $name !~ $method_regexp;
+    
+    my %methods = ();
+    foreach my $class ( Class::ISA::self_and_super_path( $test_class ) ) {
+        foreach my $info ( _methods_of_class( $self, $class ) ) {
+            my $name = $info->name;
+            foreach my $type ( @types ) {
+                if ( $info->is_type( $type ) ) {
+                    $methods{ $name } = 1 
+                        unless $type eq TEST && $name !~ $method_regexp;
                 }
-			};
-		};
-	};
+            };
+        };
+    };
 
     return sort keys %methods;
 };
 
 sub _num_expected_tests {
-	my $self = shift;
-	if (my $reason = $self->SKIP_CLASS ) {
-	   return $reason eq "1" ? 0 : 1;
+    my $self = shift;
+    if (my $reason = $self->SKIP_CLASS ) {
+       return $reason eq "1" ? 0 : 1;
     };
-	my @startup_shutdown_methods = 
-			_get_methods($self, STARTUP, SHUTDOWN);
-	my $num_startup_shutdown_methods = 
-			_total_num_test_methods($self, @startup_shutdown_methods);
+    my @startup_shutdown_methods = _get_methods($self, STARTUP, SHUTDOWN);
+    my $num_startup_shutdown_methods = 
+            _total_num_test_methods($self, @startup_shutdown_methods);
 
-	return(NO_PLAN) if $num_startup_shutdown_methods eq NO_PLAN;
+    return NO_PLAN if $num_startup_shutdown_methods eq NO_PLAN;
 
-	my @fixture_methods = _get_methods($self, SETUP, TEARDOWN);
-	my $num_fixture_tests = _total_num_test_methods($self, @fixture_methods);
-	return(NO_PLAN) if $num_fixture_tests eq NO_PLAN;
+    my @fixture_methods = _get_methods($self, SETUP, TEARDOWN);
+    my $num_fixture_tests = _total_num_test_methods($self, @fixture_methods);
+    return NO_PLAN  if $num_fixture_tests eq NO_PLAN;
 
-	my @test_methods = _get_methods($self, TEST);
-	my $num_tests = _total_num_test_methods($self, @test_methods);
-	return(NO_PLAN) if $num_tests eq NO_PLAN;
+    my @test_methods = _get_methods($self, TEST);
+    my $num_tests = _total_num_test_methods($self, @test_methods);
+    return(NO_PLAN) if $num_tests eq NO_PLAN;
 
-	return($num_startup_shutdown_methods + $num_tests );
+    return($num_startup_shutdown_methods + $num_tests );
 };
 
 sub expected_tests {
-	my $total = 0;
-	foreach my $test (@_) {
-		if ( _isa_class( __PACKAGE__, $test ) ) {
-			my $n = _num_expected_tests($test);
-			return NO_PLAN if $n eq NO_PLAN;
-			$total += $n;
-		} elsif ( defined $test && $test =~ m/^\d+$/ ) {
-			$total += $test;
-		} else {
-			$test = 'undef' unless defined $test;
-			Carp::croak "$test is not a Test::Class or an integer";
-		};
-	};
-	return $total;
+    my $total = 0;
+    foreach my $test (@_) {
+        if ( _isa_test_class( __PACKAGE__, $test ) ) {
+            my $n = _num_expected_tests($test);
+            return NO_PLAN if $n eq NO_PLAN;
+            $total += $n;
+        } elsif ( defined $test && $test =~ m/^\d+$/ ) {
+            $total += $test;
+        } else {
+            $test = 'undef' unless defined $test;
+            Carp::croak "$test is not a Test::Class or an integer";
+        };
+    };
+    return $total;
 };
 
 sub _total_num_tests {
-        my ($self, @methods) = @_;
-        my $class = _class_of( $self );
-        my $total_num_tests = 0;
-        foreach my $method (@methods) {
-                foreach my $class (Class::ISA::self_and_super_path($class)) {
-                        my $info = _method_info($self, $class, $method);
-                        next unless $info;
-                        my $num_tests = $info->num_tests;
-                        return(NO_PLAN) if ($num_tests eq NO_PLAN);
-                        $total_num_tests += $num_tests;
-                        last unless $num_tests =~ m/^\+/
-                };
+    my ($self, @methods) = @_;
+    my $class = _class_of( $self );
+    my $total_num_tests = 0;
+    foreach my $method ( @methods ) {
+        foreach my $class (Class::ISA::self_and_super_path($class)) {
+            my $info = _method_info( $self, $class, $method );
+            next unless $info;
+            my $num_tests = $info->num_tests;
+            return NO_PLAN if $num_tests eq NO_PLAN;
+            $total_num_tests += $num_tests;
+            last unless $num_tests =~ m/^\+/
         };
-        return($total_num_tests);
+    };
+    return($total_num_tests);
 };
 
 sub _total_num_test_methods {
-	my ($self, @methods) = @_;
-	my $class = _class_of( $self );
-	my $total_num_tests = 0;
-	foreach my $method (@methods) {
-		foreach my $class (Class::ISA::self_and_super_path($class)) {
-			my $info = _method_info($self, $class, $method);
-			next unless $info;
-			my $num_tests = $info->num_tests;
-			return(NO_PLAN)     if      $num_tests eq NO_PLAN;
-			$total_num_tests++  if      $num_tests =~ m/^\d/;
-			last                unless  $num_tests =~ m/^\+/
-		};
-	};
-	return($total_num_tests);
+    my ($self, @methods) = @_;
+    my $class = _class_of( $self );
+    my $total_num_tests = 0;
+    foreach my $method (@methods) {
+        foreach my $class (Class::ISA::self_and_super_path($class)) {
+            my $info = _method_info($self, $class, $method);
+            next unless $info;
+            my $num_tests = $info->num_tests;
+            return(NO_PLAN)     if      $num_tests eq NO_PLAN;
+            $total_num_tests++  if      $num_tests =~ m/^\d/;
+            last                unless  $num_tests =~ m/^\+/
+        };
+    };
+    return($total_num_tests);
 };
 
 sub _has_no_tests {
@@ -243,22 +242,22 @@ sub _has_no_tests {
 }
 
 sub _all_ok_from {
-	my ($self, $start_test) = @_;
-	my $current_test = $Builder->current_test;
-	return(1) if $start_test == $current_test;
-	my @results = ($Builder->summary)[$start_test .. $current_test-1];
-	foreach my $result (@results) { return(0) unless $result };
-	return(1);
+    my ($self, $start_test) = @_;
+    my $current_test = $Builder->current_test;
+    return(1) if $start_test == $current_test;
+    my @results = ($Builder->summary)[$start_test .. $current_test-1];
+    foreach my $result (@results) { return(0) unless $result };
+    return(1);
 };
 
 sub _exception_failure {
-	my ($self, $method, $exception, $tests) = @_;
-    local $Test::Builder::Level = $Test::Builder::Level+1;
-	my $message = $method;
-	$message .= " (for test method '$Current_method')"
-			if defined $Current_method && $method ne $Current_method;
-	_show_header( $self );
-	$Builder->ok(0, "$message died ($exception)");
+    my ($self, $method, $exception, $tests) = @_;
+#    local $Test::Builder::Level = $Test::Builder::Level+1;
+    my $message = $method;
+    $message .= " (for test method '$Current_method')"
+            if defined $Current_method && $method ne $Current_method;
+    _show_header( $self );
+    $Builder->ok(0, "$message died ($exception)");
 };
 
 sub _display_method_name {
@@ -269,26 +268,26 @@ sub _display_method_name {
 }
 
 sub _show_header {
-	my $self = shift;
-	return if $Builder->has_plan;
-	my $running_tests = _private_fields( $self )->{ running_tests };
-	my $num_tests = Test::Class->expected_tests( @$running_tests );
-	if ($num_tests eq NO_PLAN) {
-		$Builder->no_plan;
-	} else {
-		$Builder->expected_tests($num_tests);
-	};
+    my $self = shift;
+    return if $Builder->has_plan;
+    my $running_tests = _private_fields( $self )->{ running_tests };
+    my $num_tests = Test::Class->expected_tests( @$running_tests );
+    if ($num_tests eq NO_PLAN) {
+        $Builder->no_plan;
+    } else {
+        $Builder->expected_tests($num_tests);
+    };
 };
 
 my %SKIP_THIS_CLASS = ();
 
 sub SKIP_CLASS {
-	my $class = shift;
-	$SKIP_THIS_CLASS{ $class } = shift if @_;
-	return $SKIP_THIS_CLASS{ $class };
+    my $class = shift;
+    $SKIP_THIS_CLASS{ $class } = shift if @_;
+    return $SKIP_THIS_CLASS{ $class };
 };
 
-sub _isa_class {
+sub _isa_test_class {
     my ( $class, $object_or_class ) = @_;
     return unless defined $object_or_class;
     return if $object_or_class eq 'Contextual::Return::Value';
@@ -298,12 +297,12 @@ sub _isa_class {
 }
 
 sub _test_classes {
-	my $class = shift;
-	return grep { _isa_class( $class, $_ ) } Devel::Symdump->rnew->packages;
+    my $class = shift;
+    return grep { _isa_test_class( $class, $_ ) } Devel::Symdump->rnew->packages;
 };
 
 sub _run_methods {
-	my ( $self, @methods ) = @_;
+    my ( $self, @methods ) = @_;
 
     my $class = ref $self;
     $Builder->diag( "$class->" . $self->current_method ) if $ENV{TEST_VERBOSE};
@@ -311,13 +310,13 @@ sub _run_methods {
     my $child = $Builder->child( _display_method_name( $self ) );
 
     local $Test::Builder::Test = $child;
-    local $Test::Builder::Level = $Test::Builder::Level+2;
+#    local $Test::Builder::Level = $Test::Builder::Level+2;
 
     _show_header( $self ) unless _has_no_tests($self, @methods);
 
     eval { 
-        local $Test::Builder::Level = $Test::Builder::Level+2;
-    	my $num_expected = _total_num_tests($self, @methods);
+#        local $Test::Builder::Level = $Test::Builder::Level+2;
+        my $num_expected = _total_num_tests( $self, @methods );
         $child->plan( $num_expected eq NO_PLAN ? NO_PLAN : ( tests => $num_expected ) );
         $self->$_ foreach @methods;;
     };
@@ -332,6 +331,7 @@ sub _run_methods {
     
     return $last_test_passed;
 };
+
 
 sub _run_test_methods {
     my $self = shift;
@@ -348,21 +348,22 @@ sub _run_test_methods {
 
 
 sub runtests {
+    my @tests = @_;
     die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
         unless $Check_block_has_run;
-	my @tests = @_;
-	if (@tests == 1 && !ref($tests[0])) {
-		my $base_class = shift @tests;
-		@tests = _test_classes( $base_class );
-	};
-	my $all_passed = 1;
-	TEST_OBJECT: foreach my $t (@tests) {
 
-		# SHOULD ALSO ALLOW NO_PLAN
-		next if $t =~ m/^\d+$/;
+    if (@tests == 1 && !ref($tests[0])) {
+        my $base_class = shift @tests;
+        @tests = _test_classes( $base_class );
+    };
 
-		Carp::croak "$t is not Test::Class or integer"
-		    unless _isa_class( __PACKAGE__, $t );
+    my $all_passed = 1;
+    TEST_OBJECT: foreach my $t (@tests) {
+
+        next if $t =~ m/^\d+$/;
+
+        Carp::croak "$t is not Test::Class or integer"
+            unless _isa_test_class( __PACKAGE__, $t );
 
         $t = $t->new unless ref($t);
         _private_fields( $t )->{ running_tests } = \@tests;
@@ -387,39 +388,39 @@ sub runtests {
             }
             
         }
-	}
-	return $all_passed;
+    }
+    return $all_passed;
 };
 
 sub _find_calling_test_class {
-	my $level = 0;
-	while (my $class = caller(++$level)) {
-		next if $class eq __PACKAGE__;
-		return $class if _isa_class( __PACKAGE__, $class );
-	}; 
-	return(undef);
+    my $level = 0;
+    while (my $class = caller(++$level)) {
+        next if $class eq __PACKAGE__;
+        return $class if _isa_test_class( __PACKAGE__, $class );
+    }; 
+    return(undef);
 };
 
 sub num_method_tests {
-	my ($self, $method, $n) = @_;
-	my $class = _find_calling_test_class( $self )
-	    or Carp::croak "not called in a Test::Class";
-	my $info = _method_info($self, $class, $method)
-	    or Carp::croak "$method is not a test method of class $class";
-	$info->num_tests($n) if defined($n);
-	return( $info->num_tests );
+    my ($self, $method, $n) = @_;
+    my $class = _find_calling_test_class( $self )
+        or Carp::croak "not called in a Test::Class";
+    my $info = _method_info($self, $class, $method)
+        or Carp::croak "$method is not a test method of class $class";
+    $info->num_tests($n) if defined($n);
+    return $info->num_tests;
 };
 
 sub num_tests {
     my $self = shift;
-	Carp::croak "num_tests need to be called within a test method"
-			unless defined $Current_method;
-	return( $self->num_method_tests( $Current_method, @_ ) );
+    Carp::croak "num_tests need to be called within a test method"
+            unless defined $Current_method;
+    return( $self->num_method_tests( $Current_method, @_ ) );
 };
 
 sub BAILOUT {
-	my ($self, $reason) = @_;
-	$Builder->BAILOUT($reason);
+    my ($self, $reason) = @_;
+    $Builder->BAILOUT($reason);
 };
 
 sub _last_test_if_exiting_immediately {
@@ -427,21 +428,21 @@ sub _last_test_if_exiting_immediately {
 };
 
 sub FAIL_ALL {
-	my ($self, $reason) = @_;
-	my $last_test = _last_test_if_exiting_immediately();
-	$Builder->expected_tests( $last_test ) unless $Builder->has_plan;
-	$Builder->ok(0, $reason) until $Builder->current_test >= $last_test;
-	my $num_failed = grep( !$_, $Builder->summary );
-	exit( $num_failed < 254 ? $num_failed : 254 );
+    my ($self, $reason) = @_;
+    my $last_test = _last_test_if_exiting_immediately();
+    $Builder->expected_tests( $last_test ) unless $Builder->has_plan;
+    $Builder->ok(0, $reason) until $Builder->current_test >= $last_test;
+    my $num_failed = grep( !$_, $Builder->summary );
+    exit( $num_failed < 254 ? $num_failed : 254 );
 };
 
-sub SKIP_ALL {	
-	my ($self, $reason) = @_;
-	$Builder->skip_all( $reason ) unless $Builder->has_plan;
-	my $last_test = _last_test_if_exiting_immediately();
-	$Builder->skip( $reason ) 
-	    until $Builder->current_test >= $last_test;
-	exit(0);
+sub SKIP_ALL {  
+    my ($self, $reason) = @_;
+    $Builder->skip_all( $reason ) unless $Builder->has_plan;
+    my $last_test = _last_test_if_exiting_immediately();
+    $Builder->skip( $reason ) 
+        until $Builder->current_test >= $last_test;
+    exit(0);
 }
 
 1;
@@ -1257,9 +1258,9 @@ If the true value returned by SKIP_CLASS is anything other than "1" then a skip 
 
 will output something like this if C<POSTGRES_HOME> is not set
 
-	... other tests ...
-	ok 123 # skip My::Postgres::Test  - $POSTGRES_HOME needs to be set
-	... more tests ...
+    ... other tests ...
+    ok 123 # skip My::Postgres::Test  - $POSTGRES_HOME needs to be set
+    ... more tests ...
 
 You can also override SKIP_CLASS for a class hierarchy. For example, to prevent any subclasses of My::Postgres::Test running we could override SKIP_CLASS like this:
 
