@@ -1,0 +1,267 @@
+0.31 - or the "good god adrian is still alive" release
+    -   Downgraded IO::File dependancy to 1.09 (RT#38424 - thanks Mark Stosberg)
+
+0.30 - or the "Oslo QA 2008 #2" release
+    -   Move up to depend on Test::Simple 0.78 to stomp on RT##33809
+
+0.29 - or the "Oslo QA 2008" release
+    -   Fixed some broken edge cases where you didn't get a plan when you had
+        tests in a shutdown method, and no tests in the rest of your class
+    -   Test::Class::Load can now be subclassed so you can add your own filters
+        for what is considered a test class (patch from Cosimo Streppone)
+    -   Described minimum perl as '5.006001' rather than '5.6.1' so old perls
+        understand what we're talking about.
+    -   Fixed typo in docs (thanks Tony Edwardson)
+
+0.28 - or the "just for the debian folk" release
+    -   Downgraded some dependencies to avoid some bogus warnings on Debian
+        (thanks Gunnar Wolf & Hynek)
+
+0.27 - or the "Adrian cannot write in English" release
+    -   Fixed a couple of typos/grammar stupidities (thank Jim Brandt)
+
+0.26 - or the "really working on windows this time (fingers crossed)" release
+    -   Tests that look at test_err from Test::Builder::Tester now use caller() 
+        to get the filename - just like Test::Builder. So hopefully everything 
+        should work on all platforms this time.
+    -   Updated the Test::* version dependencies to something vaguely modern
+    -   Fixed runtests_die.t, which still had platform-specific paths in
+
+0.25 - or the "idiotic platform specific tests fixed" release
+    -   Fixed RT#31122 that was failing tests on Strawberry Perl
+        (thanks to Chris Dolan)
+
+0.24 - or the "hating perl's broken object model" release
+    -   Stopped throwing warnings when Contextual::Return was loaded due to the 
+        AUTOLOADING of isa() (thank's to agianni)
+    -   If you are filtering with TEST_METHOD your startup/shutdown methods 
+        still get executed (thanks Chris Dolan)
+
+0.23 - or the "damn David and his smoke testing" release
+    -   Added explicit dependency on Test::Simple for those odd folk who have 
+        old Test::Simple releases running with a recent Test::Builder::Tester 
+        (thanks David Cantrell)
+
+0.22 - or the "++ becomes a legal regex" release
+    -   Factored out some common code
+    -   Added test for Test::Class::Load not loading modules 
+        successfully
+    -   Tidied up all the T::C::L test libraries into t/test-libs
+    -   Added patch from Nicholas Clark to make T::C work with blead 
+        perl
+
+0.21 - or the "we're all growed up" release
+    -   expected_tests() gives a sensible info when given undef as an argument
+    -   fixed bug when we repeatedly wrapped Test::Builder::ok with extra
+        Test::Class functionality every time we run a test method
+    -   Test::Class::Load only adds directories to @INC once
+
+0.20 - or the "you failed where?" release
+    -   Added an extra diagnostic line on test failures that list the method
+        that failed and the class being tested. Makes locating test failures in
+        test class hierarchies much simpler.
+    -   Added some tests for plan math for startup/shutdown methods (phew they
+        worked!)
+
+0.19 - or the "last RT bug crushed" release
+    -   You now get a sensible error message if you load Test::Class after the
+        CHECK phase where the :Test attribute gets applied.
+    -   Added "A NOTE ON LOADING TEST CLASSES" section that describes the issue
+        of the :Test attribute being applied at CHECK time
+
+0.18 - or the "damn multiple inheritence" release
+    -   You now get a sensible error message if Test::Class's new() gets
+        overridden badly via a subclass or multiple inheritance
+
+0.17 - or the "wot I did on the train" release
+    -   Removed pointless uses of UNIVERSAL::isa
+    -   We rename "test name" to "test description" to confirm with current TAP
+        nomenclature
+    -   Added some pointers to third party documentation
+    -   Added references to Test::Object, Test::Group and Test::Block
+    -   Actually added spelling.t to the distro (sigh)
+
+0.16 - or the "sepling mist ook!" release
+    -   Added (optional) spelling tests for the POD in t/developer
+    -   Fixed a whole bunch of spelling mistakes
+    -   Added some references to Test::Class::Load in the main Test::Class POD
+    -   Added more modules that use Test::Class to SEE ALSO
+
+0.15 - or the "down. down. deeper and down" release
+    -   Now works with Test::Deep, which annoyingly defines its own isa() 
+        subroutine. This no longer confuses Test::Class into thinking Test::Deep
+        isa Test::Class.
+    -   Added some more modules that use Test::Class to SEE ALSO
+
+0.14 - or the "for the Windows folk" release
+    -   Test::Class::Load now works on Windows (thanks Kenichi Ishigaki for the 
+        patch)
+    -   Tests should now pass on Windows (thanks Kenichi Ishigaki again!)
+
+0.13 - or the "just to make Ovid & David happy" release
+    -   Added Test::Class::Load (thanks Ovid) to allow you to easily load
+        test classes
+    -   Added ability to run a specific test or set of tests based upon a
+        regular expression specified in the TEST_METHOD environment variable
+        (thanks to Ovid again). This mechanism is likely to change in the future
+        but it's useful enough to go in now.
+    -   Fixed some broken code in the POD (thanks Jeff Deifik)
+    -   Removed Cwd from prerequisites - it's core
+
+0.12 - or the "to avoid public mocking" release
+    -   Fixed the installation errors that everybody has been rightly 
+        complaining about for the last year:
+        -   Prerequisities in requires, not build_requires
+        -   Tests no longer rely on hard coded test output (thanks Mart’n 
+            Ferrari and Nicholas Clark for patches)
+        -   Require appropriate version of Test::Exception
+    -   Added link to del.icio.us perl+testing links in POD
+    -   Fixed some bad markup in the POD
+    -   Stuck distribution related tests under t/developer
+    -   Added Perl::Critic tests under t/developer
+    -   Added some documentation for Test::Class::MethodInfo since I was bored
+        with people asking what it was for (it's internal - don't use it)
+    -   Added a whole bunch of people to the acknowledgements section
+    
+0.11
+    -   A belated thank you added to some folk who send in RT bugs and whose
+        name I missed off the acknowledgements section
+    -   Tweaked link to XUL::Node in SEE ALSO
+    -   Changed RT link so it went directly to Test::Class page
+    -   An exception in a startup method now causes the rest of the tests in 
+        the current test object to be ignored, and no longer gives a bogus 
+        warning (reported by Emil Jansson - ta!)
+    -   Added COMMUNITY section to POD
+
+0.10
+    -   Really fixed the _test_classes bug (doh!)
+    -   Added :Tests attribute that acts like :Test but defaults to 'no_plan'
+        if no test number is given.
+
+0.09
+    -   Fixed bug with _test_classes spotted by Corion's cpan smoker
+        (see t/test_classes.t)
+    -   Added links to tada to do list to TO DO section of POD
+    -   Added links modules that use Test::Class to SEE ALSO section of POD
+        (thanks to Terrence Brannon for suggesting this)
+    
+0.08
+    -   The undocumented behaviour of C<runtests> has been tweaked and
+        documented. You can now run all loaded test classes by doing
+        Test::Class->runtests
+    -   Removed undocumented autorun method, and replaced with SKIP_CLASS. This
+        allows you to prevent test classes being run by runtests.
+    -   Removed undocumented class method run_all_tests.
+    (thanks to David Wheeler & Ovid for helping define the above behaviour)
+
+0.07
+    -   Removed Test::Class::Tutorial & Test::Class::BaseTest since
+        they shouldn't have escaped into the wild quite yet. Oops.
+
+0.06
+    -   Some cosmetic POD updates
+
+0.06_8
+    -   Made tests pass with Test::Simple 0.48
+    -   New signature since old one about to be revoked
+
+0.06_7
+    -   Added Module::Build support
+
+0.06_6
+    -   Fixed bogus test failures under MSWin32
+
+0.06_5
+    -   Cleaned up internals
+    -   Having a single method be simultaniously a setup and teardown
+        method no longer supported
+    -   The undocumented add_method method, that you should not have
+        been using anyway, disappears
+
+0.06_4
+    -   Fixed bogus heading styles in POD
+    -   Test names that default to $self->current_method now replace all
+        "_" characters with spaces to increase readability
+    -   Documented default test name behaviour
+    -   D'oh! Fixed MANIFEST so the distribution actually included the 
+        new tests for 0.06_3 and 0.06_2
+
+0.06_3
+    -   more POD tweaks
+    -   all tests now compile with warnings enabled
+    -   test name now defaults to $self->current_method
+
+0.06_2
+    -   now uses inside out objects so restriction on using -test and 
+        _test as hash keys has been removed
+    -   tweaked POD of Test::Class
+    -   you can now have spaces around test numbers, etc. (bug report
+        and patch from David Wheeler)
+
+0.06_1
+    -   removed examples directory from distribution, needs rewrite
+    -   removed .svn directories from distribution (doh!)
+    -   removed Test::Class::Tutorial from distribution - needs rewrite
+    -   removed Test::Class::BaseTest - needs rethink
+    -   cleaned up Test::Class POD a bit
+    -   documented.t now uses Test::Pod::Coverage if available
+    -   pod.t now uses Test::Pod if available
+    -   private methods now called as functions to avoid problems
+        with subclasses accidentally overriding
+
+0.05 (not distributed on CPAN)
+    -   fixed MANIFEST and MANIFEST.SKIP
+    -   now skips rest of tests in a test method after first failure
+        due to an exception.
+
+0.04 (not distributed on CPAN)
+    -   refactored mercylessly
+    -   Added Test::Class::MethodInfo
+    -   Added first draft of Test::Class::Tutorial. Feedback welcome.
+    -   rearranged Test::Class POD (hopefully making it clearer!)
+    -   dropped total_num_tests, teardown_methods, setup_methods and 
+        test_methods from public interface - they were implementation 
+        details that shouldn't have been public in first place. If you 
+        disagree let me know (with a rationale) and I'll probably add 
+        them back :-)
+    -   fixed bug where runtests() could blow up if supplied with a
+        non-Test::Class
+    -   fixed bug where runtests returned whether all tests had passed,
+        rather than whether all test run on test object passed
+    -   bug with runtests showing duplicate header lines fixed (thanks
+        to Michael for adding has_plan() to Test::Builder) 
+    -   FAIL_ALL now exits with the # tests failed (or 254 if
+        more than 254 tests failed) to match behaviour of Test::Simple
+        et al.
+    -   An extra exception thrown after all the tests in a method have 
+        run now causes a failed test (to better match the behaviour of a 
+        die at the end of a normal test script).
+    -   Changed diagnostic messages when exceptions occur to show
+        method exception occurred in. Makes tracking failure easier.
+    -   Added Test::Class::BaseTest - base class for creating a fixture
+        and testing it's of the correct class.
+    -   Diagnostic messages improved
+    -   Plan correctly shown when setup/teardown method without any
+        tests throws an exception
+    -   TEST_VERBOSE now outputs a newline before the method name which
+        makes reading verbose output easier.
+    -   Added startup and shutdown methods after suggestion from
+        Tony Bowden.
+    -   Added run_all_classes and autorun - inspired by comments from 
+        Tony Bowden on running multiple Test::Classes easily
+    -   Changed runtests so that it will run all of a classes 
+        autorunnable sub-classes if called as a class method with no 
+        arguments.
+
+0.03  Thu Jun 20
+    -   fixed README
+    -   fixed tests that broke now Test::Builder (quite rightly) can
+        no longer display multiple plans in v0.15
+    -   tidied up the code a little.
+
+0.02  Sat Jun 15
+    -   released to perl-qa@perl.org
+
+0.01  Fri May 10 22:36:52 2002
+    - original version; created by h2xs 1.21 with options
+        -AX -n Test::Class
