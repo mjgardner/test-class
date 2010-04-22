@@ -1,3 +1,18 @@
+Changes for Perl extension Test-Class
+
+0.34 - or the "Abandon ship!" release
+    -   Harmonised $VERSION to the same value (Adam Kennedy)
+    -   Devel::Symdump has a bug which is really a bug in core and won't be fixed.
+        Dumped it and switched to MRO::Compat instead (tokuhirom)
+    -   Add "build_requires" (Alexandr Ciornii)
+
+0.33 - or the "ZOMGIBROKECPAN" release
+    -   Make the test scripts adaptive to Test::More diagnostic changes in
+        version 0.88
+    -   Skip invalid package names in Test::Class::Load::_load so that we
+        don't try to load classes in .svn/et-al paths
+    -   Removed #! script invocation line from the MethodInfo.pm module
+
 0.32_1 - or the "Birmingham QA 2009" release
     -   Removed pointless use of Test::Exception in t/bad-autoloads.t to stop
         bogus warnings that were confusing some folk

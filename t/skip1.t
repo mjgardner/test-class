@@ -1,4 +1,4 @@
-#! /usr/bin/perl -T
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -20,7 +20,7 @@ END {
 	print "1..1\n";
 	my $output = <$io>;
 	chomp($output);
-	my $ok = $output eq "1..0 # Skip skipping";
+	my $ok = $output =~ /^1..0 # Skip skipping$/i;
 	print "not " unless $ok;
 	print "ok 1 - SKIP_ALL called skip_all\n";
 };

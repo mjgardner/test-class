@@ -7,7 +7,7 @@ use Test::Class;
 use File::Find;
 use File::Spec;
 
-our $VERSION = '0.03';
+our $VERSION = '0.34';
 
 # Override to get your own filter
 sub is_test_class {
@@ -30,6 +30,9 @@ sub _load {
 
     # untaint that puppy!
     my ( $package ) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
+   
+    # Filter out bad classes (mainly this means things in .svn and similar)
+    return unless defined $package;
 
     unshift @INC => $dir unless $Added_to_INC{ $dir }++;
     eval "require $package"; ## no critic

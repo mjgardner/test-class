@@ -1,12 +1,10 @@
-#! /usr/bin/perl -Tw
-
 use strict;
 use warnings;
 
 package Test::Class::MethodInfo;
 use Carp;
 
-our $VERSION = '0.02';
+our $VERSION = '0.34';
 
 sub new {
     my ( $class, %param ) = @_;
