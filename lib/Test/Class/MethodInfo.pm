@@ -21,6 +21,8 @@ sub new {
 
 sub name { shift->{name} };
 
+sub type { shift->{type} };
+
 sub num_tests	{ 
 	my ( $self, $n ) = @_;
 	if ( defined $n ) {
