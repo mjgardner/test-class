@@ -1,0 +1,37 @@
+---
+name: Test-Class
+version: 0.34
+author:
+  - 'Adrian Howard <adrianh@quietstars.com>'
+abstract: Easily create test classes in an xUnit/JUnit style
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+build_requires:
+  IO::File: 1.09
+  Test::Exception: 0.25
+requires:
+  Attribute::Handlers: 0.77
+  MRO::Compat: 0.11
+  Storable: 2.04
+  Test::Builder: 0.78
+  Test::Builder::Tester: 1.02
+  Test::More: 0.78
+  Test::Simple: 0.78
+  perl: 5.006001
+configure_requires:
+  Module::Build: 0.35
+provides:
+  Test::Class:
+    file: lib/Test/Class.pm
+    version: 0.34
+  Test::Class::Load:
+    file: lib/Test/Class/Load.pm
+    version: 0.34
+  Test::Class::MethodInfo:
+    file: lib/Test/Class/MethodInfo.pm
+    version: 0.34
+generated_by: Module::Build version 0.35
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
