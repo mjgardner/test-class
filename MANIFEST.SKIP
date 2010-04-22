@@ -14,4 +14,4 @@
 \.svn
 Makefile.old
 Makefile$
-^cover_db
+^cover_db^MYMETA.yml$
