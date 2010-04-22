@@ -266,14 +266,14 @@ RUNNING TESTS
     to easily load multiple test classes in a *.t file and run them all.
 
       #! /usr/bin/perl
-      
-  # load all the test classes I want to run
+  
+      # load all the test classes I want to run
       use Foo::Test;
       use Foo::Bar::Test;
       use Foo::Fribble::Test;
       use Foo::Ni::Test;
-      
-  # and run them all
+  
+      # and run them all
       Test::Class->runtests;
 
     You can use Test::Class::Load to automatically load all the test classes
@@ -595,16 +595,16 @@ RUNNING INDIVIDUAL TESTS
 
      #! /usr/bin/perl
      use Example::Test;
-          
- $ENV{TEST_METHOD} = 'customer_profile';
+      
+     $ENV{TEST_METHOD} = 'customer_profile';
      Test::Class->runtests;
 
     Running all tests with "customer" in their name:
 
      #! /usr/bin/perl
      use Example::Test;
-          
- $ENV{TEST_METHOD} = '.*customer.*';
+      
+     $ENV{TEST_METHOD} = '.*customer.*';
      Test::Class->runtests;
 
     If you specify an invalid regular expression, your tests will not be
@@ -612,8 +612,8 @@ RUNNING INDIVIDUAL TESTS
 
      #! /usr/bin/perl
      use Example::Test;
-          
- $ENV{TEST_METHOD} = 'C++';
+      
+     $ENV{TEST_METHOD} = 'C++';
      Test::Class->runtests;
 
     And when you run it:
@@ -820,12 +820,12 @@ METHODS
 
           #! /usr/bin/perl
           # Test all the Foo stuff
-          
-  use Foo::Test;
+  
+          use Foo::Test;
           use Foo::Bar::Test;
           use Foo::Ni::Test;
-          
-  # run all the Foo*Test modules we just loaded
+  
+          # run all the Foo*Test modules we just loaded
           Test::Class->runtests;
 
     SKIP_CLASS
