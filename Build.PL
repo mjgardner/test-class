@@ -17,6 +17,11 @@ my $build = Module::Build->new(
         'Test::Exception'       => '0.25',
         'IO::File'              => '1.09',
     },
+    meta_merge => {
+        resources => {
+            repository => 'http://github.com/adrianh/test-class/',
+        },
+    },
     create_makefile_pl => 'traditional',
     create_readme      => 1,
 );

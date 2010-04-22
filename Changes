@@ -1,6 +1,8 @@
 Changes for Perl extension Test-Class
 
 0.35
+    -   Add repository information to the META.yml (via Build.PL).
+    -   Add dates to all releases in Change file.  This resolves RT#45581
     -   If extra tests are found in the test control methods, report the
         class name along with the method name.
 
