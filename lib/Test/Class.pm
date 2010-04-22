@@ -11,7 +11,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.34';
+our $VERSION = '0.35';
 
 my $Check_block_has_run;
 {
@@ -265,7 +265,8 @@ sub _run_method {
 		_exception_failure($self, $method, $exception, $tests) 
 				unless $exception eq '';
 	} elsif ($num_done > $num_expected) {
-		$Builder->diag("expected $num_expected test(s) in $method, $num_done completed\n");
+        my $class = ref $self;
+		$Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
 	} else {
 		until (($Builder->current_test - $num_start) >= $num_expected) {
 			if ($exception ne '') {

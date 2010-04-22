@@ -1,5 +1,9 @@
 Changes for Perl extension Test-Class
 
+0.35
+    -   If extra tests are found in the test control methods, report the
+        class name along with the method name.
+
 0.34 - or the "Abandon ship!" release
     -   Harmonised $VERSION to the same value (Adam Kennedy)
     -   Devel::Symdump has a bug which is really a bug in core and won't be fixed.
