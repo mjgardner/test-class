@@ -29,7 +29,7 @@ sub test_another_not_matching : Test(1) {
 
 package main;
 
-Test::Class->add_filter( sub { $_[1] =~ /filter_me/ } );
-Test::Class->add_filter( sub { $_[1] =~ /me_too/ } );
+Test::Class->add_filter( sub { $_[1] !~ /filter_me/ } );
+Test::Class->add_filter( sub { $_[1] !~ /me_too/ } );
 
 Test::Class->runtests;

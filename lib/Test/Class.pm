@@ -150,9 +150,9 @@ sub _get_methods {
 
             if ( $info->type eq TEST ) {
                 # determine if method is filtered, true if *any* filter
-                # returns true.
+                # returns false.
                 foreach my $filter ( @Filters ) {
-                    next FILTER if $filter->( $class, $name );
+                    next FILTER unless $filter->( $class, $name );
                 }
             }
 
@@ -1074,7 +1074,7 @@ be used by specifying coderefs to the 'add_filter' method of this class.
 
 In determining which tests should be run, all filters that have previously
 been specified via the add_filter method will be run in-turn for each normal
-test method.  If B<any> of these filters return a true value, the method will
+test method.  If B<any> of these filters return a false value, the method will
 not be executed, or included in the number of tests.  Note that filters will
 only be run for normal test methods, they are ignored for startup, shutdown,
 setup, and teardown test methods.
@@ -1096,7 +1096,7 @@ above is:
  my $filter = sub {
     my ( $test_class, $test_method ) = @_;
 
-    return 1 if $test_method !~ $MYTEST_METHOD;
+    return $test_method =~ $MYTEST_METHOD;
  };
  Test::Class->add_filter( $filter );
 

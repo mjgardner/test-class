@@ -21,6 +21,6 @@ sub test_filter_due_to_class : Test(1) {
 
 package main;
 
-Test::Class->add_filter( sub { $_[0] eq 'Bar' } );
+Test::Class->add_filter( sub { $_[0] eq 'Foo' } );
 
 Test::Class->runtests;

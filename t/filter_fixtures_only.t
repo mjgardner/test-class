@@ -30,6 +30,6 @@ sub test_filtered : Test( 1 ) {
 
 package main;
 
-Test::Class->add_filter( sub { 1 } );
+Test::Class->add_filter( sub { 0 } );
 
 Test::Class->runtests;

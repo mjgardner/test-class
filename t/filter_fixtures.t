@@ -34,6 +34,6 @@ sub test_should_run : Test( 1 ) {
 
 package main;
 
-Test::Class->add_filter( sub { $_[1] =~ /filtered/ } );
+Test::Class->add_filter( sub { $_[1] !~ /filtered/ } );
 
 Test::Class->runtests;
