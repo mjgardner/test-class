@@ -154,7 +154,8 @@ sub _get_methods {
 		};
 	};
 
-    return sort keys %methods;
+    my @methods = sort keys %methods;
+    return @methods;
 };
 
 sub _num_expected_tests {
