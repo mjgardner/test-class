@@ -1601,11 +1601,11 @@ various anonymous folk and all the fine people on perl-qa for their feedback, pa
 This module wouldn't be possible without the excellent L<Test::Builder>. Thanks to chromatic and Michael G Schwern for creating such a useful module.
 
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Adrian Howard <adrianh@quietstars.com>
+Adrian Howard <adrianh@quietstars.com>, Curtis "Ovid" Poe, <ovid at cpan.org>, Mark Morgan <makk384@gmail.com>.
 
-If you use this module, and can spare the time please drop me an e-mail or rate it at L<http://cpanratings.perl.org/rate/?distribution=Test-Class>.
+If you use this module, and can spare the time please let us know or rate it at L<http://cpanratings.perl.org/rate/?distribution=Test-Class>.
 
 =head1 SEE ALSO
 

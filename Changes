@@ -1,6 +1,8 @@
 Changes for Perl extension Test-Class
 
-0.35
+0.35 - or the "Yay! Open Source For The Win!" release [2010-04-28]
+    -   Introducing Ovid & Mark Morgan in "Folk with commit bits who aren't 
+        afraid to use them!"
     -   Add repository information to the META.yml (via Build.PL).
     -   Add dates to all releases in Change file.  This resolves RT#45581
     -   If extra tests are found in the test control methods, report the
@@ -8,7 +10,8 @@ Changes for Perl extension Test-Class
 
 0.34 - or the "Abandon ship!" release [2010-03-08]
     -   Harmonised $VERSION to the same value (Adam Kennedy)
-    -   Devel::Symdump has a bug which is really a bug in core and won't be fixed.
+    -   Devel::Symdump has a bug which is really a bug in core and won't be 
+        fixed.
         Dumped it and switched to MRO::Compat instead (tokuhirom)
     -   Add "build_requires" (Alexandr Ciornii)
 
