@@ -36,6 +36,7 @@ sub builder { $Builder };
 
 
 my $Tests = {};
+my @Filters = ();
 
 
 my %_Test;  # inside-out object field indexed on $self
@@ -143,8 +144,18 @@ sub _get_methods {
 	
 	my %methods = ();
 	foreach my $class ( @{mro::get_linear_isa( $test_class )} ) {
+      FILTER:
 		foreach my $info ( _methods_of_class( $self, $class ) ) {
 		    my $name = $info->name;
+
+            if ( $info->type eq TEST ) {
+                # determine if method is filtered, true if *any* filter
+                # returns false.
+                foreach my $filter ( @Filters ) {
+                    next FILTER unless $filter->( $class, $name );
+                }
+            }
+
 			foreach my $type ( @types ) {
 			    if ( $info->is_type( $type ) ) {
     				$methods{ $name } = 1 
@@ -411,6 +422,16 @@ sub SKIP_ALL {
 	$Builder->skip( $reason ) 
 	    until $Builder->current_test >= $last_test;
 	exit(0);
+}
+
+sub add_filter {
+    my ( $class, $cb ) = @_;
+
+    if ( not ref $cb eq 'CODE' ) {
+        croak "Filter isn't a code-ref"
+    }
+
+    push @Filters, $cb;
 }
 
 1;
@@ -1044,6 +1065,49 @@ If you still can't arrange for your classes to be loaded at runtime, you could u
 
 See the L<add_testinfo|/"add_testinfo"> method for more details.
 
+=head1 GENERAL FILTERING OF TESTS
+
+The use of $ENV{TEST_METHOD} to run just a subset of tests is useful, but
+sometimes it doesn't give the level of granularity that you desire.  Another
+feature of this class is the ability to do filtering on other static criteria.
+In order to permit this, a generic filtering method is supported.  This can
+be used by specifying coderefs to the 'add_filter' method of this class.
+
+In determining which tests should be run, all filters that have previously
+been specified via the add_filter method will be run in-turn for each normal
+test method.  If B<any> of these filters return a false value, the method will
+not be executed, or included in the number of tests.  Note that filters will
+only be run for normal test methods, they are ignored for startup, shutdown,
+setup, and teardown test methods.
+
+Note that test filters are global, and will affect all tests in all classes,
+not just the one that they were defined in.
+
+An example of this mechanism that mostly simulates the use of TEST_METHOD
+above is:
+
+ package MyTests;
+
+ use Test::More;
+
+ use base qw( Test::Class );
+
+ my $MYTEST_METHOD = qr/^t_not_filtered$/;
+
+ my $filter = sub {
+    my ( $test_class, $test_method ) = @_;
+
+    return $test_method =~ $MYTEST_METHOD;
+ };
+ Test::Class->add_filter( $filter );
+
+ sub t_filtered : Test( 1 ) {
+    fail( "filtered test run" );
+ }
+
+ sub t_not_filtered : Test( 1 ) {
+    pass( "unfiltered test run" );
+ }
 
 =head1 METHODS
 
