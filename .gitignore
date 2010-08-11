@@ -5,3 +5,5 @@ MYMETA.yml
 _build/
 blib
 Makefile.PL
+# ignore vim swap files
+*.sw[po]
