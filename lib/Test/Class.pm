@@ -345,6 +345,8 @@ sub runtests {
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
+            my @test_methods = _get_methods($t, TEST);
+            next TEST_OBJECT unless @test_methods;
             foreach my $method (_get_methods($t, STARTUP)) {
                 _show_header($t, @tests) unless _has_no_tests($t, $method);
                 my $method_passed = _run_method($t, $method, \@tests);
@@ -354,7 +356,7 @@ sub runtests {
             my $class = ref($t);
             my @setup    = _get_methods($t, SETUP);
             my @teardown = _get_methods($t, TEARDOWN);
-            foreach my $test (_get_methods($t, TEST)) { 
+            foreach my $test (@test_methods) { 
                 local $Current_method = $test;
                 $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
                 foreach my $method (@setup, $test, @teardown) {
@@ -600,7 +602,7 @@ to import the test functions into your test class.
 
 =head1 METHOD TYPES
 
-There are three different types of method you can define using Test::Class.
+There are two different types of method you can define using Test::Class.
 
 =head2 1) Test methods
 
@@ -638,7 +640,24 @@ or use the :Tests attribute, which acts just like C<:Test> but defaults to C<no_
   };
 
 
-=head2 2) Setup and teardown methods
+=head2 2) Test control methods
+
+These methods are used to control how the overall test class runs.  They run
+in different phases, sort of like this:
+
+ load test class
+ skip if no test methods
+ "startup" methods run
+ 
+ foreach test method in test methods
+    "setup" methods run
+    "test" method runs
+    "teardown" methods run
+ end foreach
+
+ "teardown" methods run
+
+=head3 Setup and teardown methods
 
 Setup and teardown methods are run before and after every test. For example:
 
@@ -672,7 +691,7 @@ You can also declare setup and teardown methods as running tests. For example yo
   };
 
 
-=head2 3) Startup and shutdown methods
+=head3 Startup and shutdown methods
 
 Startup and shutdown methods are like setup and teardown methods for the whole test class. All the startup methods are run once when you start running a test class. All the shutdown methods are run once just before a test class stops running.
 
