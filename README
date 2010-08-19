@@ -1114,6 +1114,20 @@ METHODS
         "setup", "test", "teardown" or "shutdown", and $num_tests has the
         same meaning as "N" in the description of the Test attribute.
 
+    add_filter
+            CLASS->add_filter($filter_coderef);
+
+        Adds a filtering coderef. Each filter is passed a test class and
+        method name and returns a boolean. All filters are applied globally
+        in the order they were added. If any filter returns false the test
+        method is not run or included in the number of tests.
+
+        Note that filters will only be run for normal test methods, they are
+        ignored for startup, shutdown, setup, and teardown test methods.
+
+        See the section on the "GENERAL FILTERING OF TESTS" for more
+        information.
+
 HELP FOR CONFUSED JUNIT USERS
     This section is for people who have used JUnit (or similar) and are
     confused because they don't see the TestCase/Suite/Runner class
