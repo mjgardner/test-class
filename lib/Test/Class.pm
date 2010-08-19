@@ -1485,6 +1485,16 @@ Chiefly for use by libraries like L<Test::Class::Sugar>, which can't use the C<:
 C<$name> is the name of the method, C<$type> must be one of C<startup>, C<setup>, C<test>, C<teardown> or C<shutdown>, and C<$num_tests> has the same meaning as C<N> in the description of the L<Test|/"Test"> attribute.
 
 
+=item B<add_filter>
+
+    CLASS->add_filter($filter_coderef);
+
+Adds a filtering coderef. Each filter is passed a test class and method name and returns a boolean. All filters are applied globally in the order they were added. If any filter returns false the test method is not run or included in the number of tests.
+
+Note that filters will only be run for normal test methods, they are ignored for startup, shutdown, setup, and teardown test methods.
+
+See the section on the L</"GENERAL FILTERING OF TESTS"> for more information.
+
 =back
 
 
