@@ -78,6 +78,8 @@ Holds info related to particular test methods. Not part of the public API and li
 
 =item B<name>
 
+=item B<type>
+
 =item B<num_tests>
 
 =back
