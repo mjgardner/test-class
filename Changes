@@ -1,7 +1,7 @@
 Changes for Perl extension Test-Class
 
 0.36 - or the "Adrian should have released this earlier" release [2010-08-19]
-(Thanks to Mark Morgan & Ovid for doing all the useful work on this one!)
+(Thanks to Mark Morgan for doing all the useful work on this one!)
     - New add_filter() method allows global filtering of test methods
     - Apply t/todo.t patch to fix RT#55324 (test bug, not Test::Class bug).
       This makes the test suite pass with Test::Simple 0.95_01 and greater.
