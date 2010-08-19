@@ -275,7 +275,7 @@ RUNNING TESTS
   
       # and run them all
       Test::Class->runtests;
-
+  
     You can use Test::Class::Load to automatically load all the test classes
     in a given set of directories.
 
@@ -355,7 +355,7 @@ TEST DESCRIPTIONS
     test description, for example:
 
       is $something, $something_else, 'a description of my test';
-
+    
     If you do not supply a test description, and the test function does not
     supply its own default, then Test::Class will use the name of the
     currently running test method, replacing all "_" characters with spaces
@@ -364,7 +364,7 @@ TEST DESCRIPTIONS
       sub one_plus_one_is_two : Test {
           is 1+1, 2;
       }
-
+  
     will result in:
 
       ok 1 - one plus one is two
@@ -437,7 +437,7 @@ HANDLING EXCEPTIONS
       sub read_file : Test {
           is(read_file('test.txt'), "content", 'test file read');
       };
-
+  
     If more than one test remains after an exception then the first one is
     failed, and the remaining ones are skipped.
 
@@ -642,11 +642,11 @@ A NOTE ON LOADING TEST CLASSES
     modules. Basically while:
 
       require $some_test_class;
-
+  
     will break, doing:
 
       BEGIN { require $some_test_class };
-
+  
     will work just fine. For more information on CHECK blocks see "BEGIN,
     CHECK, INIT and END" in perlmod.
 
@@ -659,6 +659,50 @@ A NOTE ON LOADING TEST CLASSES
       __PACKAGE__->add_testinfo('test_something', test => 3);
 
     See the add_testinfo method for more details.
+
+GENERAL FILTERING OF TESTS
+    The use of $ENV{TEST_METHOD} to run just a subset of tests is useful,
+    but sometimes it doesn't give the level of granularity that you desire.
+    Another feature of this class is the ability to do filtering on other
+    static criteria. In order to permit this, a generic filtering method is
+    supported. This can be used by specifying coderefs to the 'add_filter'
+    method of this class.
+
+    In determining which tests should be run, all filters that have
+    previously been specified via the add_filter method will be run in-turn
+    for each normal test method. If any of these filters return a false
+    value, the method will not be executed, or included in the number of
+    tests. Note that filters will only be run for normal test methods, they
+    are ignored for startup, shutdown, setup, and teardown test methods.
+
+    Note that test filters are global, and will affect all tests in all
+    classes, not just the one that they were defined in.
+
+    An example of this mechanism that mostly simulates the use of
+    TEST_METHOD above is:
+
+     package MyTests;
+
+     use Test::More;
+
+     use base qw( Test::Class );
+
+     my $MYTEST_METHOD = qr/^t_not_filtered$/;
+
+     my $filter = sub {
+        my ( $test_class, $test_method ) = @_;
+
+        return $test_method =~ $MYTEST_METHOD;
+     };
+     Test::Class->add_filter( $filter );
+
+     sub t_filtered : Test( 1 ) {
+        fail( "filtered test run" );
+     }
+
+     sub t_not_filtered : Test( 1 ) {
+        pass( "unfiltered test run" );
+     }
 
 METHODS
   Creating and running tests
@@ -787,7 +831,7 @@ METHODS
         "runtests" is used to run test classes. At its most basic doing:
 
           $test->runtests
-
+  
         will run the test methods of the test object $test, unless
         "$test->SKIP_CLASS" returns a true value.
 
@@ -827,7 +871,7 @@ METHODS
   
           # run all the Foo*Test modules we just loaded
           Test::Class->runtests;
-
+    
     SKIP_CLASS
           $reason = CLASS->SKIP_CLASS;
           CLASS->SKIP_CLASS( $reason );
@@ -841,7 +885,7 @@ METHODS
         class that should not run just add the following to your module:
 
           My::Abstract::Test->SKIP_CLASS( 1 );
-
+  
         This will not affect any sub-classes of "My::Abstract::Test" which
         will run as normal.
 
@@ -866,7 +910,7 @@ METHODS
           sub My::Postgres::Test::SKIP_CLASS {
               $ENV{POSTGRES_HOME} ? 0 : '$POSTGRES_HOME needs to be set'
           };
-
+  
   Fetching and setting a method's test number
     num_method_tests
           $n = $Tests->num_method_tests($method_name)
