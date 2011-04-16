@@ -1,3 +1,5 @@
+* Get changes files in the new format
+* Move away from RT
 * Should SKIP_CLASS should skip all the tests or just one 
 * $object->SKIP_ALL should just skip tests in current object
 * Write some cookbook POD
