@@ -174,6 +174,8 @@ sub _num_expected_tests {
     if (my $reason = $self->SKIP_CLASS ) {
        return $reason eq "1" ? 0 : 1;
     };
+    my @test_methods = _get_methods($self, TEST);
+    return 0 unless @test_methods;
     my @startup_shutdown_methods = 
             _get_methods($self, STARTUP, SHUTDOWN);
     my $num_startup_shutdown_methods = 
@@ -182,7 +184,6 @@ sub _num_expected_tests {
     my @fixture_methods = _get_methods($self, SETUP, TEARDOWN);
     my $num_fixture_tests = _total_num_tests($self, @fixture_methods);
     return(NO_PLAN) if $num_fixture_tests eq NO_PLAN;
-    my @test_methods = _get_methods($self, TEST);
     my $num_tests = _total_num_tests($self, @test_methods);
     return(NO_PLAN) if $num_tests eq NO_PLAN;
     return($num_startup_shutdown_methods + $num_tests + @test_methods * $num_fixture_tests);
@@ -345,27 +346,31 @@ sub runtests {
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
-            foreach my $method (_get_methods($t, STARTUP)) {
-                _show_header($t, @tests) unless _has_no_tests($t, $method);
-                my $method_passed = _run_method($t, $method, \@tests);
-                $all_passed = 0 unless $method_passed;
-                next TEST_OBJECT unless $method_passed;
-            };
-            my $class = ref($t);
-            my @setup    = _get_methods($t, SETUP);
-            my @teardown = _get_methods($t, TEARDOWN);
-            foreach my $test (_get_methods($t, TEST)) { 
-                local $Current_method = $test;
-                $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-                foreach my $method (@setup, $test, @teardown) {
+            my @test_methods    = _get_methods($t, TEST);
+            if ( @test_methods ) {
+                foreach my $method (_get_methods($t, STARTUP)) {
+                    _show_header($t, @tests) unless _has_no_tests($t, $method);
+                    my $method_passed = _run_method($t, $method, \@tests);
+                    $all_passed = 0 unless $method_passed;
+                    next TEST_OBJECT unless $method_passed;
+                };
+                my $class = ref($t);
+                my @setup           = _get_methods($t, SETUP);
+                my @teardown        = _get_methods($t, TEARDOWN);
+                foreach my $test ( @test_methods ) { 
+                    local $Current_method = $test;
+                    $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
+                    foreach my $method (@setup, $test, @teardown) {
+                        _show_header($t, @tests) unless _has_no_tests($t, $method);
+                        $all_passed = 0 unless _run_method($t, $method, \@tests);
+                    };
+                };
+                foreach my $method (_get_methods($t, SHUTDOWN)) {
                     _show_header($t, @tests) unless _has_no_tests($t, $method);
                     $all_passed = 0 unless _run_method($t, $method, \@tests);
-                };
-            };
-            foreach my $method (_get_methods($t, SHUTDOWN)) {
-                _show_header($t, @tests) unless _has_no_tests($t, $method);
-                $all_passed = 0 unless _run_method($t, $method, \@tests);
+                }
             }
+            
         }
     }
     return($all_passed);

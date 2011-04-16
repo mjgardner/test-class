@@ -2,7 +2,7 @@
 
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 1;
+use Test::More;
 
 my $shutdown_has_run;
 
@@ -13,6 +13,10 @@ my $shutdown_has_run;
     sub shutdown :Test( shutdown ) {
         $shutdown_has_run = 1;
     }
+    
+    sub test : Test {
+        pass "passing test to force shutdown method to run";
+    } 
     
 }
 
