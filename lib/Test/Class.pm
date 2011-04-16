@@ -11,7 +11,7 @@ use Storable qw(dclone);
 use Test::Builder;
 use Test::Class::MethodInfo;
 
-our $VERSION = '0.36';
+our $VERSION = '0.37';
 
 my $Check_block_has_run;
 {
@@ -1624,6 +1624,7 @@ Thanks to
 Adam Kennedy,
 agianni,
 Apocalypse,
+Andrew Grangaard,
 Ask Bjorn Hansen,
 Chris Dolan,
 Chris Williams,
@@ -1648,6 +1649,7 @@ Joshua ben Jore,
 Jost Krieger,
 Kenichi Ishigaki
 Lee Goddard,
+Mark Morgan,
 Mark Reynolds,
 Mark Stosberg,
 Martin Ferrari,
