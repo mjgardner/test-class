@@ -4,9 +4,13 @@ Changes for Perl extension Test-Class
     -   Fixed RT#64470: minor documentation error in Test::Class::Load (thanks
         to Andrew Grangaard for patch)
     -   Fixed RT#39266: Test::Class with Package::Alias
+    -   Fixed RT#56636: feature request: option to turn off auto-skipping 
+        uncompleted tests (thanks to Ken Fox for suggestion) with addition
+        of fail_if_returned_early() (thanks to Dave Evans for patch)
     -   startup and shutdown methods are no longer run if a class will not
         run any test methods
-    -   Added some more folk to acknowledgements
+    -   Updated acknowledgements
+    -   Added missing filter tests to MANIFEST& distribution
 
 0.36 - or the "Adrian should have released this earlier" release [2010-08-19]
         (Thanks to Mark Morgan for doing all the useful work on this one!)
