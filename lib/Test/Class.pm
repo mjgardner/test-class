@@ -245,10 +245,21 @@ sub _exception_failure {
             if defined $Current_method && $method ne $Current_method;
     _show_header($self, @$tests);
     $Builder->ok(0, "$message died ($exception)");
+    _threw_exception( $self, $method => 1 );
 };
+
+my %threw_exception;
+sub _threw_exception {
+    my ( $self, $method, $optional_value) = @_;
+    my $class = ref( $self );
+    $threw_exception{ $class }{ $method } = $optional_value 
+        if defined $optional_value;
+    return $threw_exception{ $class }{ $method };
+}
 
 sub _run_method {
     my ($self, $method, $tests) = @_;
+    _threw_exception( $self, $method => 0 );
     my $num_start = $Builder->current_test;
     my $skip_reason;
     my $original_ok = \&Test::Builder::ok;
@@ -367,9 +378,15 @@ sub runtests {
                 foreach my $test ( @test_methods ) { 
                     local $Current_method = $test;
                     $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-                    foreach my $method (@setup, $test, @teardown) {
+                    my @methods_to_run = (@setup, $test, @teardown);
+                    while ( my $method = shift @methods_to_run ) {
                         _show_header($t, @tests) unless _has_no_tests($t, $method);
                         $all_passed = 0 unless _run_method($t, $method, \@tests);
+                        if ( _threw_exception( $t, $method ) ) {
+                            my $num_to_skip = _total_num_tests($t, @methods_to_run);
+                            $Builder->skip( "$method died" ) for ( 1 .. $num_to_skip );
+                            last;
+                        };
                     };
                 };
                 foreach my $method (_get_methods($t, SHUTDOWN)) {
@@ -1658,6 +1675,7 @@ This is yet another implementation of the ideas from Kent Beck's Testing Framewo
 Thanks to 
 Adam Kennedy,
 agianni,
+Alexander D'Archangel,
 Andrew Grangaard,
 Apocalypse,
 Ask Bjorn Hansen,

@@ -7,11 +7,12 @@ Changes for Perl extension Test-Class
     -   Fixed RT#56636: feature request: option to turn off auto-skipping 
         uncompleted tests (thanks to Ken Fox for suggestion) with addition
         of fail_if_returned_early() (thanks to Dave Evans for patch)
-    -   startup and shutdown methods are no longer run if a class will not
+    -   Fixed RT#64268: dying in setup does not skip rest of test
+    -   Startup and shutdown methods are no longer run if a class will not
         run any test methods
     -   Updated acknowledgements
-    -   Added missing filter tests to MANIFEST& distribution
-
+    -   Added missing filter tests to MANIFEST & distribution
+    
 0.36 - or the "Adrian should have released this earlier" release [2010-08-19]
         (Thanks to Mark Morgan for doing all the useful work on this one!)
     -   New add_filter() method allows global filtering of test methods

@@ -25,6 +25,6 @@ $ENV{TEST_VERBOSE}=0;
 test_out("not ok 1 - setup (for test method 'test') died (died before plan set)");
 test_fail(+3);
 test_err( "#   (in Object::Test->setup)" );
-test_out("ok 2 - test just here to get setup method run");
+test_out("ok 2 # skip setup died");
 Object::Test->runtests;
 test_test("die before plan");
