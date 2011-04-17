@@ -288,7 +288,8 @@ sub _run_method {
                 $exception = '';
             } else {
                 if ($self->fail_if_returned_early) {
-                    $Builder->ok(0, "(returned before plan complete)");
+                    my $class = ref $self;
+                    $Builder->ok(0, "($class\::$method returned before plan complete)");
                 } else {
                     $Builder->skip( $skip_reason );
                 }
@@ -1507,7 +1508,7 @@ For example, if you had a test script that only applied to the darwin OS you cou
 
 =item B<add_testinfo>
 
-  CLASS->add_test($name, $type, $num_tests)
+  CLASS->add_testinfo($name, $type, $num_tests)
 
 Chiefly for use by libraries like L<Test::Class::Sugar>, which can't use the C<:Test(...)> interfaces make test methods. C<add_testinfo> informs the class about a test method that has been defined without a C<Test>, C<Tests> or other attribute.
 
