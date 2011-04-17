@@ -898,7 +898,9 @@ with:
   
 If more than one test remains after an exception then the first one is failed, and the remaining ones are skipped.
 
-Startup methods are a special case. Since startup methods will usually be creating state needed by all the other test methods an exception within a startup method will prevent all other test methods running.
+If the setup method of a test method dies, then all of the remaining setup and shutdown methods are also skipped.
+
+Since startup methods will usually be creating state needed by all the other test methods an exception within a startup method will prevent all other test methods of that class running.
 
 
 =head1 RETURNING EARLY
