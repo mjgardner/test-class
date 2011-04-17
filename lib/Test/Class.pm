@@ -287,12 +287,18 @@ sub _run_method {
                 $skip_reason = "$method died";
                 $exception = '';
             } else {
-                $Builder->skip( $skip_reason );
+                if ($self->fail_if_returned_early) {
+                    $Builder->ok(0, "(returned before plan complete)");
+                } else {
+                    $Builder->skip( $skip_reason );
+                }
             };
         };
     };
     return(_all_ok_from($self, $num_start));
 };
+
+sub fail_if_returned_early { 0 }
 
 sub _show_header {
     my ($self, @tests) = @_;
@@ -876,9 +882,27 @@ If more than one test remains after an exception then the first one is failed, a
 
 Startup methods are a special case. Since startup methods will usually be creating state needed by all the other test methods an exception within a startup method will prevent all other test methods running.
 
+
+=head1 RETURNING EARLY
+
+If a test method returns before it has run all of its tests, by default the missing tests are deemed to have been skipped; see L<"Skipped Tests"> for more information.
+
+However, if the class's C<fail_if_returned_early> method returns true, then the missing tests will be deemed to have failed.  For example,
+
+  package MyClass;
+  use base 'Test::Class';
+  sub fail_if_returned_early { 1 }
+
+  sub oops : Tests(8) {
+    for (my $n=1; $n*$n<50; ++$n) {
+      ok 1, "$n squared is less than fifty";
+    }
+  }
+
+
 =head1 SKIPPED TESTS
 
-You can skip the rest of the tests in a method by returning from the method before all the test have finished running. The value returned is used as the reason for the tests being skipped.
+You can skip the rest of the tests in a method by returning from the method before all the test have finished running (but see L<"Returning Early"> for how to change this). The value returned is used as the reason for the tests being skipped.
 
 This makes managing tests that can be skipped for multiple reasons very simple. For example:
 
@@ -1500,6 +1524,11 @@ Note that filters will only be run for normal test methods, they are ignored for
 
 See the section on the L</"GENERAL FILTERING OF TESTS"> for more information.
 
+=item B<fail_if_returned_early>
+
+Controls what happens if a method returns before it has run all of its tests.  It is called with no arguments in boolean context; if it returns true, then the missing tests fail, otherwise, they skip.  See L<"Returning Early"> and L<"Skipped Tests">.
+
+
 =back
 
 
@@ -1628,14 +1657,15 @@ This is yet another implementation of the ideas from Kent Beck's Testing Framewo
 Thanks to 
 Adam Kennedy,
 agianni,
-Apocalypse,
 Andrew Grangaard,
+Apocalypse,
 Ask Bjorn Hansen,
 Chris Dolan,
 Chris Williams,
 Corion, 
 Cosimo Streppone,
 Daniel Berger,
+Dave Evans,
 Dave O'Neill,
 David Cantrell,
 David Wheeler,
@@ -1653,6 +1683,7 @@ John West,
 Jonathan R. Warden,
 Joshua ben Jore,
 Jost Krieger,
+Ken Fox,
 Kenichi Ishigaki
 Lee Goddard,
 Mark Morgan,
