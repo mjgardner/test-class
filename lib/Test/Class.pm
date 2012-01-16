@@ -720,6 +720,15 @@ Just like setup and teardown methods you can pass an optional number of tests to
   sub example : Test(startup => 1) {
       ok(1, 'a startup method with one test');
   };
+  
+If you want to run an unknown number of tests within your startup method, you need to say e.g.
+
+  sub example : Test(startup => no_plan) {
+     ok(1, q{The first of many tests that don't want to have to count});
+     ...
+  }
+
+as the : Tests attribute behaves exactly like : Test in this context.
 
 If a startup method has a failing test or throws an exception then all other tests for the current test object are ignored. 
 
