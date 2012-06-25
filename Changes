@@ -1,6 +1,6 @@
 Changes for Perl extension Test-Class
 
-0.37 - or the "QA Hackathon 2011" release [2011-04-XX]
+0.37 - or the "amazingly late QA Hackathon 2011" release [2012-06-25]
     -   Fixed RT#64470: minor documentation error in Test::Class::Load (thanks
         to Andrew Grangaard for patch)
     -   Fixed RT#39266: Test::Class with Package::Alias
