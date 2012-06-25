@@ -275,7 +275,7 @@ RUNNING TESTS
   
       # and run them all
       Test::Class->runtests;
-  
+
     You can use Test::Class::Load to automatically load all the test classes
     in a given set of directories.
 
@@ -355,7 +355,7 @@ TEST DESCRIPTIONS
     test description, for example:
 
       is $something, $something_else, 'a description of my test';
-    
+
     If you do not supply a test description, and the test function does not
     supply its own default, then Test::Class will use the name of the
     currently running test method, replacing all "_" characters with spaces
@@ -364,7 +364,7 @@ TEST DESCRIPTIONS
       sub one_plus_one_is_two : Test {
           is 1+1, 2;
       }
-  
+
     will result in:
 
       ok 1 - one plus one is two
@@ -437,18 +437,40 @@ HANDLING EXCEPTIONS
       sub read_file : Test {
           is(read_file('test.txt'), "content", 'test file read');
       };
-  
+
     If more than one test remains after an exception then the first one is
     failed, and the remaining ones are skipped.
 
-    Startup methods are a special case. Since startup methods will usually
-    be creating state needed by all the other test methods an exception
-    within a startup method will prevent all other test methods running.
+    If the setup method of a test method dies, then all of the remaining
+    setup and shutdown methods are also skipped.
+
+    Since startup methods will usually be creating state needed by all the
+    other test methods an exception within a startup method will prevent all
+    other test methods of that class running.
+
+RETURNING EARLY
+    If a test method returns before it has run all of its tests, by default
+    the missing tests are deemed to have been skipped; see "Skipped Tests"
+    for more information.
+
+    However, if the class's "fail_if_returned_early" method returns true,
+    then the missing tests will be deemed to have failed. For example,
+
+      package MyClass;
+      use base 'Test::Class';
+      sub fail_if_returned_early { 1 }
+
+      sub oops : Tests(8) {
+        for (my $n=1; $n*$n<50; ++$n) {
+          ok 1, "$n squared is less than fifty";
+        }
+      }
 
 SKIPPED TESTS
     You can skip the rest of the tests in a method by returning from the
-    method before all the test have finished running. The value returned is
-    used as the reason for the tests being skipped.
+    method before all the test have finished running (but see "Returning
+    Early" for how to change this). The value returned is used as the reason
+    for the tests being skipped.
 
     This makes managing tests that can be skipped for multiple reasons very
     simple. For example:
@@ -642,11 +664,11 @@ A NOTE ON LOADING TEST CLASSES
     modules. Basically while:
 
       require $some_test_class;
-  
+
     will break, doing:
 
       BEGIN { require $some_test_class };
-  
+
     will work just fine. For more information on CHECK blocks see "BEGIN,
     CHECK, INIT and END" in perlmod.
 
@@ -831,7 +853,7 @@ METHODS
         "runtests" is used to run test classes. At its most basic doing:
 
           $test->runtests
-  
+
         will run the test methods of the test object $test, unless
         "$test->SKIP_CLASS" returns a true value.
 
@@ -871,7 +893,7 @@ METHODS
   
           # run all the Foo*Test modules we just loaded
           Test::Class->runtests;
-    
+
     SKIP_CLASS
           $reason = CLASS->SKIP_CLASS;
           CLASS->SKIP_CLASS( $reason );
@@ -885,7 +907,7 @@ METHODS
         class that should not run just add the following to your module:
 
           My::Abstract::Test->SKIP_CLASS( 1 );
-  
+
         This will not affect any sub-classes of "My::Abstract::Test" which
         will run as normal.
 
@@ -899,9 +921,9 @@ METHODS
 
         will output something like this if "POSTGRES_HOME" is not set
 
-                ... other tests ...
-                ok 123 # skip My::Postgres::Test  - $POSTGRES_HOME needs to be set
-                ... more tests ...
+            ... other tests ...
+            ok 123 # skip My::Postgres::Test  - $POSTGRES_HOME needs to be set
+            ... more tests ...
 
         You can also override SKIP_CLASS for a class hierarchy. For example,
         to prevent any subclasses of My::Postgres::Test running we could
@@ -910,7 +932,7 @@ METHODS
           sub My::Postgres::Test::SKIP_CLASS {
               $ENV{POSTGRES_HOME} ? 0 : '$POSTGRES_HOME needs to be set'
           };
-  
+
   Fetching and setting a method's test number
     num_method_tests
           $n = $Tests->num_method_tests($method_name)
@@ -1103,7 +1125,7 @@ METHODS
           };
 
     add_testinfo
-          CLASS->add_test($name, $type, $num_tests)
+          CLASS->add_testinfo($name, $type, $num_tests)
 
         Chiefly for use by libraries like Test::Class::Sugar, which can't
         use the ":Test(...)" interfaces make test methods. "add_testinfo"
@@ -1127,6 +1149,12 @@ METHODS
 
         See the section on the "GENERAL FILTERING OF TESTS" for more
         information.
+
+    fail_if_returned_early
+        Controls what happens if a method returns before it has run all of
+        its tests. It is called with no arguments in boolean context; if it
+        returns true, then the missing tests fail, otherwise, they skip. See
+        "Returning Early" and "Skipped Tests".
 
 HELP FOR CONFUSED JUNIT USERS
     This section is for people who have used JUnit (or similar) and are
@@ -1280,16 +1308,18 @@ ACKNOWLEDGMENTS
     This is yet another implementation of the ideas from Kent Beck's Testing
     Framework paper <http://www.xprogramming.com/testfram.htm>.
 
-    Thanks to Adam Kennedy, agianni, Apocalypse, Ask Bjorn Hansen, Chris
-    Dolan, Chris Williams, Corion, Cosimo Streppone, Daniel Berger, Dave
-    O'Neill, David Cantrell, David Wheeler, Emil Jansson, Gunnar Wolf, Hai
+    Thanks to Adam Kennedy, agianni, Alexander D'Archangel, Andrew
+    Grangaard, Apocalypse, Ask Bjorn Hansen, Chris Dolan, Chris Williams,
+    Corion, Cosimo Streppone, Daniel Berger, Dave Evans, Dave O'Neill, David
+    Cantrell, David Wheeler, Diab Jerius, Emil Jansson, Gunnar Wolf, Hai
     Pham, Hynek, imacat, Jeff Deifik, Jim Brandt, Jochen Stenzel, Johan
     Lindstrom, John West, Jonathan R. Warden, Joshua ben Jore, Jost Krieger,
-    Kenichi Ishigaki Lee Goddard, Mark Reynolds, Mark Stosberg, Martin
-    Ferrari, Mathieu Sauve-Frankel, Matt Trout, Matt Williamson, Michael G
-    Schwern, Murat Uenalan, Nicholas Clark, Ovid, Piers Cawley, Rob Kinyon,
-    Scott Lanning, Sebastien Aperghis-Tramoni, Steve Kirkup, Stray Toaster,
-    Ted Carnahan, Terrence Brannon, Tom Metro, Tony Bowden, Tony Edwardson,
+    Ken Fox, Kenichi Ishigaki Lee Goddard, Mark Morgan, Mark Reynolds, Mark
+    Stosberg, Martin Ferrari, Mathieu Sauve-Frankel, Matt Trout, Matt
+    Williamson, Michael G Schwern, Murat Uenalan, Naveed Massjouni, Nicholas
+    Clark, Ovid, Piers Cawley, Rob Kinyon, Sam Raymer, Scott Lanning,
+    Sebastien Aperghis-Tramoni, Steve Kirkup, Stray Toaster, Ted Carnahan,
+    Terrence Brannon, Todd W, Tom Metro, Tony Bowden, Tony Edwardson,
     William McKee, various anonymous folk and all the fine people on perl-qa
     for their feedback, patches, suggestions and nagging.
 
