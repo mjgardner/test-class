@@ -41,6 +41,8 @@ END {
 	seek $io, SEEK_SET, 0;
 	while (my $actual = <$io>) {
 		chomp($actual);
+		next if $actual =~ /^TAP version \d+/;
+		$actual =~ s{# skip\b}{# skip}i; # normalize directives
 		my $expected=<DATA>; chomp($expected);
 		ok($actual, $expected);
 	};

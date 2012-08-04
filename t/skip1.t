@@ -18,9 +18,9 @@ Test::Class->SKIP_ALL("skipping");
 END {
 	seek $io, SEEK_SET, 0;
 	print "1..1\n";
-	my $output = <$io>;
-	chomp($output);
-	my $ok = $output =~ /^1..0 # Skip skipping$/i;
+	my @output = <$io>;
+	shift @output if $output[0] =~ /^TAP version \d+/; 
+	my $ok = $output[0] =~ /^1..0 # Skip skipping$/i;
 	print "not " unless $ok;
 	print "ok 1 - SKIP_ALL called skip_all\n";
 };
