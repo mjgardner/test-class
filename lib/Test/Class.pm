@@ -230,11 +230,19 @@ sub _has_no_tests {
 
 sub _all_ok_from {
     my ($self, $start_test) = @_;
-    my $current_test = $Builder->current_test;
-    return(1) if $start_test == $current_test;
-    my @results = ($Builder->summary)[$start_test .. $current_test-1];
-    foreach my $result (@results) { return(0) unless $result };
-    return(1);
+
+    # The Test::Builder 1.5 way to do it
+    if( $Builder->can("history") ) {
+        return $Builder->history->can_succeed;
+    }
+    # The Test::Builder 0.x way to do it
+    else {
+        my $current_test = $Builder->current_test;
+        return(1) if $start_test == $current_test;
+        my @results = ($Builder->summary)[$start_test .. $current_test-1];
+        foreach my $result (@results) { return(0) unless $result };
+        return(1);
+    }
 };
 
 sub _exception_failure {
@@ -440,7 +448,8 @@ sub FAIL_ALL {
     my $last_test = _last_test_if_exiting_immediately();
     $Builder->expected_tests( $last_test ) unless $Builder->has_plan;
     $Builder->ok(0, $reason) until $Builder->current_test >= $last_test;
-    my $num_failed = grep( !$_, $Builder->summary );
+    my $num_failed = $Builder->can("history")
+      ? $Builder->history->fail_count : grep( !$_, $Builder->summary );
     exit( $num_failed < 254 ? $num_failed : 254 );
 };
 
