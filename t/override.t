@@ -4,11 +4,8 @@ use strict;
 use warnings;
 use Test::More tests => 1;
 
-my $warning;
-
 BEGIN {
-
-    $SIG{ __WARN__ } = sub { $warning = "@_" };
+    use t::WarnCatch; # has to be use so that it runs earlier than BEGIN
 
     {
         package Base::Test;
@@ -25,5 +22,5 @@ BEGIN {
     }
 }
 
-like $warning, qr/overriding public method/,
+like t::WarnCatch::Caught, qr/overriding public method/,
     'cannot override a public method with a test method';
