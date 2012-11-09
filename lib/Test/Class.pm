@@ -13,12 +13,6 @@ use Test::Class::MethodInfo;
 
 our $VERSION = '0.37';
 
-my $Check_block_has_run;
-{
-    no warnings 'void';
-    CHECK { $Check_block_has_run = 1 };
-}
-
 use constant NO_PLAN    => "no_plan";
 use constant SETUP      => "setup";
 use constant TEST       => "test";
@@ -92,7 +86,7 @@ sub _is_public_method {
     return 1;
 }
 
-sub Test : ATTR(CODE,RAWDATA) {
+sub Test : ATTR(CODE,RAWDATA,BEGIN) {
     my ($class, $symbol, $code_ref, $attr, $args) = @_;
     if ($symbol eq "ANON") {
         warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
@@ -105,7 +99,7 @@ sub Test : ATTR(CODE,RAWDATA) {
     };
 };
 
-sub Tests : ATTR(CODE,RAWDATA) {
+sub Tests : ATTR(CODE,RAWDATA,BEGIN) {
     my ($class, $symbol, $code_ref, $attr, $args) = @_;
     $args ||= 'no_plan';
     Test( $class, $symbol, $code_ref, $attr, $args );
@@ -346,8 +340,6 @@ sub _test_classes {
 };
 
 sub runtests {
-    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
-        unless $Check_block_has_run;
     my @tests = @_;
     if (@tests == 1 && !ref($tests[0])) {
         my $base_class = shift @tests;
