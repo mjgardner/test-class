@@ -161,7 +161,7 @@ For example:
       my ( $class, $file, $dir ) = @_;
 
       # return unless it's a .pm (the default)
-      return unless $class->SUPER:is_test_class( $file, $dir );
+      return unless $class->SUPER::is_test_class( $file, $dir );
     
       # and only allow .pm files with "Good" in their filename
       return $file =~ m{Good};

@@ -4,6 +4,7 @@
 ^blib/
 ^blibdirs$
 ^Build$
+Build.bat
 ^examples
 ^Makefile$
 ^MANIFEST.SKIP$
@@ -18,3 +19,4 @@ Makefile.old
 Makefile$
 ^cover_db
 ^MYMETA.yml$
+^MYMETA\.json$
