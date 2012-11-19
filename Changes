@@ -3,6 +3,8 @@ Changes for Perl extension Test-Class
 0.38   or the "We need Test::Class to work on Windows" release [2012-11-19]
     -   die-in-setup.t will work on Windows (thanks to Alexandr Ciornii for
         the patch)
+    -   Fix docs to explain "no_plan" in start up" (thanks to skington for the
+        patch)
 
 0.37 - or the "amazingly late QA Hackathon 2011" release [2012-06-25]
     -   Fixed RT#64470: minor documentation error in Test::Class::Load (thanks
