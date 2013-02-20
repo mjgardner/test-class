@@ -37,6 +37,7 @@ sub builder { $Builder };
 
 my $Tests = {};
 my @Filters = ();
+my %_Test_Failure = ();
 
 
 my %_Test;  # inside-out object field indexed on $self
@@ -275,6 +276,7 @@ sub _run_method {
         unless ( $is_ok ) {
             my $class = ref $self;
             $Builder->diag( "  (in $class->$method)" );
+            $_Test_Failure{$class}{$method}++;
         };
         return $is_ok;
     };
@@ -397,8 +399,22 @@ sub runtests {
             
         }
     }
+    if (!$all_passed && $ENV{TEST_VERBOSE}) {
+        $Builder->diag(_test_failures())
+    }
     return($all_passed);
 };
+
+sub _test_failures {
+    my $message = "Test failures were as follows:\n";
+    for my $class (sort keys %_Test_Failure) {
+        $message .= "  $class:\n";
+        for my $method (sort keys %{$_Test_Failure{$class}}) {
+            $message .= "    ->$method\n";
+        }
+    }
+    return $message;
+}
 
 sub _find_calling_test_class {
     my $level = 0;
@@ -1306,6 +1322,15 @@ If the environment variable C<TEST_VERBOSE> is set C<runtests> will display the 
   ok 1 - fribble
   # My::Test::Class->another_test
   ok 2 - bar
+
+If there are any errors in your tests, and C<TEST_VERBOSE> is set, C<runtests> will display a summary of the failing tests after all the tests have been run:
+
+  # Test failures were as follows:
+  #   My::Test::Class
+  #     ->my_test
+  #     ->another_test
+  #   My::Other::Test::Class
+  #     ->this_test
 
 Just like L<expected_tests()|/"expected_tests">, C<runtests> can take an optional list of test object/classes and integers. All of the test object/classes are run. Any integers are added to the total number of tests shown in the test header output by C<runtests>. 
 
