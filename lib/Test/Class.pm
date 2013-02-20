@@ -342,7 +342,7 @@ sub _isa_class {
 
 sub _test_classes {
     my $class = shift;
-    return( @{mro::get_isarev($class)}, $class );
+    return( sort @{mro::get_isarev($class)}, $class );
 };
 
 sub runtests {
