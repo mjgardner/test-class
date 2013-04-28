@@ -1,5 +1,9 @@
 Changes for Perl extension Test-Class
 
+0.39   or the "For the QA Hackathon 2013" release [2013-04-12]
+    -   Merged schwern's https://github.com/adrianh/test-class/pull/2 
+        "Fix Test::Class for Test::Builder 1.5" - thank you Schwern!
+    
 0.38   or the "We need Test::Class to work on Windows" release [2012-11-19]
     -   Many thanks to the ever excellent Ovid for actually making this happen.
     -   die-in-setup.t will work on Windows (thanks to Alexandr Ciornii for

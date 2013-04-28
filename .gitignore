@@ -10,3 +10,4 @@ Makefile.PL
 MYMETA.json
 META.json
 README
+Test-Class-*.tar.gz
