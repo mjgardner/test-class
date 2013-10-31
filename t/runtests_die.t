@@ -23,10 +23,10 @@ $ENV{TEST_VERBOSE}=0;
 my $filename = sub { return (caller)[1] }->();
 my $identifier = ($Test::More::VERSION < 0.88) ? 'object' : 'thing';
 
-test_out( "not ok 1 - The $identifier isa Object");
+test_out( qr/not ok 1 - (?:The $identifier|undef) isa '?Object'?\n/);
 test_err( "#     Failed test ($filename at line 15)");
 test_err( "#   (in Foo->test_object)" );
-test_err( "#     The $identifier isn't defined");
+test_err( qr/#     (?:The $identifier|undef) isn't defined\n/);
 test_out( "not ok 2 - test_object died (could not create object)");
 test_err( "#     Failed test ($filename at line 33)");
 test_err( "#   (in Foo->test_object)" );
