@@ -1,5 +1,9 @@
 Changes for Perl extension Test-Class
 
+0.40   or the "rjbs wants to install App::GitGot" release [2013-10-31]
+    -   Applied Zefram's fix for RT#89473, Test::Class fails on Test::Builder
+        0.99
+
 0.39   or the "For the QA Hackathon 2013" release [2013-04-12]
     -   Merged schwern's https://github.com/adrianh/test-class/pull/2 
         "Fix Test::Class for Test::Builder 1.5" - thank you Schwern!
