@@ -39,16 +39,9 @@ my $Tests = {};
 my @Filters = ();
 
 
-my %_Test;  # inside-out object field indexed on $self
-
-sub DESTROY {
-    my $self = shift;
-    delete $_Test{ $self };
-};
-
 sub _test_info {
     my $self = shift;
-    return ref($self) ? $_Test{$self} : $Tests;
+    return ref($self) ? $self->{Tests} : $Tests;
 };
 
 sub _method_info {
@@ -130,7 +123,7 @@ sub new {
     my $class = _class_of( $proto );
     $proto = {} unless ref($proto);
     my $self = bless {%$proto, @_}, $class;
-    $_Test{$self} = dclone($Tests);
+    $self->{Tests} = dclone($Tests);
     return($self);
 };
 
