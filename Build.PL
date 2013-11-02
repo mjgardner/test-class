@@ -13,6 +13,9 @@ my $build = Module::Build->new(
         'Test::Builder::Tester' => '1.02',
         'Test::More'            => '0.78',
     },
+    test_requires => {
+        'Moose'                 => '2.04',
+    },
     build_requires => {
         'Test::Exception'       => '0.25',
         'IO::File'              => '1.09',
