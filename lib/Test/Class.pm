@@ -240,7 +240,7 @@ sub _all_ok_from {
 
 sub _exception_failure {
     my ($self, $method, $exception, $tests) = @_;
-    local $Test::Builder::Level = 3;
+    local $Test::Builder::Level = 4;
     my $message = $method;
     $message .= " (for test method '$Current_method')"
             if defined $Current_method && $method ne $Current_method;
@@ -355,7 +355,7 @@ sub runtests {
         @tests = $base_class->_test_classes;
     };
     my $all_passed = 1;
-    TEST_OBJECT: foreach my $t (@tests) {
+    foreach my $t (@tests) {
         # SHOULD ALSO ALLOW NO_PLAN
         next if $t =~ m/^\d+$/;
         croak "$t is not Test::Class or integer"
@@ -365,41 +365,46 @@ sub runtests {
             $Builder->skip( $reason ) unless $reason eq "1";
         } else {
             $t = $t->new unless ref($t);
-            my @test_methods    = $t->_get_methods(TEST);
-            if ( @test_methods ) {
-                foreach my $method ($t->_get_methods(STARTUP)) {
-                    $t->_show_header(@tests) unless $t->_has_no_tests($method);
-                    my $method_passed = $t->run_method($method, \@tests);
-                    $all_passed = 0 unless $method_passed;
-                    next TEST_OBJECT unless $method_passed;
-                };
-                my $class = ref($t);
-                my @setup           = $t->_get_methods(SETUP);
-                my @teardown        = $t->_get_methods(TEARDOWN);
-                foreach my $test ( @test_methods ) { 
-                    local $Current_method = $test;
-                    $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
-                    my @methods_to_run = (@setup, $test, @teardown);
-                    while ( my $method = shift @methods_to_run ) {
-                        $t->_show_header(@tests) unless $t->_has_no_tests($method);
-                        $all_passed = 0 unless $t->run_method($method, \@tests);
-                        if ( $t->_threw_exception($method ) ) {
-                            my $num_to_skip = $t->_total_num_tests(@methods_to_run);
-                            $Builder->skip( "$method died" ) for ( 1 .. $num_to_skip );
-                            last;
-                        };
-                    };
-                };
-                foreach my $method ($t->_get_methods(SHUTDOWN)) {
-                    $t->_show_header(@tests) unless $t->_has_no_tests($method);
-                    $all_passed = 0 unless $t->run_method($method, \@tests);
-                }
-            }
-            
+            $all_passed = $t->run_class_tests($all_passed,\@tests);
         }
     }
     return($all_passed);
 };
+
+sub run_class_tests {
+    my ($t,$all_passed,$tests) = @_;
+    my @test_methods    = $t->_get_methods(TEST);
+    if ( @test_methods ) {
+        foreach my $method ($t->_get_methods(STARTUP)) {
+            $t->_show_header(@$tests) unless $t->_has_no_tests($method);
+            my $method_passed = $t->run_method($method, $tests);
+            $all_passed = 0 unless $method_passed;
+            return $all_passed unless $method_passed;
+        };
+        my $class = ref($t);
+        my @setup           = $t->_get_methods(SETUP);
+        my @teardown        = $t->_get_methods(TEARDOWN);
+        foreach my $test ( @test_methods ) { 
+            local $Current_method = $test;
+            $Builder->diag("\n$class->$test") if $ENV{TEST_VERBOSE};
+            my @methods_to_run = (@setup, $test, @teardown);
+            while ( my $method = shift @methods_to_run ) {
+                $t->_show_header(@$tests) unless $t->_has_no_tests($method);
+                $all_passed = 0 unless $t->run_method($method, $tests);
+                if ( $t->_threw_exception($method ) ) {
+                    my $num_to_skip = $t->_total_num_tests(@methods_to_run);
+                    $Builder->skip( "$method died" ) for ( 1 .. $num_to_skip );
+                    last;
+                };
+            };
+        };
+        foreach my $method ($t->_get_methods(SHUTDOWN)) {
+            $t->_show_header(@$tests) unless $t->_has_no_tests($method);
+            $all_passed = 0 unless $t->run_method($method, $tests);
+        }
+    }
+    return $all_passed;
+}
 
 sub _find_calling_test_class {
     my $level = 0;
