@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+0.41   or the "0.99 was a bad year" release [2013-11-30]
+    -   require a newer Test::Builder if 0.99 is installed RT#90699
+
 0.40   or the "rjbs wants to install App::GitGot" release [2013-11-04]
     -   Applied Zefram's fix for RT#89473, Test::Class fails on Test::Builder
         0.99
