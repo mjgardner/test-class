@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+    -   properly handle thrown exceptions that stringify to the empty string
+        before or after chomping (Karen Etheridge, PR#11)
+
 0.41   or the "0.99 was a bad year" release [2013-11-30]
     -   require a newer Test::Builder if 0.99 is installed RT#90699
 

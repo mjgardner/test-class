@@ -252,6 +252,7 @@ sub _exception_failure {
     $message .= " (for test method '$Current_method')"
             if defined $Current_method && $method ne $Current_method;
     _show_header($self, @$tests);
+    chomp $exception;
     $Builder->ok(0, "$message died ($exception)");
     _threw_exception( $self, $method => 1 );
 };
@@ -289,19 +290,18 @@ sub _run_method {
     $skip_reason = eval {$self->$method};
     $skip_reason = $method unless $skip_reason;
     my $exception = $@;
-    chomp($exception) if $exception;
     my $num_done = $Builder->current_test - $num_start;
     my $num_expected = _total_num_tests($self, $method);
     $num_expected = $num_done if $num_expected eq NO_PLAN;
     if ($num_done == $num_expected) {
         _exception_failure($self, $method, $exception, $tests) 
-                unless $exception eq '';
+                if $exception;
     } elsif ($num_done > $num_expected) {
         my $class = ref $self;
         $Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
     } else {
         until (($Builder->current_test - $num_start) >= $num_expected) {
-            if ($exception ne '') {
+            if ($exception) {
                 _exception_failure($self, $method, $exception, $tests);
                 $skip_reason = "$method died";
                 $exception = '';
