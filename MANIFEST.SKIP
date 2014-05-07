@@ -20,3 +20,4 @@ Makefile$
 ^cover_db
 ^MYMETA.yml$
 ^MYMETA\.json$
+^.ackrc$
