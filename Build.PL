@@ -19,11 +19,21 @@ my $build = Module::Build->new(
         'Test::Simple'          => '0.78',
         'Test::Builder'         => $tb_v,
         'Test::Builder::Tester' => '1.02',
-        'Test::More'            => '0.78',
+        'Carp'                  => '0',
+        'File::Find'            => '0',
+        'File::Spec'            => '0',
+        'constant'              => '0',
+        'strict'                => '0',
+        'warnings'              => '0',
     },
     build_requires => {
         'Test::Exception'       => '0.25',
         'IO::File'              => '1.09',
+        'Test::More'            => '0.78',
+        'Fcntl'                 => '0',
+        'Test'                  => '0',
+        'base'                  => '0',
+        'overload'              => '0',
     },
     meta_merge => {
         resources => {
