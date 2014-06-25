@@ -1,4 +1,4 @@
-use Module::Build;
+use Module::Build 0.4004;    # test_requires
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ my $build = Module::Build->new(
         'strict'                => '0',
         'warnings'              => '0',
     },
-    build_requires => {
+    test_requires => {
         'Test::Exception'       => '0.25',
         'IO::File'              => '1.09',
         'Test::More'            => '0.78',
