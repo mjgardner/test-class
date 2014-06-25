@@ -11,6 +11,9 @@ my $tb_v = Test::Builder->VERSION eq '0.99' ? '1.001002' : '0.78';
 my $build = Module::Build->new(
     module_name => 'Test::Class',
     license     => 'perl',
+    configure_requires => {
+        'Module::Build'         => '0.4004',
+    },
     requires    => {
         'perl'                  => '5.008001',
         'Attribute::Handlers'   => '0.77',
