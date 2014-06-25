@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+0.43
+    -   specify test prereqs as test_requires rather than build_requires
+
 0.42   or the "how did I get stuck with co-maint?" release [2014-05-07]
     -   properly handle thrown exceptions that stringify to the empty string
         before or after chomping (Karen Etheridge, PR#11)
