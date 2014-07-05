@@ -1,6 +1,6 @@
 Changes for Perl extension Test-Class
 
-0.44
+0.44   [2014-07-04]
     -   run teardown method even if test method dies, as in version 0.37 and
         earlier
 
