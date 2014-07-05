@@ -1,5 +1,9 @@
 Changes for Perl extension Test-Class
 
+0.44
+    -   run teardown method even if test method dies, as in version 0.37 and
+        earlier
+
 0.43   [2014-06-25]
     -   specify test prereqs as test_requires rather than build_requires
 
