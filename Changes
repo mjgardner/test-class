@@ -1,5 +1,7 @@
 Changes for Perl extension Test-Class
 
+    -   bump minimum required version of Test::More (RT#96951)
+
 0.44   [2014-07-04]
     -   run teardown method even if test method dies, as in version 0.37 and
         earlier
