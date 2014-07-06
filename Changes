@@ -1,5 +1,6 @@
 Changes for Perl extension Test-Class
 
+0.45   [2014-07-05]
     -   bump minimum required version of Test::More (RT#96951)
 
 0.44   [2014-07-04]
