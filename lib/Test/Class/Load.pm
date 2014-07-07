@@ -7,7 +7,7 @@ use Test::Class;
 use File::Find;
 use File::Spec;
 
-our $VERSION = '0.45';
+our $VERSION = '0.46';
 
 # Override to get your own filter
 sub is_test_class {

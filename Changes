@@ -1,5 +1,6 @@
 Changes for Perl extension Test-Class
 
+0.46   [2014-07-06]
     -   fix new teardown tests for MSWin32
 
 0.45   [2014-07-05]
