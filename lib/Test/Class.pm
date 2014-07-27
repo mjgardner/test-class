@@ -650,7 +650,7 @@ You define test methods using the L<Test|/"Test"> attribute. For example:
   use Test::More;
 
   sub subtraction : Test {
-      is( 2-1, 1, 'subtraction works );
+      is( 2-1, 1, 'subtraction works' );
   };
 
 This declares the C<subtraction> method as a test method that runs one test. 
