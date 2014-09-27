@@ -1,5 +1,6 @@
 Changes for Perl extension Test-Class
 
+0.47   [2014-09-26]
     - fixes for Test::More 1.301001_* series (PR#17, PR#18, Chad Granum)
 
 0.46   [2014-07-06]

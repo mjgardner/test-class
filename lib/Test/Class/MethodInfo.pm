@@ -4,7 +4,7 @@ use warnings;
 package Test::Class::MethodInfo;
 use Carp;
 
-our $VERSION = '0.46';
+our $VERSION = '0.47';
 
 sub new {
     my ( $class, %param ) = @_;
