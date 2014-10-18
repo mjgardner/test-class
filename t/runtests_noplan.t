@@ -11,15 +11,15 @@ use base qw(Test::Class);
 
 sub set_tests : Test(1) {
 	pass("this should pass");
-};
+}
 
 sub undef_tests : Test(no_plan) {
 	my $self = shift;
 	my $n = $self->{runtime_tests};
 	foreach $n (1..$n) {
 		pass("runtime test $n");
-	};
-};
+	}
+}
 
 
 package main;

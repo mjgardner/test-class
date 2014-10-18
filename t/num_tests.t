@@ -12,7 +12,7 @@ sub test_num_tests : Test(no_plan) {
 	is($self->num_tests, 'no_plan', "num_tests access okay");
 	$self->num_tests(2);
 	is($self->num_tests, 2, "num_tests set okay");
-};
+}
 
 
 package main;

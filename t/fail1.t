@@ -18,4 +18,4 @@ END {
 	test_test("FAIL_ALL with plan");
 	is($?, 2, "exit value okay");
 	$?=0;
-};
+}

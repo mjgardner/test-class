@@ -10,17 +10,17 @@ use base qw(Test::Class);
 sub test : Test {
 	my $self = shift;
 	is($self->current_method, "test", "current_method in method"); 
-};
+}
 
 sub setup : Test(setup => 1) {
 	my $self = shift;
 	is($self->current_method, "test", "current_method in setup"); 
-};
+}
 
 sub teardown : Test(teardown => 1) {
 	my $self = shift;
 	is($self->current_method, "test", "current_method in teardown"); 
-};
+}
 
 __PACKAGE__->runtests;
 

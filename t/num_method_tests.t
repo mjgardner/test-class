@@ -11,7 +11,7 @@ sub passN {
 	my ($self, $n) = @_;
 	my $m = $self->current_method;
 	pass("$m just passing $_") foreach (1..$n);
-};
+}
 
 sub new {
 	my $class = shift;
@@ -25,23 +25,23 @@ sub new {
 	lives_ok {$self->num_method_tests('no_plan_test2', '+2')} 'updated extended';
 	is($self->num_method_tests('no_plan_test2'), '+2', 'update worked');
 	return($self);
-};
+}
 
-sub two_tests : Test(2) {$_[0]->passN(2)};
-sub no_plan_test : Test(no_plan) {$_[0]->passN(2)};
-sub no_plan_test2 : Test(no_plan) {$_[0]->passN(2)};
+sub two_tests : Test(2) {$_[0]->passN(2)}
+sub no_plan_test : Test(no_plan) {$_[0]->passN(2)}
+sub no_plan_test2 : Test(no_plan) {$_[0]->passN(2)}
 
 package Bar; use base qw(Foo);
 use Test::More;
 
-sub no_plan_test : Test(+1) {pass("just passing"); $_[0]->SUPER::no_plan_test};
+sub no_plan_test : Test(+1) {pass("just passing"); $_[0]->SUPER::no_plan_test}
 
 sub new {
 	my $class = shift;
 	my $self = $class->SUPER::new(@_);
 	is($self->num_method_tests('no_plan_test'), '+1', 'extended method okay');
 	return($self);
-};
+}
 
 
 package main;

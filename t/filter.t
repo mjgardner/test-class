@@ -9,7 +9,7 @@ use base qw(Test::Class);
 
 sub test_run : Test(1) {
 	pass( "test_run not filtered, so is run" );
-};
+}
 
 package Bar;
 use Test::More;

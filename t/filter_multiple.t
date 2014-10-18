@@ -9,7 +9,7 @@ use base qw(Test::Class);
 
 sub test_not_filtered : Test(1) {
     pass( "test_not_filtered doesn't meet any filters, so is run" );
-};
+}
 
 sub test_filter_me : Test(1) {
     fail( "shouldn't run, due to filtering of /filter_me/" );

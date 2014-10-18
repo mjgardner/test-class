@@ -6,7 +6,7 @@ use Test::More tests => 2;
 use Test::Builder::Tester;
 
 package Object;
-sub new {return(undef)};
+sub new {return(undef)}
 
 
 package Object::Test;
@@ -17,7 +17,7 @@ sub _test_new : Test(3) {
 	my $self = shift;
 	isa_ok(Object->new, "Object") 
 		|| $self->FAIL_ALL('cannot create Objects');
-};
+}
 
 
 package main;

@@ -16,7 +16,7 @@ our $VERSION = '0.47';
 my $Check_block_has_run;
 {
     no warnings 'void';
-    CHECK { $Check_block_has_run = 1 };
+    CHECK { $Check_block_has_run = 1 }
 }
 
 use constant NO_PLAN    => "no_plan";
@@ -28,11 +28,11 @@ use constant SHUTDOWN   => "shutdown";
 
 
 our $Current_method = undef;
-sub current_method { $Current_method };
+sub current_method { $Current_method }
 
 
 my $Builder = Test::Builder->new;
-sub builder { $Builder };
+sub builder { $Builder }
 
 
 my $Tests = {};
@@ -44,17 +44,17 @@ my %_Test;  # inside-out object field indexed on $self
 sub DESTROY {
     my $self = shift;
     delete $_Test{ $self };
-};
+}
 
 sub _test_info {
     my $self = shift;
     return ref($self) ? $_Test{$self} : $Tests;
-};
+}
 
 sub _method_info {
     my ($self, $class, $method) = @_;
     return( _test_info($self)->{$class}->{$method} );
-};
+}
 
 sub _methods_of_class {
     my ( $self, $class ) = @_;
@@ -62,7 +62,7 @@ sub _methods_of_class {
         or die "Test::Class internals seem confused. Did you override "
             . "new() in a sub-class or via multiple inheritance?\n";
     return values %{ $test_info->{$class} };
-};
+}
 
 sub _parse_attribute_args {
     my $args = shift || '';
@@ -76,10 +76,10 @@ sub _parse_attribute_args {
             $type = $arg;
         } else {
             die 'bad attribute args';
-        };
-    };
+        }
+    }
     return( $type, $num_tests );
-};
+}
 
 sub _is_public_method {
     my ($class, $name) = @_;
@@ -102,14 +102,14 @@ sub Test : ATTR(CODE,RAWDATA) {
                 if _is_public_method( $class, $name );
         eval { $class->add_testinfo($name, _parse_attribute_args($args)) } 
             || warn "bad test definition '$args' in $class->$name\n";   
-    };
-};
+    }
+}
 
 sub Tests : ATTR(CODE,RAWDATA) {
     my ($class, $symbol, $code_ref, $attr, $args) = @_;
     $args ||= 'no_plan';
     Test( $class, $symbol, $code_ref, $attr, $args );
-};
+}
 
 sub add_testinfo {
     my($class, $name, $type, $num_tests) = @_;
@@ -132,7 +132,7 @@ sub new {
     my $self = bless {%$proto, @_}, $class;
     $_Test{$self} = dclone($Tests);
     return($self);
-};
+}
 
 sub _get_methods {
     my ( $self, @types ) = @_;
@@ -161,13 +161,13 @@ sub _get_methods {
                     $methods{ $name } = 1 
                         unless $type eq TEST && $name !~ $method_regexp;
                 }
-            };
-        };
-    };
+            }
+        }
+    }
 
     my @methods = sort keys %methods;
     return @methods;
-};
+}
 
 sub _num_expected_tests {
     my $self = shift;
@@ -187,7 +187,7 @@ sub _num_expected_tests {
     my $num_tests = _total_num_tests($self, @test_methods);
     return(NO_PLAN) if $num_tests eq NO_PLAN;
     return($num_startup_shutdown_methods + $num_tests + @test_methods * $num_fixture_tests);
-};
+}
 
 sub expected_tests {
     my $total = 0;
@@ -201,10 +201,10 @@ sub expected_tests {
         } else {
             $test = 'undef' unless defined $test;
             croak "$test is not a Test::Class or an integer";
-        };
-    };
+        }
+    }
     return $total;
-};
+}
 
 sub _total_num_tests {
     my ($self, @methods) = @_;
@@ -218,10 +218,10 @@ sub _total_num_tests {
             return(NO_PLAN) if ($num_tests eq NO_PLAN);
             $total_num_tests += $num_tests;
             last unless $num_tests =~ m/^\+/
-        };
-    };
+        }
+    }
     return($total_num_tests);
-};
+}
 
 sub _has_no_tests {
     my ( $self, $method ) = @_;
@@ -240,10 +240,10 @@ sub _all_ok_from {
         my $current_test = $Builder->current_test;
         return(1) if $start_test == $current_test;
         my @results = ($Builder->summary)[$start_test .. $current_test-1];
-        foreach my $result (@results) { return(0) unless $result };
+        foreach my $result (@results) { return(0) unless $result }
         return(1);
     }
-};
+}
 
 sub _exception_failure {
     my ($self, $method, $exception, $tests) = @_;
@@ -255,7 +255,7 @@ sub _exception_failure {
     chomp $exception;
     $Builder->ok(0, "$message died ($exception)");
     _threw_exception( $self, $method => 1 );
-};
+}
 
 my %threw_exception;
 sub _threw_exception {
@@ -279,12 +279,12 @@ sub _run_method {
         unless ( defined($description) ) {
             $description = $self->current_method;
             $description =~ tr/_/ /;
-        };
+        }
         my $is_ok = $original_ok->($builder, $test, $description);
         unless ( $is_ok ) {
             my $class = ref $self;
             $Builder->diag( "  (in $class->$method)" );
-        };
+        }
         return $is_ok;
     };
     $skip_reason = eval {$self->$method};
@@ -312,11 +312,11 @@ sub _run_method {
                 } else {
                     $Builder->skip( $skip_reason );
                 }
-            };
-        };
-    };
+            }
+        }
+    }
     return(_all_ok_from($self, $num_start));
-};
+}
 
 sub fail_if_returned_early { 0 }
 
@@ -328,8 +328,8 @@ sub _show_header {
         $Builder->no_plan;
     } else {
         $Builder->expected_tests($num_tests);
-    };
-};
+    }
+}
 
 my %SKIP_THIS_CLASS = ();
 
@@ -337,7 +337,7 @@ sub SKIP_CLASS {
     my $class = shift;
     $SKIP_THIS_CLASS{ $class } = shift if @_;
     return $SKIP_THIS_CLASS{ $class };
-};
+}
 
 sub _isa_class {
     my ( $class, $object_or_class ) = @_;
@@ -351,7 +351,7 @@ sub _isa_class {
 sub _test_classes {
     my $class = shift;
     return( @{mro::get_isarev($class)}, $class );
-};
+}
 
 sub runtests {
     die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
@@ -360,7 +360,7 @@ sub runtests {
     if (@tests == 1 && !ref($tests[0])) {
         my $base_class = shift @tests;
         @tests = _test_classes( $base_class );
-    };
+    }
     my $all_passed = 1;
     TEST_OBJECT: foreach my $t (@tests) {
         # SHOULD ALSO ALLOW NO_PLAN
@@ -379,7 +379,7 @@ sub runtests {
                     my $method_passed = _run_method($t, $method, \@tests);
                     $all_passed = 0 unless $method_passed;
                     next TEST_OBJECT unless $method_passed;
-                };
+                }
                 my $class = ref($t);
                 my @setup           = _get_methods($t, SETUP);
                 my @teardown        = _get_methods($t, TEARDOWN);
@@ -395,9 +395,9 @@ sub runtests {
                             my $num_to_skip = _total_num_tests($t, @methods_to_run);
                             $Builder->skip( "$method died" ) for ( 1 .. $num_to_skip );
                             last;
-                        };
-                    };
-                };
+                        }
+                    }
+                }
                 foreach my $method (_get_methods($t, SHUTDOWN)) {
                     _show_header($t, @tests) unless _has_no_tests($t, $method);
                     $all_passed = 0 unless _run_method($t, $method, \@tests);
@@ -407,16 +407,16 @@ sub runtests {
         }
     }
     return($all_passed);
-};
+}
 
 sub _find_calling_test_class {
     my $level = 0;
     while (my $class = caller(++$level)) {
         next if $class eq __PACKAGE__;
         return $class if _isa_class( __PACKAGE__, $class );
-    }; 
+    }
     return(undef);
-};
+}
 
 sub num_method_tests {
     my ($self, $method, $n) = @_;
@@ -426,23 +426,23 @@ sub num_method_tests {
         or croak "$method is not a test method of class $class";
     $info->num_tests($n) if defined($n);
     return( $info->num_tests );
-};
+}
 
 sub num_tests {
     my $self = shift;
     croak "num_tests need to be called within a test method"
             unless defined $Current_method;
     return( $self->num_method_tests( $Current_method, @_ ) );
-};
+}
 
 sub BAILOUT {
     my ($self, $reason) = @_;
     $Builder->BAILOUT($reason);
-};
+}
 
 sub _last_test_if_exiting_immediately {
     $Builder->expected_tests || $Builder->current_test+1
-};
+}
 
 sub FAIL_ALL {
     my ($self, $reason) = @_;
@@ -452,7 +452,7 @@ sub FAIL_ALL {
     my $num_failed = $Builder->can("history")
       ? $Builder->history->fail_count : grep( !$_, $Builder->summary );
     exit( $num_failed < 254 ? $num_failed : 254 );
-};
+}
 
 sub SKIP_ALL {  
     my ($self, $reason) = @_;
@@ -491,14 +491,14 @@ Test::Class - Easily create test classes in an xUnit/JUnit style
   sub make_fixture : Test(setup) {
       my $array = [1, 2];
       shift->{test_array} = $array;
-  };
+  }
 
   # a test method that runs 1 test
   sub test_push : Test {
       my $array = shift->{test_array};
       push @$array, 3;
       is_deeply($array, [1, 2, 3], 'push worked');
-  };
+  }
 
   # a test method that runs 4 tests
   sub test_pop : Test(4) {
@@ -507,13 +507,13 @@ Test::Class - Easily create test classes in an xUnit/JUnit style
       is(pop @$array, 1, 'pop = 1');
       is_deeply($array, [], 'array empty');
       is(pop @$array, undef, 'pop = undef');
-  };
+  }
 
   # teardown methods are run after every test method.
   sub teardown : Test(teardown) {
       my $array = shift->{test_array};
       diag("array = (@$array) after test(s)");
-  };
+  }
 
 later in a nearby .t file
 
@@ -651,7 +651,7 @@ You define test methods using the L<Test|/"Test"> attribute. For example:
 
   sub subtraction : Test {
       is( 2-1, 1, 'subtraction works' );
-  };
+  }
 
 This declares the C<subtraction> method as a test method that runs one test. 
 
@@ -660,55 +660,55 @@ If your test method runs more than one test, you should put the number of tests 
   sub addition : Test(2) {
       is(10 + 20, 30, 'addition works');
       is(20 + 10, 30, '  both ways');
-  };
+  }
 
 If you don't know the number of tests at compile time you can use C<no_plan> like this.
 
   sub check_class : Test(no_plan) {
       my $objects = shift->{objects};
       isa_ok($_, "Object") foreach @$objects;
-  };
+  }
 
 or use the :Tests attribute, which acts just like C<:Test> but defaults to C<no_plan> if no number is given:
 
   sub check_class : Tests {
       my $objects = shift->{objects};
       isa_ok($_, "Object") foreach @$objects;
-  };
+  }
 
 
 =head2 2) Setup and teardown methods
 
 Setup and teardown methods are run before and after every test. For example:
 
-  sub before : Test(setup)    { diag("running before test") };
-  sub after  : Test(teardown) { diag("running after test") };
+  sub before : Test(setup)    { diag("running before test") }
+  sub after  : Test(teardown) { diag("running after test") }
 
 You can use setup and teardown methods to create common objects used by all of your test methods (a test I<fixture>) and store them in your Test::Class object, treating it as a hash. For example:
 
   sub pig : Test(setup) {
       my $self = shift;
       $self->{test_pig} = Pig->new;
-  };
+  }
 
   sub born_hungry : Test {
       my $pig = shift->{test_pig};
       is($pig->hungry, 'pigs are born hungry');
-  };
+  }
 
   sub eats : Test(3) {
       my $pig = shift->{test_pig};
       ok(  $pig->feed,   'pig fed okay');
       ok(! $pig->hungry, 'fed pig not hungry');
       ok(! $pig->feed,   'cannot feed full pig');
-  };
+  }
 
 You can also declare setup and teardown methods as running tests. For example you could check that the test pig survives each test method by doing:
 
   sub pig_alive : Test(teardown => 1) {
       my $pig = shift->{test_pig};
       ok($pig->alive, 'pig survived tests' );
-  };
+  }
 
 
 =head2 3) Startup and shutdown methods
@@ -719,17 +719,17 @@ You can use these to create and destroy expensive objects that you don't want to
 
   sub db_connect : Test(startup) {
       shift->{dbi} = DBI->connect;
-  };
+  }
 
   sub db_disconnect : Test(shutdown) {
       shift->{dbi}->disconnect;
-  };
+  }
 
 Just like setup and teardown methods you can pass an optional number of tests to startup and shutdown methods. For example:
 
   sub example : Test(startup => 1) {
       ok(1, 'a startup method with one test');
-  };
+  }
   
 If you want to run an unknown number of tests within your startup method, you need to say e.g.
 
@@ -872,7 +872,7 @@ Most of the time you should not care what order tests are run in, but it can occ
   sub _check_new {
       my $self = shift;
       isa_ok(Object->new, "Object") or $self->BAILOUT('new fails!');
-  };
+  }
 
 The leading C<_> will force the above method to run first - allowing the entire suite to be aborted before any other test methods run.
 
@@ -885,7 +885,7 @@ If a startup, setup, test, teardown or shutdown method dies then L<runtests()|/"
       my $object = Object->new;
       isa_ok( $object, "Object" ) or die "could not create object\n";
       ok( $object->open, "open worked" );
-  };
+  }
 
 will produce the following if the first test failed:
 
@@ -913,7 +913,7 @@ with:
 
   sub read_file : Test {
       is(read_file('test.txt'), "content", 'test file read');
-  };
+  }
   
 If more than one test remains after an exception then the first one is failed, and the remaining ones are skipped.
 
@@ -952,7 +952,7 @@ This makes managing tests that can be skipped for multiple reasons very simple. 
       ok($pig->takeoff, 'takeoff')  or return("takeoff failed");
       ok( $pig->altitude > 0, 'Pig is airborne' );
       ok( $pig->airspeed > 0, '  and moving'    );
-  };
+  }
 
 If you run this test in an environment where C<Pig-E<gt>new> worked and the takeoff method existed, but failed when ran, you would get:
 
@@ -973,8 +973,8 @@ I<Note:> if you want to skip tests in a method with C<no_plan> tests then you ha
           isa_ok($_, "Object") foreach (@$objects);
       } else {
           $self->builder->skip("no objects to test");
-      };
-  };
+      }
+  }
 
 Another way of overcoming this problem is to explicitly set the number of tests for the method at run time using L<num_method_tests()|/"num_method_tests"> or L<"num_tests">.
 
@@ -987,7 +987,7 @@ You can create todo tests just as you do in L<Test::More> and L<Test::Builder> u
   sub live_test : Test  {
       local $TODO = "live currently unimplemented";
       ok(Object->live, "object live");
-  };
+  }
 
 See L<Test::Harness/"Todo tests"> for more information.
 
@@ -1000,26 +1000,26 @@ You can extend test methods by inheritance in the usual way. For example conside
   use base qw(Test::Class);
   use Test::More;
 
-  sub testing_class { "Pig" };
-  sub new_args { (-age => 3) };
+  sub testing_class { "Pig" }
+  sub new_args { (-age => 3) }
 
   sub setup : Test(setup) {
       my $self = shift;
       my $class = $self->testing_class;
       my @args = $self->new_args;
       $self->{pig} = $class->new( @args );
-  };
+  }
 
   sub _creation : Test {
       my $self = shift;
       isa_ok($self->{pig}, $self->testing_class) 
               or $self->FAIL_ALL('Pig->new failed');
-  };
+  }
 
   sub check_fields : Test {
-      my $pig = shift->{pig};
+      my $pig = shift->{pig}
       is($pig->age, 3, "age accessed");
-  };
+  }
 
 Next consider C<NamedPig> a subclass of C<Pig> where you can give your pig a name.
 
@@ -1029,8 +1029,8 @@ We want to make sure that all the tests for the C<Pig> object still work for C<N
   use base qw(Pig::Test);
   use Test::More;
 
-  sub testing_class { "NamedPig" };
-  sub new_args { (shift->SUPER::new_args, -name => 'Porky') };
+  sub testing_class { "NamedPig" }
+  sub new_args { (shift->SUPER::new_args, -name => 'Porky') }
 
 Now we need to test the name method. We could write another test method, but we also have the option of extending the existing C<check_fields> method.
 
@@ -1038,7 +1038,7 @@ Now we need to test the name method. We could write another test method, but we 
       my $self = shift;
       $self->SUPER::check_fields;   
       is($self->{pig}->name, 'Porky', 'name accessed');
-  };
+  }
 
 While the above works, the total number of tests for the method is dependent on the number of tests in its C<SUPER::check_fields>. If we add a test to C<Pig::Test-E<gt>check_fields> we will also have to update the number of tests of C<NamedPig::test-E<gt>check_fields>.
 
@@ -1048,7 +1048,7 @@ Test::Class allows us to state explicitly that we are adding tests to an existin
       my $self = shift;
       $self->SUPER::check_fields;
       is($self->{pig}->name, 'Porky', 'name accessed');
-  };
+  }
 
 With the above definition you can add tests to C<check_fields> in C<Pig::Test> without affecting C<NamedPig::Test>.
 
@@ -1120,7 +1120,7 @@ This can be problematic if you want to dynamically load Test::Class modules. Bas
   
 will break, doing:
 
-  BEGIN { require $some_test_class };
+  BEGIN { require $some_test_class }
   
 will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">.
 
@@ -1166,7 +1166,7 @@ above is:
     my ( $test_class, $test_method ) = @_;
 
     return $test_method =~ $MYTEST_METHOD;
- };
+ }
  Test::Class->add_filter( $filter );
 
  sub t_filtered : Test( 1 ) {
@@ -1186,24 +1186,24 @@ above is:
 =item B<Test>
 
   # test methods
-  sub method_name : Test { ... };
-  sub method_name : Test(N) { ... };
+  sub method_name : Test { ... }
+  sub method_name : Test(N) { ... }
 
   # setup methods
-  sub method_name : Test(setup) { ... };
-  sub method_name : Test(setup => N) { ... };
+  sub method_name : Test(setup) { ... }
+  sub method_name : Test(setup => N) { ... }
 
   # teardown methods
-  sub method_name : Test(teardown) { ... };
-  sub method_name : Test(teardown => N) { ... };
+  sub method_name : Test(teardown) { ... }
+  sub method_name : Test(teardown => N) { ... }
 
   # startup methods
-  sub method_name : Test(startup) { ... };
-  sub method_name : Test(startup => N) { ... };
+  sub method_name : Test(startup) { ... }
+  sub method_name : Test(startup => N) { ... }
 
   # shutdown methods
-  sub method_name : Test(shutdown) { ... };
-  sub method_name : Test(shutdown => N) { ... };
+  sub method_name : Test(shutdown) { ... }
+  sub method_name : Test(shutdown => N) { ... }
 
 Marks a startup, setup, test, teardown or shutdown method. See L<runtests()|/"runtests"> for information on how to run methods declared with the C<Test> attribute.
 
@@ -1232,13 +1232,13 @@ You can change the number of tests that a method runs using L<num_method_tests()
 
 =item B<Tests>
 
-  sub method_name : Tests { ... };
-  sub method_name : Tests(N) { ... };
+  sub method_name : Tests { ... }
+  sub method_name : Tests(N) { ... }
 
 Acts just like the C<:Test> attribute, except that if the number of tests is not specified it defaults to C<no_plan>. So the following are equivalent:
 
-  sub silly1 :Test( no_plan ) { ok(1) foreach (1 .. rand 5) };
-  sub silly2 :Tests           { ok(1) foreach (1 .. rand 5) };
+  sub silly1 :Test( no_plan ) { ok(1) foreach (1 .. rand 5) }
+  sub silly2 :Tests           { ok(1) foreach (1 .. rand 5) }
 
 
 =item B<new>
@@ -1256,13 +1256,13 @@ Since the test object is passed to every test method as it runs it is a convenie
       my $self = shift;
       $self->{object} = Object->new();
       $self->{dbh} = Mock::DBI->new(-type => normal);
-  };
+  }
 
   sub test_open : Test {
       my $self = shift;
       my ($o, $dbh) = ($self->{object}, $self->{dbh});
       ok($o->open($dbh), "opened ok");
-  };
+  }
 
 See L<num_method_tests()|/"num_method_tests"> for an example of overriding C<new>.
 
@@ -1366,7 +1366,7 @@ You can also override SKIP_CLASS for a class hierarchy. For example, to prevent 
 
   sub My::Postgres::Test::SKIP_CLASS {
       $ENV{POSTGRES_HOME} ? 0 : '$POSTGRES_HOME needs to be set'
-  };
+  }
   
 =back
 
@@ -1406,12 +1406,12 @@ For example, the following test class will run a different number of tests depen
       my $num_objects = @{$self->{objects}};
       $self->num_method_tests('test_objects', $num_objects);
       return($self);
-  };
+  }
 
   sub test_objects : Tests {
     my $self = shift;
     ok($_->open, "opened $_") foreach @{$self->{objects}};
-  };
+  }
   ...
   # This runs two tests
   Object::Test->new(objects => [$o1, $o2]);
@@ -1431,7 +1431,7 @@ For example, consider the creation of a subclass of Object::Test that ensures th
       $self->SUPER::test_objects;
       my @bad_objects = grep {! $_->read_only} (@{$self->{objects}});
       ok(@bad_objects == 0, "all objects read only");
-  };
+  }
   ...
   # This runs three tests
   Special::Object::Test->new(objects => [$o1, $o2]);
@@ -1455,7 +1455,7 @@ For example:
       my @files = <*.txt>;
       $self->num_tests(scalar(@files));
       ok(-r $_, "$_ readable") foreach (@files);
-  };
+  }
 
 Setting the number of expected tests at run time, rather than just having a C<no_plan> test method, allows L<runtests()|/"runtests"> to display appropriate diagnostic messages if the method runs a different number of tests.
 
@@ -1476,7 +1476,7 @@ Returns the underlying L<Test::Builder> object that Test::Class uses. For exampl
       my $self = shift;
       my ($o, $dbh) = ($self->{object}, $self->{dbh});
       $self->builder->ok($o->close($dbh), "closed ok");
-  };
+  }
 
 =item B<current_method>
 
@@ -1491,7 +1491,7 @@ The method name is also available in the setup and teardown methods that run bef
       my $self = shift;
       my $m = $self->current_method;
       ok($self->invarient_ok, "class okay after $m");
-  };
+  }
 
 
 
@@ -1523,7 +1523,7 @@ For example, if all your tests rely on the ability to create objects then you mi
       isa_ok(Object->new, "Object") 
           || $self->FAIL_ALL('cannot create Objects');
       ...
-  };
+  }
 
 
 
@@ -1541,7 +1541,7 @@ For example, if you had a test script that only applied to the darwin OS you cou
   sub _darwin_only : Test(setup) {
       my $self = shift;
       $self->SKIP_ALL("darwin only") unless $^O eq "darwin";    
-  };
+  }
 
 
 =item B<add_testinfo>
@@ -1587,14 +1587,14 @@ Unlike JUnit the test functions supplied by Test::More et al do I<not> throw exc
   sub foo : Test(2) {
       ok($foo->method1);
       ok($foo->method2);
-  };
+  }
 
 The second test I<will> run if the first one fails. You can emulate the JUnit way of doing it by throwing an explicit exception on test failure:
 
   sub foo : Test(2) {
       ok($foo->method1) or die "method1 failed";
       ok($foo->method2);
-  };
+  }
 
 The exception will be caught by Test::Class and the other test automatically failed.
 

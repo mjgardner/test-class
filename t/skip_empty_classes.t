@@ -58,11 +58,11 @@ Test::Class->runtests;
 #         chomp($actual);
 #         my $expected=<DATA>; chomp($expected);
 #         ok($actual, $expected);
-#     };
+#     }
 # 
 #     ok($?, 0, "exit value okay");
 #     $?=0;
-# };
+# }
 # 
 # __DATA__
 # 1..1

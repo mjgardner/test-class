@@ -5,39 +5,39 @@ use warnings FATAL => 'all';
 
 package Tests1; use base qw(Test::Class);
 
-sub start : Test(setup => 1) {};
-sub test : Test(1) {};
-sub end : Test(teardown => 1) {};
+sub start : Test(setup => 1) {}
+sub test : Test(1) {}
+sub end : Test(teardown => 1) {}
 
 package Tests2; use base qw(Test::Class);
 
-sub start : Test(setup => no_plan) {};
-sub test : Test(1) {};
-sub end : Test(teardown => 1) {};
+sub start : Test(setup => no_plan) {}
+sub test : Test(1) {}
+sub end : Test(teardown => 1) {}
 
 package Tests3; use base qw(Test::Class);
 
-sub start : Test(setup => 1) {};
-sub test : Test(no_plan) {};
-sub end : Test(teardown => 1) {};
+sub start : Test(setup => 1) {}
+sub test : Test(no_plan) {}
+sub end : Test(teardown => 1) {}
 
 package Tests4; use base qw(Test::Class);
 
-sub start : Test(setup => 1) {};
-sub test : Test(1) {};
-sub end : Test(teardown => no_plan) {};
+sub start : Test(setup => 1) {}
+sub test : Test(1) {}
+sub end : Test(teardown => no_plan) {}
 
 package Test5; use base qw(Test::Class);
 
-sub startup :Test( startup => no_plan ) {};
-sub test : Test(1) {};
-sub shutdown :Test( shutdown => 1 ) {};
+sub startup :Test( startup => no_plan ) {}
+sub test : Test(1) {}
+sub shutdown :Test( shutdown => 1 ) {}
 
 package Test6; use base qw(Test::Class);
 
-sub startup :Test( startup => 1 ) {};
-sub test : Test(1) {};
-sub shutdown :Test( shutdown => no_plan ) {};
+sub startup :Test( startup => 1 ) {}
+sub test : Test(1) {}
+sub shutdown :Test( shutdown => no_plan ) {}
 
 package main;
 use Test::More tests => 10;

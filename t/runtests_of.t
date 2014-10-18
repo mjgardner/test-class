@@ -10,16 +10,16 @@ use Test::More;
 sub setup : Test(setup) {
 	my $self = shift;
 	$self->FAIL_ALL("premature plan") if $self->builder->expected_tests;
-};
+}
 
-sub test : Test { pass('Tests1 test') };
+sub test : Test { pass('Tests1 test') }
 
 
 package Tests2;
 use base qw(Test::Class);
 use Test::More;
 
-sub test : Test { pass('Tests2 test') };
+sub test : Test { pass('Tests2 test') }
 
 
 package main;

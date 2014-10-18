@@ -7,7 +7,7 @@ use Test::More tests => 6;
 
 BEGIN {
 	use_ok('Test::Class')  || Test::Builder->BAILOUT("CANNOT USE Test::Class");
-};
+}
 
 package Foo;
 use base qw(Test::Class);

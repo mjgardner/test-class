@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 package Object;
-sub live {undef};
+sub live {undef}
 
 
 package Foo;
@@ -14,7 +14,7 @@ use base qw(Test::Class);
 sub todo_test : Test  {
 	local $TODO = "unimplemented";
 	ok(Object->live, "object live");
-};
+}
 
 package main;
 use Test::Builder::Tester tests => 2;

@@ -13,11 +13,11 @@ my $stderr;
 BEGIN {
 	$stderr = IO::File->new_tmpfile or die "no tmp file ($!)\n";
 	*STDERR = $stderr;
-};
+}
 
 
 my $sub = sub : Test(1) {print "ok\n"};
-sub foo : Test(foo) {print "ok\n"};
+sub foo : Test(foo) {print "ok\n"}
 
 
 END {
@@ -26,4 +26,4 @@ END {
 			"cannot test anon sub");
 	is(<$stderr>, "bad test definition 'foo' in main->foo\n",
 			"bad number detected");
-};
+}

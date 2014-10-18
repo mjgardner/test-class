@@ -10,7 +10,7 @@ use Test::More;
 
 sub default_name : Test( 1 ) {
 	pass();
-};
+}
 
 package main;
 use Test::More 'no_plan';

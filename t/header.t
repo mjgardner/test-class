@@ -11,7 +11,7 @@ use Test::More;
 
 sub test : Test {
 	pass("test in Test::Class");
-};
+}
 
 package main;
 use Test::More 'no_plan';

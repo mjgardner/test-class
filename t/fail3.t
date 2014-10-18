@@ -19,4 +19,4 @@ END {
 	is($?, 1, "exit value okay");
 	print "1..2\n";
 	$?=0;
-};
+}

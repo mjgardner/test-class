@@ -21,11 +21,11 @@ sub _only : Test(setup => 1) {
 	my $self = shift;
 	$self->builder->ok(1==1);
 	$self->SKIP_ALL("skippy");
-};
+}
 
 sub test : Test(3) {
     die "this should never run!";
-};
+}
 
 test_out("ok 1 - test");
 test_out("ok 2 # skip skippy");

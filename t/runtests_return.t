@@ -12,7 +12,7 @@ sub darwin_only : Tests(2) {
     return("darwin only test");# unless $^O eq "darwin";
     ok(-w "/Library", "/Library writable");
     ok(-r "/Library", "/Library readable");
-};
+}
 
 package Bar;
 use Test::More;
@@ -24,7 +24,7 @@ sub darwin_only : Tests(2) {
     return("darwin only test");# unless $^O eq "darwin";
     ok(-r "/Library", "/Library readable");
     ok(-w "/Library", "/Library writable");
-};
+}
 
 
 package main;

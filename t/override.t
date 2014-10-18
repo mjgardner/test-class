@@ -13,7 +13,7 @@ BEGIN {
     {
         package Base::Test;
         use base qw( Test::Class );
-    };
+    }
     
     {
         package Broken::Test;

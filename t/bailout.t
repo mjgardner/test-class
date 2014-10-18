@@ -15,4 +15,4 @@ END {
 	test_test("bailout works");
 	is($?, 255, "exit value okay");
 	$?=0;
-};
+}

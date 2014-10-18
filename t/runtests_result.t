@@ -9,11 +9,11 @@ use base qw(Test::Class);
 
 sub test1 : Test(1) {
 	fail("fails");
-}; 
+} 
 
 sub test2 : Test(1) {
 	pass("passes");
-}; 
+} 
 
 
 package Pass;
@@ -22,7 +22,7 @@ use base qw(Test::Class);
 
 sub test1 : Test(1) {
 	pass("a successful test");
-}; 
+} 
 
 
 package main;

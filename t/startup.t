@@ -30,22 +30,22 @@ sub trace_ok {
 	$caller =~ s/^.*://s;
 	my $expected = shift @ORDER;
 	is($caller, $expected, "called $expected");
-};
+}
 
-sub start1	: Test(startup=>1)	{ trace_ok() };
-sub start2	: Test(startup=>1)	{ trace_ok() };
+sub start1	: Test(startup=>1)	{ trace_ok() }
+sub start2	: Test(startup=>1)	{ trace_ok() }
 
-sub setup1	: Test(setup=>1)	{ trace_ok() };
-sub setup2	: Test(setup=>1)	{ trace_ok() };
+sub setup1	: Test(setup=>1)	{ trace_ok() }
+sub setup2	: Test(setup=>1)	{ trace_ok() }
 
-sub test1	: Test(1)			{ trace_ok() };
-sub test2	: Test(1)			{ trace_ok() };
+sub test1	: Test(1)			{ trace_ok() }
+sub test2	: Test(1)			{ trace_ok() }
 
-sub tear1	: Test(teardown=>1)	{ trace_ok() };
-sub tear2	: Test(teardown=>1)	{ trace_ok() };
+sub tear1	: Test(teardown=>1)	{ trace_ok() }
+sub tear2	: Test(teardown=>1)	{ trace_ok() }
 
-sub end1	: Test(shutdown=>1)	{ trace_ok() };
-sub end2	: Test(shutdown=>1)	{ trace_ok() };
+sub end1	: Test(shutdown=>1)	{ trace_ok() }
+sub end2	: Test(shutdown=>1)	{ trace_ok() }
 
 
 package main;

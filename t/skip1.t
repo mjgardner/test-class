@@ -23,4 +23,4 @@ END {
 	my $ok = $output[0] =~ /^1..0 # Skip skipping$/i;
 	print "not " unless $ok;
 	print "ok 1 - SKIP_ALL called skip_all\n";
-};
+}

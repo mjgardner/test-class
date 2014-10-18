@@ -7,8 +7,8 @@ package Local::Test;
 use base qw(Test::Class);
 use Test::More;
 
-sub test1 : Test { ok(1) };
-sub test2 : Test { ok(1) };
+sub test1 : Test { ok(1) }
+sub test2 : Test { ok(1) }
 
 package main;
 use Test::Builder::Tester tests => 1;

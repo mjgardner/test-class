@@ -11,7 +11,7 @@ use base qw(Test::Class);
 sub trailing_exception : Test(1) {
 	pass("successful test");
 	die "died\n";
-};
+}
 
 
 package main;

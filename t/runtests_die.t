@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 package Object;
-sub new { undef };
+sub new { undef }
 
 package Foo;
 use Test::More;
@@ -14,7 +14,7 @@ sub test_object : Test(2) {
 	my $object = Object->new;
 	isa_ok($object, "Object") or die("could not create object\n");
 	is($object->open, "open worked");
-};
+}
 
 package main;
 use Test::Builder::Tester tests => 1;

@@ -11,11 +11,11 @@ use Test::More;
 
 sub setup : Test(setup) {
 	die "died before plan set\n";
-};
+}
 
 sub test : Test {
 	ok(1==1, 'test just here to get setup method run');
-};
+}
 
 
 package main;

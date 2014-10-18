@@ -13,7 +13,7 @@ use Test::Builder;
     use base qw(Test::Class);
     use Test::More;
 
-    sub skipped_with_reason : Test( 3 )  { fail( "this should not run" ) };
+    sub skipped_with_reason : Test( 3 )  { fail( "this should not run" ) }
     __PACKAGE__->SKIP_CLASS( 'because SKIP_CLASS returned a string' );
 }
 
@@ -22,7 +22,7 @@ use Test::Builder;
     use base qw(Test::Class);
     use Test::More;
 
-    sub skipped_with_reason : Test( 3 )  { fail( "this should not run" ) };
+    sub skipped_with_reason : Test( 3 )  { fail( "this should not run" ) }
     __PACKAGE__->SKIP_CLASS( 1 );
 }
 
@@ -45,11 +45,11 @@ END {
 		$actual =~ s{# skip\b}{# skip}i; # normalize directives
 		my $expected=<DATA>; chomp($expected);
 		ok($actual, $expected);
-	};
+	}
 
 	ok($?, 0, "exit value okay");
 	$?=0;
-};
+}
 
 __DATA__
 1..1

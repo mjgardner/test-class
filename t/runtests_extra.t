@@ -11,7 +11,7 @@ use base qw(Test::Class);
 sub extra_test : Test(1)  {
 	ok(1, "expected test");
 	ok(1, "extra test");
-};
+}
 
 package main;
 use Test::Builder::Tester tests => 1;

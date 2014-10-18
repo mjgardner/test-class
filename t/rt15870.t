@@ -5,7 +5,7 @@ use warnings;
 use Test::Exception tests => 1;
 
 {   package SomeClassThatDefinesNew;
-    sub new { return bless {}, shift };
+    sub new { return bless {}, shift }
 }
 
 {   package TestClassWithBrokenMI;
