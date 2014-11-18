@@ -89,7 +89,7 @@ sub _is_public_method {
 sub Test : ATTR(CODE,RAWDATA,BEGIN) {
     my ($class, $symbol, $code_ref, $attr, $args) = @_;
     if ($symbol eq "ANON") {
-        warn "cannot test anonymous subs - you probably loaded a Test::Class too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
+        warn "cannot test anonymous subs - you probably loaded a Test::Class too late. See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n";
     } else {
         my $name = *{$symbol}{NAME};
         warn "overriding public method $name with a test method in $class\n"
@@ -1115,7 +1115,7 @@ will break, doing:
 
   BEGIN { require $some_test_class }
 
-will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">.
+will work just fine.
 
 If you still can't arrange for your classes to be loaded at runtime, you could use an alternative mechanism for adding your tests:
 
