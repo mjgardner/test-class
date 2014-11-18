@@ -1101,6 +1101,31 @@ Place all test classes in F<t/lib>.
 
 The L<Test::Class::Load> provides a simple mechanism for easily loading all of the test classes in a given set of directories.
 
+
+=head1 A NOTE ON LOADING TEST CLASSES
+
+Due to its use of subroutine attributes Test::Class based modules must be loaded
+at compile rather than run time on versions of perl prior to 5.12.0.
+
+This can be problematic if you want to dynamically load Test::Class modules. Basically while:
+
+  require $some_test_class;
+
+will break, doing:
+
+  BEGIN { require $some_test_class }
+
+will work just fine. For more information on CHECK blocks see L<perlmod/"BEGIN, CHECK, INIT and END">.
+
+If you still can't arrange for your classes to be loaded at runtime, you could use an alternative mechanism for adding your tests:
+
+  # sub test_something : Test(3) {...}
+  # becomes
+  sub test_something {...}
+  __PACKAGE__->add_testinfo('test_something', test => 3);
+
+See the L<add_testinfo|/"add_testinfo"> method for more details.
+
 =head1 GENERAL FILTERING OF TESTS
 
 The use of $ENV{TEST_METHOD} to run just a subset of tests is useful, but
