@@ -7,7 +7,7 @@ use Test::Class;
 use File::Find;
 use File::Spec;
 
-our $VERSION = '0.47';
+our $VERSION = '0.48';
 
 # Override to get your own filter
 sub is_test_class {
@@ -69,7 +69,7 @@ Test::Class::Load - Load C<Test::Class> classes automatically.
 
 =head1 VERSION
 
-Version 0.41
+Version 0.48
 
 =head1 SYNOPSIS
 

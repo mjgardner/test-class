@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+0.48   [2014-11-14] TRIAL RELEASE
+    - Move the test aggregator to BEGIN so that it gets preload friendly (PR#4, Tatsuhiko Miyagawa)
+
 0.47   [2014-09-26]
     - fixes for Test::More 1.301001_* series (PR#17, PR#18, Chad Granum)
 
