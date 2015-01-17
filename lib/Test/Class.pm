@@ -1787,6 +1787,22 @@ Chapter 8 has a few pages on using Test::Class.
 
 Includes the article "Test-Driven Development in Perl" by Piers Cawley that uses Test::Class.
 
+=item Test::Class Tutorial series written by Curtis "Ovid" Poe
+
+=over 4
+
+=item * L<http://www.modernperlbooks.com/mt/2009/03/organizing-test-suites-with-testclass.html>
+
+=item * L<http://www.modernperlbooks.com/mt/2009/03/reusing-test-code-with-testclass.html>
+
+=item * L<http://www.modernperlbooks.com/mt/2009/03/making-your-testing-life-easier.html>
+
+=item * L<http://www.modernperlbooks.com/mt/2009/03/using-test-control-methods-with-testclass.html>
+
+=item * L<http://www.modernperlbooks.com/mt/2009/03/working-with-testclass-test-suites.html>
+
+=back
+
 =item L<Test::Builder>
 
 Support module for building test libraries.
