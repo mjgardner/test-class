@@ -1771,6 +1771,14 @@ If you use this module, and can spare the time please let us know or rate it at 
 
 Simple way to load "Test::Class" classes automatically.
 
+=item L<Test::Class::Most>
+
+Test::Class with additional conveniences to reduce need for some boilerplate code. Also makes L<Test::Most> testing functions available.
+
+=item L<Test::Class::Moose>
+
+Testing framework allows you to write your tests in Moose and test Moose and non-Moose code.  It offers reporting, extensibility, test inheritance, parallel testing and more.
+
 =item L<http://del.icio.us/tag/Test::Class>
 
 Delicious links on Test::Class.
