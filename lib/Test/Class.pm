@@ -1841,7 +1841,7 @@ The following modules use Test::Class as part of their test suite. You might wan
 
 =over 4
 
-L<Aspect>, Bricolage (L<http://www.bricolage.cc/>), L<Class::StorageFactory>, L<CGI::Application::Search>, L<DBIx::Romani>, L<Xmldoom>, L<Object::Relational>, L<File::Random>, L<Geography::JapanesePrefectures>, L<Google::Adwords>, L<Merge::HashRef>, L<PerlBuildSystem>, L<Pixie>, L<Yahoo::Marketing>, and L<XUL-Node>
+L<App-GitGot>, L<Aspect>, Bricolage (L<http://www.bricolage.cc/>), L<CHI>, L<Cinnamon>, L<Class::StorageFactory>, L<CGI::Application::Search>, L<DBIx::Romani>, L<Xmldoom>, L<Object::Relational>, L<File::Random>, L<Geography::JapanesePrefectures>, L<Google::Adwords>, L<Merge::HashRef>, L<PerlBuildSystem>, L<Ubic>, L<Pixie>, L<Yahoo::Marketing>, and L<XUL-Node>
 
 =back
 
