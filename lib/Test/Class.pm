@@ -777,7 +777,7 @@ You can also pass L<runtests()|/"runtests"> a list of test objects to run. For e
   # runs all the tests in $o1 and $o2
   $o1->runtests($o2);
 
-Since, by definition, the base Test::Class has no tests you could also have written:
+Since, by definition, the base Test::Class has no tests, you could also have written:
 
   my $o1 = Example::Test->new;
   my $o2 = Another::Test->new;
@@ -805,7 +805,7 @@ To overcome this problem you can pass an integer value to L<runtests()|/"runtest
 
 If you prefer to write your test plan explicitly you can use L<expected_tests()|/"expected_tests"> to find out the number of tests a class/object is expected to run.
 
-Since L<runtests()|/"runtests"> will not output a test plan if one has already been set the previous example can be written as:
+Since L<runtests()|/"runtests"> will not output a test plan if one has already been set, the previous example can be written as:
 
   plan tests => Test::Class->expected_tests(+2);
   Test::Class->runtests;
@@ -922,7 +922,7 @@ If more than one test remains after an exception then the first one is failed, a
 
 If the setup method of a test method dies, then all of the remaining setup and shutdown methods are also skipped.
 
-Since startup methods will usually be creating state needed by all the other test methods an exception within a startup method will prevent all other test methods of that class running.
+Since startup methods will usually be creating state needed by all the other test methods, an exception within a startup method will prevent all other test methods of that class running.
 
 
 =head1 RETURNING EARLY
@@ -1045,7 +1045,7 @@ Now we need to test the name method. We could write another test method, but we 
 
 While the above works, the total number of tests for the method is dependent on the number of tests in its C<SUPER::check_fields>. If we add a test to C<Pig::Test-E<gt>check_fields> we will also have to update the number of tests of C<NamedPig::test-E<gt>check_fields>.
 
-Test::Class allows us to state explicitly that we are adding tests to an existing method by using the C<+> prefix. Since we are adding a single test to C<check_fields> it can be rewritten as:
+Test::Class allows us to state explicitly that we are adding tests to an existing method by using the C<+> prefix. Since we are adding a single test to C<check_fields>, it can be rewritten as:
 
   sub check_fields : Test(+1) {
       my $self = shift;
@@ -1253,7 +1253,7 @@ Creates a new test object (blessed hashref) containing the specified key/value p
 
 If called as an object method the existing object's key/value pairs are copied into the new object. Any key/value pairs passed to C<new> override those in the original object if duplicates occur.
 
-Since the test object is passed to every test method as it runs it is a convenient place to store test fixtures. For example:
+Since the test object is passed to every test method as it runs, it is a convenient place to store test fixtures. For example:
 
   sub make_fixture : Test(setup) {
       my $self = shift;
@@ -1605,7 +1605,7 @@ The exception will be caught by Test::Class and the other test automatically fai
 
 Test::Class corresponds to TestCase in JUnit.
 
-In Test::Class setup, test and teardown methods are marked explicitly using the L<Test|/"Test"> attribute. Since we need to know the total number of tests to provide a test plan for L<Test::Harness> we also state how many tests each method runs.
+In Test::Class setup, test and teardown methods are marked explicitly using the L<Test|/"Test"> attribute. Since we need to know the total number of tests to provide a test plan for L<Test::Harness>, we also state how many tests each method runs.
 
 Unlike JUnit you can have multiple setup/teardown methods in a class.
 
@@ -1613,7 +1613,7 @@ Unlike JUnit you can have multiple setup/teardown methods in a class.
 
 Test::Class also does the work that would be done by TestSuite in JUnit.
 
-Since the methods are marked with attributes Test::Class knows what is and isn't a test method. This allows it to run all the test methods without having the developer create a suite manually, or use reflection to dynamically determine the test methods by name. See the L<runtests()|/"runtests"> method for more details.
+Since the methods are marked with attributes, Test::Class knows what is and isn't a test method. This allows it to run all the test methods without having the developer create a suite manually, or use reflection to dynamically determine the test methods by name. See the L<runtests()|/"runtests"> method for more details.
 
 The running order of the test methods is fixed in Test::Class. Methods are executed in alphabetical order.
 
