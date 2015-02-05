@@ -1617,7 +1617,7 @@ Since the methods are marked with attributes, Test::Class knows what is and isn'
 
 The running order of the test methods is fixed in Test::Class. Methods are executed in alphabetical order.
 
-Unlike JUnit, Test::Class currently does not allow you to run individual test methods.
+To run individual test methods, see L</"RUNNING INDIVIDUAL TESTS">.
 
 =item B<Class TestRunner>
 
