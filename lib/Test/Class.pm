@@ -287,21 +287,21 @@ sub _run_method {
         }
         return $is_ok;
     };
-    $skip_reason = eval {$self->$method};
-    $skip_reason = $method unless $skip_reason;
+    my $succeeded = eval { $skip_reason = $self->$method; 1 };
     my $exception = $@;
+    $skip_reason = $method unless $skip_reason;
     my $num_done = $Builder->current_test - $num_start;
     my $num_expected = _total_num_tests($self, $method);
     $num_expected = $num_done if $num_expected eq NO_PLAN;
     if ($num_done == $num_expected) {
-        _exception_failure($self, $method, $exception, $tests) 
-                if $exception;
+        _exception_failure($self, $method, $exception, $tests)
+                if !$succeeded;
     } elsif ($num_done > $num_expected) {
         my $class = ref $self;
         $Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
     } else {
         until (($Builder->current_test - $num_start) >= $num_expected) {
-            if ($exception) {
+            if (!$succeeded) {
                 _exception_failure($self, $method, $exception, $tests);
                 $skip_reason = "$method died";
                 $exception = '';
