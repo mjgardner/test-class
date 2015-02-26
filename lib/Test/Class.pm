@@ -354,7 +354,7 @@ sub _test_classes {
 }
 
 sub runtests {
-    die "Test::Class was loaded too late (after the CHECK block was run). See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
+    die "Test::Class was loaded too late (after the CHECK block was run), or you may have redefined a test_ sub. See 'A NOTE ON LOADING TEST CLASSES' in perldoc Test::Class for more details\n"
         unless $Check_block_has_run;
     my @tests = @_;
     if (@tests == 1 && !ref($tests[0])) {
@@ -1132,6 +1132,8 @@ If you still can't arrange for your classes to be loaded at runtime, you could u
   __PACKAGE__->add_testinfo('test_something', test => 3);
 
 See the L<add_testinfo|/"add_testinfo"> method for more details.
+
+Additionally, if you've forgotten to enable warnings and have two test subs called the same thing, you will get the same error.
 
 =head1 GENERAL FILTERING OF TESTS
 
