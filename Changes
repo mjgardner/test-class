@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+    - update documentation about running individual tests (Matthew Horsfall,
+      PR#22)
+
 0.48   [2014-11-06]
     - replace a few bare evals with more modern alternatives
 
