@@ -8,7 +8,7 @@ use File::Find;
 use File::Spec;
 use Module::Runtime 'require_module';
 
-our $VERSION = '0.48';
+our $VERSION = '0.50';
 
 # Override to get your own filter
 sub is_test_class {
@@ -66,6 +66,10 @@ __END__
 =head1 NAME
 
 Test::Class::Load - Load C<Test::Class> classes automatically.
+
+=head1 VERSION
+
+version 0.50
 
 =head1 SYNOPSIS
 

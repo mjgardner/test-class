@@ -12,7 +12,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 use Try::Tiny;
 
-our $VERSION = '0.48';
+our $VERSION = '0.50';
 
 my $Check_block_has_run;
 {
@@ -483,6 +483,10 @@ __END__
 =head1 NAME
 
 Test::Class - Easily create test classes in an xUnit/JUnit style
+
+=head1 VERSION
+
+version 0.50
 
 =head1 SYNOPSIS
 

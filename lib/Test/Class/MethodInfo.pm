@@ -4,7 +4,7 @@ use warnings;
 package Test::Class::MethodInfo;
 use Carp;
 
-our $VERSION = '0.48';
+our $VERSION = '0.50';
 
 sub new {
     my ( $class, %param ) = @_;
@@ -54,6 +54,10 @@ __END__
 =head1 NAME
 
 Test::Class::MethodInfo - the info associated with a test method
+
+=head1 VERSION
+
+version 0.50
 
 =head1 SYNOPSIS
 
