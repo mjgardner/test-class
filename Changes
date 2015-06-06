@@ -1,5 +1,10 @@
 Changes for Perl extension Test-Class
 
+    - add links to Ovid's tutorial series on Test::Class (Tim Vroom, PR#19)
+    - add links to Test::Class::Most, Test::Class::Moose (Tim Vroom, PR#20)
+    - list some distributions that use Test::Class in their test suite (Tim
+      Vroom, PR#21)
+
 0.48   [2014-11-06]
     - replace a few bare evals with more modern alternatives
 
