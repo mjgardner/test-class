@@ -6,6 +6,7 @@ Changes for Perl extension Test-Class
       Vroom, PR#21)
     - update documentation about running individual tests (Matthew Horsfall,
       PR#22)
+    - fix some tests to work with the new Test::Stream (Chad Granum, PR#27)
 
 0.48   [2014-11-06]
     - replace a few bare evals with more modern alternatives
