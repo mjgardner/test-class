@@ -6,8 +6,9 @@ package Test::Class::Load;
 use Test::Class;
 use File::Find;
 use File::Spec;
+use Module::Runtime 'require_module';
 
-our $VERSION = '0.47';
+our $VERSION = '0.48';
 
 # Override to get your own filter
 sub is_test_class {
@@ -30,13 +31,12 @@ sub _load {
 
     # untaint that puppy!
     my ( $package ) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
-   
+
     # Filter out bad classes (mainly this means things in .svn and similar)
     return unless defined $package;
 
     unshift @INC => $dir unless $Added_to_INC{ $dir }++;
-    eval "require $package"; ## no critic
-    die $@ if $@;
+    require_module($package);
 }
 
 sub import {
@@ -66,10 +66,6 @@ __END__
 =head1 NAME
 
 Test::Class::Load - Load C<Test::Class> classes automatically.
-
-=head1 VERSION
-
-Version 0.41
 
 =head1 SYNOPSIS
 
@@ -113,7 +109,7 @@ Using C<Test::Class::Load> is as simple as this:
  use Test::Class::Load 't/tests';
 
  Test::Class->runtests;
- 
+
 That will search through all files in the C<t/tests> directory and automatically load anything which ends in C<.pm>. You should only put test classes in those directories.
 
 If you have test classes in more than one directory, that's OK. Just list all of them in the import list.
@@ -135,14 +131,14 @@ You can redefine the filtering criteria, that is, decide what classes are picked
 up and what others are not. You do this simply by subclassing
 C<Test::Class::Load> overriding the C<is_test_class()> method. You might want to
 do this to only load modules which inherit from C<Test::Class>, or anything else
-for that matter. 
+for that matter.
 
 =over 4
 
 =item B<is_test_class>
 
   $is_test_class = $class->is_test_class( $file, $directory )
-  
+
 Returns true if C<$file> in C<$directory> should be considered a test class and be loaded by L<Test::Class::Load>. The default filter simply returns true if C<$file> ends with C<.pm>
 
 =back
@@ -162,7 +158,7 @@ For example:
 
       # return unless it's a .pm (the default)
       return unless $class->SUPER::is_test_class( $file, $dir );
-    
+
       # and only allow .pm files with "Good" in their filename
       return $file =~ m{Good};
   }
@@ -172,7 +168,7 @@ For example:
 =head2 CUSTOMIZING TEST RUNS
 
 One problem with this style of testing is that you run I<all> of the tests every time you need to test something.  If you want to run only one test class, it's problematic.  The easy way to do this is to change your helper script by deleting the C<runtests> call:
- 
+
  #!/usr/bin/perl -T
 
  use strict;
@@ -183,7 +179,7 @@ One problem with this style of testing is that you run I<all> of the tests every
 Then, just make sure that all of your test classes inherit from your own base class which runs the tests for you.  It might looks something like this:
 
  package My::Test::Class;
- 
+
  use strict;
  use warnings;
 
@@ -198,7 +194,7 @@ Then you can run an individual test class by using the C<prove> utility, tell it
  prove -lv -It/tests Some::Test::Class
 
 You can even automate this by binding it to a key in C<vim>:
-    
+
  noremap ,t  :!prove -lv -It/tests %<CR>
 
 Then you can just type C<,t> ('comma', 'tee') and it will run the tests for your test class or the tests for your test script (if you're using a traditional C<Test::More> style script).

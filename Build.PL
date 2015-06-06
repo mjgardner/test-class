@@ -28,6 +28,8 @@ my $build = Module::Build->new(
         'constant'              => '0',
         'strict'                => '0',
         'warnings'              => '0',
+        'Try::Tiny'             => '0',
+        'Module::Runtime'       => '0',
     },
     test_requires => {
         'Test::Exception'       => '0.25',
