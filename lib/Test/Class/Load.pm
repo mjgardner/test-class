@@ -193,9 +193,9 @@ Then, just make sure that all of your test classes inherit from your own base cl
 
  1;
 
-Then you can run an individual test class by using the C<prove> utility, tell it the directory of the test classes and the name of the test package you wish to run:
+Then you can run an individual test class by using the C<prove> utility, tell it the directory of the test classes and the filename of the test class you wish to run:
 
- prove -lv -It/tests Some::Test::Class
+ prove -lv -It/tests t/lib/Some/Test/Class.pm
 
 You can even automate this by binding it to a key in C<vim>:
 
