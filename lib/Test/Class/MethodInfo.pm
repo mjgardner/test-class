@@ -4,7 +4,7 @@ use warnings;
 package Test::Class::MethodInfo;
 use Carp;
 
-our $VERSION = '0.47';
+our $VERSION = '0.50';
 
 sub new {
     my ( $class, %param ) = @_;
@@ -23,10 +23,10 @@ sub name { shift->{name} };
 
 sub type { shift->{type} };
 
-sub num_tests	{ 
+sub num_tests	{
 	my ( $self, $n ) = @_;
 	if ( defined $n ) {
-		croak "$n not valid number of tests" 
+		croak "$n not valid number of tests"
 		    unless $self->is_num_tests($n);
 		$self->{ num_tests } = $n;
 	};
@@ -38,12 +38,12 @@ sub is_type {
     return $self->{ type } eq $type;
 };
 
-sub is_method_type { 
+sub is_method_type {
 	my ( $self, $type ) = @_;
 	return $type =~ m/^(startup|setup|test|teardown|shutdown)$/s;
 };
 
-sub is_num_tests { 
+sub is_num_tests {
 	my ( $self, $num_tests ) = @_;
 	return $num_tests =~ m/^(no_plan)|(\+?\d+)$/s;
 };
@@ -54,6 +54,10 @@ __END__
 =head1 NAME
 
 Test::Class::MethodInfo - the info associated with a test method
+
+=head1 VERSION
+
+version 0.50
 
 =head1 SYNOPSIS
 
