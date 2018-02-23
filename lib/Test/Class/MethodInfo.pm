@@ -88,18 +88,6 @@ Holds info related to particular test methods. Not part of the public API and li
 
 =back
 
-=head1 BUGS
-
-None known at the time of writing. Apart from the fact this seems a bit gnarly so I'm likely to tidy it up at some point.
-
-If you find any please let me know by e-mail, or report the problem with L<http://rt.cpan.org/>.
-
-=head1 TO DO
-
-If you think this module should do something that it doesn't (or does something that it shouldn't) please let me know.
-
-You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/15423>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/15423>.
-
 =head1 AUTHOR
 
 Adrian Howard <adrianh@quietstars.com>

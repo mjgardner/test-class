@@ -213,13 +213,17 @@ C<Test::Class::Load> is taint safe.  Because we're reading the class names from 
 
  my ($package) = $_package =~ /^([[:word:]]+(?:::[[:word:]]+)*)$/;
 
+=head1 SUPPORT
+
+Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Test-Class>
+(or L<bug-Test-Class@rt.cpan.org|mailto:bug-Test-Class@rt.cpan.org>).
+
+There is also an irc channel available for users of this distribution, at
+L<C<#perl-qa> on C<irc.perl.org>|irc://irc.perl.org/#perl-qa>.
+
 =head1 AUTHOR
 
 Curtis "Ovid" Poe, C<< <ovid@cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-test-class-load@rt.cpan.org>, or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-Class-Load>. I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
 
 =head1 ACKNOWLEDGMENTS
 

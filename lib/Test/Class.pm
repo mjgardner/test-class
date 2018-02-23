@@ -1668,34 +1668,19 @@ Test::Unit implements it's own testing framework separate from L<Test::Harness>.
 
 =back
 
+=head1 SUPPORT
 
-=head1 BUGS
+Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Test-Class>
+(or L<bug-Test-Class@rt.cpan.org|mailto:bug-Test-Class@rt.cpan.org>).
 
-None known at the time of writing.
-
-If you find any bugs please let me know by e-mail at <adrianh@quietstars.com>, or report the problem with L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-Class>.
-
-
-=head1 COMMUNITY
-
-=head2 perl-qa
-
-If you are interested in testing using Perl I recommend you visit L<http://qa.perl.org/> and join the excellent perl-qa mailing list. See L<http://lists.perl.org/showlist.cgi?name=perl-qa> for details on how to subscribe.
-
-=head2 perlmonks
-
-You can find users of Test::Class, including the module author, on  L<http://www.perlmonks.org/>. Feel free to ask questions on Test::Class there.
-
-=head2 CPAN::Forum
-
-The CPAN Forum is a web forum for discussing Perl's CPAN modules.   The Test::Class forum can be found at L<http://www.cpanforum.com/dist/Test-Class>.
-
+There is also an irc channel available for users of this distribution, at
+L<C<#perl-qa> on C<irc.perl.org>|irc://irc.perl.org/#perl-qa>.
 
 =head1 TO DO
 
 If you think this module should do something that it doesn't (or does something that it shouldn't) please let me know.
 
-You can see my current to do list at L<http://adrianh.tadalist.com/lists/public/4798>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/4798>.
+You can see an old to do list at L<http://adrianh.tadalist.com/lists/public/4798>, with an RSS feed of changes at L<http://adrianh.tadalist.com/lists/feed_public/4798>.
 
 
 =head1 ACKNOWLEDGMENTS
