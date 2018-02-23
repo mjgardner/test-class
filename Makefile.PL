@@ -49,6 +49,7 @@ my %WriteMakefileArgs = (
     },
 
     META_ADD => {
+        'meta-spec' => { version => 2 },
         prereqs => {
             configure => {
                 requires => {
