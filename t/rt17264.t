@@ -1,5 +1,3 @@
-#! /usr/bin/perl
-
 use strict;
 use warnings;
 use Test::Exception tests => 1;
