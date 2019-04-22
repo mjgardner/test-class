@@ -12,7 +12,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 use Try::Tiny;
 
-our $VERSION = '0.50';
+our $VERSION = '0.51';
 
 my $Check_block_has_run;
 {
@@ -302,7 +302,7 @@ sub _run_method {
     } elsif ($num_done > $num_expected) {
         my $class = ref $self;
         if ($self->fail_if_returned_late) {
-            $Builder->ok(0, "($class\::$method returned before plan complete)");
+            $Builder->ok(0, "expected $num_expected test(s) in $class\::$method, $num_done completed");
         } else {
             $Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
         }
@@ -491,7 +491,7 @@ Test::Class - Easily create test classes in an xUnit/JUnit style
 
 =head1 VERSION
 
-version 0.50
+version 0.51
 
 =head1 SYNOPSIS
 
