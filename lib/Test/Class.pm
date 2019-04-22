@@ -12,7 +12,7 @@ use Test::Builder;
 use Test::Class::MethodInfo;
 use Try::Tiny;
 
-our $VERSION = '0.50';
+our $VERSION = '0.51';
 
 my $Check_block_has_run;
 {
@@ -301,7 +301,11 @@ sub _run_method {
                 if $exception;
     } elsif ($num_done > $num_expected) {
         my $class = ref $self;
-        $Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
+        if ($self->fail_if_returned_late) {
+            $Builder->ok(0, "expected $num_expected test(s) in $class\::$method, $num_done completed");
+        } else {
+            $Builder->diag("expected $num_expected test(s) in $class\::$method, $num_done completed\n");
+        }
     } else {
         until (($Builder->current_test - $num_start) >= $num_expected) {
             if ($exception) {
@@ -322,6 +326,7 @@ sub _run_method {
 }
 
 sub fail_if_returned_early { 0 }
+sub fail_if_returned_late { 0 }
 
 sub _show_header {
     my ($self, @tests) = @_;
@@ -486,7 +491,7 @@ Test::Class - Easily create test classes in an xUnit/JUnit style
 
 =head1 VERSION
 
-version 0.50
+version 0.51
 
 =head1 SYNOPSIS
 
@@ -943,6 +948,22 @@ However, if the class's C<fail_if_returned_early> method returns true, then the 
     for (my $n=1; $n*$n<50; ++$n) {
       ok 1, "$n squared is less than fifty";
     }
+  }
+
+
+=head1 RETURNING LATE
+
+If a test method runs too many tests, by default the test plan succeeds.
+
+However, if the class's C<fail_if_returned_late> method returns true, then the extra tests will trigger a failure.  For example,
+
+  package MyClass;
+  use base 'Test::Class';
+  sub fail_if_returned_late { 1 }
+
+  sub oops : Tests(1) {
+    ok 1, "just a simple test";
+    ok 1, "just a simple test"; #oops I copied and pasted too many tests
   }
 
 
@@ -1575,6 +1596,10 @@ See the section on the L</"GENERAL FILTERING OF TESTS"> for more information.
 =item B<fail_if_returned_early>
 
 Controls what happens if a method returns before it has run all of its tests.  It is called with no arguments in boolean context; if it returns true, then the missing tests fail, otherwise, they skip.  See L<"Returning Early"> and L<"Skipped Tests">.
+
+=item B<fail_if_returned_late>
+
+Controls what happens if a method returns after running too many tests.  It is called with no arguments in boolean context; if it returns true, then the extra tests trigger a failure test.  See L<"Returning Late"> and L<"Skipped Tests">.
 
 
 =back
