@@ -19,7 +19,7 @@ use Test::Builder::Tester tests => 1;
 $ENV{TEST_VERBOSE}=0;
 test_out( "not ok 1 - setup_method (for test method 'test') died (oops - we died)" );
 test_err( "#   Failed test 'setup_method (for test method 'test') died (oops - we died)'" );
-test_err( "#   at $0 line 27." );
+test_err( "#   at $0 line 25." );
 test_err( "#   (in Foo->setup_method)" );
 test_out("ok 2 # skip setup_method died");
 Test::Class->runtests;
