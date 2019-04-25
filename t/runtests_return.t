@@ -102,7 +102,7 @@ test_test("early return handled (skip)");
 
 test_out("not ok 1 - (FailMissingTests::darwin_only returned before plan complete)");
 test_out("not ok 2 - (FailMissingTests::darwin_only returned before plan complete)");
-test_err(qr/.*in FailMissingTests->darwin_only.*/s);
+test_err(qr/.* at \Q$0\E line .*in FailMissingTests->darwin_only.*/s);
 FailMissingTests->runtests;
 test_test("early return handled (fail)");
 
@@ -116,7 +116,7 @@ test_test("late return handled (skip)");
 test_out("ok 1 - more tests");
 test_out("ok 2 - more tests");
 test_out("not ok 3 - expected 1 test(s) in DisallowMoreTests::more_tests, 2 completed");
-test_err(qr/.*in DisallowMoreTests->more_tests.*/s);
+test_err(qr/.* at \Q$0\E line .*in DisallowMoreTests->more_tests.*/s);
 test_out("ok 4 - other tests");
 DisallowMoreTests->runtests;
 test_test("late return handled (fail)");
@@ -136,6 +136,6 @@ test_out("ok 3 - more tests");
 test_out("ok 4 - more tests");
 test_out("not ok 5 - expected 1 test(s) in DisallowMoreAndLessTests::more_tests, 2 completed");
 test_out("ok 6 - other tests");
-test_err(qr/.*in DisallowMoreAndLessTests->less_tests.*in DisallowMoreAndLessTests->more_tests.*/s);
+test_err(qr/.* at \Q$0\E line .*in DisallowMoreAndLessTests->less_tests.* at \Q$0\E line .*in DisallowMoreAndLessTests->more_tests.*/s);
 DisallowMoreAndLessTests->runtests;
 test_test("early and late return handled (fail)");
