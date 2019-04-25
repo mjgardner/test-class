@@ -4,7 +4,7 @@ use strict;
 use warnings;
 $ENV{TEST_VERBOSE}=0;
 
-package Foo;
+package SkipMissingTests;
 use Test::More;
 use base qw(Test::Class);
 
@@ -14,7 +14,7 @@ sub darwin_only : Tests(2) {
     ok(-r "/Library", "/Library readable");
 }
 
-package Bar;
+package FailMissingTests;
 use Test::More;
 use base qw(Test::Class);
 
@@ -32,12 +32,12 @@ use Test::Builder::Tester tests => 2;
 
 test_out("ok 1 # skip darwin only test");
 test_out("ok 2 # skip darwin only test");
-Foo->runtests;
+SkipMissingTests->runtests;
 test_test("early return handled (skip)");
 
-test_out("not ok 1 - (Bar::darwin_only returned before plan complete)");
-test_out("not ok 2 - (Bar::darwin_only returned before plan complete)");
-test_err(qr/.*in Bar->darwin_only.*/s);
-Bar->runtests;
+test_out("not ok 1 - (FailMissingTests::darwin_only returned before plan complete)");
+test_out("not ok 2 - (FailMissingTests::darwin_only returned before plan complete)");
+test_err(qr/.*in FailMissingTests->darwin_only.*/s);
+FailMissingTests->runtests;
 test_test("early return handled (fail)");
 
