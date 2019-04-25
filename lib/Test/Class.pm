@@ -300,6 +300,7 @@ sub _run_method {
         _exception_failure($self, $method, $exception, $tests)
                 if $exception;
     } elsif ($num_done > $num_expected) {
+        local $Test::Builder::Level = $Test::Builder::Level+1;
         my $class = ref $self;
         if ($self->fail_if_returned_late) {
             $Builder->ok(0, "expected $num_expected test(s) in $class\::$method, $num_done completed");
@@ -313,6 +314,7 @@ sub _run_method {
                 $skip_reason = "$method died";
                 $exception = '';
             } else {
+                local $Test::Builder::Level = $Test::Builder::Level+1;
                 if ($self->fail_if_returned_early) {
                     my $class = ref $self;
                     $Builder->ok(0, "($class\::$method returned before plan complete)");
