@@ -1,5 +1,8 @@
 Changes for Perl extension Test-Class
 
+0.51   [2019-04-29]
+    - Create fail_if_returned_late (Oaxlin, PR#23)
+
 0.50   [2015-06-07]
     - add links to Ovid's tutorial series on Test::Class (Tim Vroom, PR#19)
     - add links to Test::Class::Most, Test::Class::Moose (Tim Vroom, PR#20)
