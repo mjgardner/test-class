@@ -8,7 +8,7 @@ use File::Find;
 use File::Spec;
 use Module::Runtime 'require_module';
 
-our $VERSION = '0.51';
+our $VERSION = '0.52';
 
 # Override to get your own filter
 sub is_test_class {
