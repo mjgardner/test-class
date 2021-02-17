@@ -1,9 +1,21 @@
 Changes for Perl extension Test-Class
 
+0.52   [2021-02-17]
+    - Change bugtracker link to point GitHub issues instead of RT.
     - Remove some old and broken links.
+    - Work by (Kaycie Goodman).
+    - Test fix (Pali, PR#32).
+    - Fix reporting caller information (file+line) when number of tests does
+      not match (Pali).
+    - Use better class names in t/runtests_return.t (Pali).
+    - Fix documentation to be more accurate regarding support and author
+      activity (Karen Etheridge).
+    - Ensure metadata is processed as v2 (Karen Etheridge).
+    - Remove unnecessary shebangs (Karen Etheridge).
+    - chmod ugo-x (Karen Etheridge).
 
 0.51   [2019-04-29]
-    - Create fail_if_returned_late (Oaxlin, PR#23)
+    - Create fail_if_returned_late (Jason Terry, Oaxlin, PR#23)
 
 0.50   [2015-06-07]
     - add links to Ovid's tutorial series on Test::Class (Tim Vroom, PR#19)
