@@ -1697,8 +1697,7 @@ Test::Unit implements it's own testing framework separate from L<Test::Harness>.
 
 =head1 SUPPORT
 
-Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Test-Class>
-(or L<bug-Test-Class@rt.cpan.org|mailto:bug-Test-Class@rt.cpan.org>).
+Bugs may be submitted through L<GitHub issues|https://github.com/szabgab/test-class/issues>
 
 There is also an irc channel available for users of this distribution, at
 L<C<#perl-qa> on C<irc.perl.org>|irc://irc.perl.org/#perl-qa>.
@@ -1782,8 +1781,6 @@ This module wouldn't be possible without the excellent L<Test::Builder>. Thanks 
 
 Adrian Howard <adrianh@quietstars.com>, Curtis "Ovid" Poe, <ovid at cpan.org>, Mark Morgan <makk384@gmail.com>.
 
-If you use this module, and can spare the time please let us know or rate it at L<http://cpanratings.perl.org/rate/?distribution=Test-Class>.
-
 =head1 SEE ALSO
 
 =over 4
@@ -1799,10 +1796,6 @@ Test::Class with additional conveniences to reduce need for some boilerplate cod
 =item L<Test::Class::Moose>
 
 Testing framework allows you to write your tests in Moose and test Moose and non-Moose code.  It offers reporting, extensibility, test inheritance, parallel testing and more.
-
-=item L<http://del.icio.us/tag/Test::Class>
-
-Delicious links on Test::Class.
 
 =item Perl Testing: A Developer's Notebook by Ian Langworth and chromatic
 
@@ -1820,15 +1813,15 @@ Includes the article "Test-Driven Development in Perl" by Piers Cawley that uses
 
 =over 4
 
-=item * L<http://www.modernperlbooks.com/mt/2009/03/organizing-test-suites-with-testclass.html>
+=item * L<Organizing Test Suites with Test::Class|http://www.modernperlbooks.com/mt/2009/03/organizing-test-suites-with-testclass.html>
 
-=item * L<http://www.modernperlbooks.com/mt/2009/03/reusing-test-code-with-testclass.html>
+=item * L<Reusing Test Code with Test::Class|http://www.modernperlbooks.com/mt/2009/03/reusing-test-code-with-testclass.html>
 
-=item * L<http://www.modernperlbooks.com/mt/2009/03/making-your-testing-life-easier.html>
+=item * L<Making Your Testing Life Easier|http://www.modernperlbooks.com/mt/2009/03/making-your-testing-life-easier.html>
 
-=item * L<http://www.modernperlbooks.com/mt/2009/03/using-test-control-methods-with-testclass.html>
+=item * L<Using Test Control Methods with Test::Class|http://www.modernperlbooks.com/mt/2009/03/using-test-control-methods-with-testclass.html>
 
-=item * L<http://www.modernperlbooks.com/mt/2009/03/working-with-testclass-test-suites.html>
+=item * L<Working with Test::Class Test Suites|http://www.modernperlbooks.com/mt/2009/03/working-with-testclass-test-suites.html>
 
 =back
 
@@ -1840,13 +1833,9 @@ Support module for building test libraries.
 
 Basic utilities for writing tests.
 
-=item L<http://qa.perl.org/test-modules.html>
+=item L<https://qa.perl.org/test-modules.html>
 
 Overview of some of the many testing modules available on CPAN.
-
-=item L<http://del.icio.us/tag/perl+testing>
-
-Delicious links on perl testing.
 
 =item L<Test::Object>
 

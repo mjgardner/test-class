@@ -1,5 +1,7 @@
 Changes for Perl extension Test-Class
 
+    - Remove some old and broken links.
+
 0.51   [2019-04-29]
     - Create fail_if_returned_late (Oaxlin, PR#23)
 
