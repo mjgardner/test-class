@@ -18,13 +18,12 @@ my %WriteMakefileArgs = (
         dynamic_config => 1,
         resources => {
             repository => {
-                url => 'https://github.com/adrianh/test-class.git',
-                web => 'https://github.com/adrianh/test-class',
+                url => 'https://github.com/szabgab/test-class.git',
+                web => 'https://github.com/szabgab/test-class',
                 type => 'git',
             },
             bugtracker => {
-                mailto => 'bug-Test-Class@rt.cpan.org',
-                web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Test-Class',
+                web => 'https://github.com/szabgab/test-class/issues',
             },
         },
         x_contributors => [ # manually added, from git shortlog -e -s -n
