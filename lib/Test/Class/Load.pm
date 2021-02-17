@@ -215,11 +215,7 @@ C<Test::Class::Load> is taint safe.  Because we're reading the class names from 
 
 =head1 SUPPORT
 
-Bugs may be submitted through L<the RT bug tracker|https://rt.cpan.org/Public/Dist/Display.html?Name=Test-Class>
-(or L<bug-Test-Class@rt.cpan.org|mailto:bug-Test-Class@rt.cpan.org>).
-
-There is also an irc channel available for users of this distribution, at
-L<C<#perl-qa> on C<irc.perl.org>|irc://irc.perl.org/#perl-qa>.
+See L<Test::Class>
 
 =head1 AUTHOR
 
