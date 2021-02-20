@@ -143,8 +143,8 @@ jobs:
       - name: Testing selected downstream modules
         run: |
             echo "Reverse dependencies ordered by River stage"
-            for module in
-                    CHI
+            for module in              \ 
+                    CHI                \
                     Test::Class::Most
             do
                 echo $module
