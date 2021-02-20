@@ -147,8 +147,9 @@ jobs:
             do
                 echo $module
                 date
-                cpanm --notest $name
-                cpanm --verbose --test-only $name
+                set -x
+                cpanm --notest $module
+                cpanm --verbose --test-only $module
                 echo "==================="
             done
 
