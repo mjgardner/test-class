@@ -52,11 +52,12 @@ jobs:
         run: |
             for module in Test::Pod::Coverage Test::Perl::Critic Pod::Simple Test::Pod Perl::MinimumVersion Test::MinimumVersion Test::Spelling File::Which
              do
-                echo $module
+                echo Start installing $module
                 date
                 set -x
                 cpanm --notest $module
                 perl -M$module -e "print qq{$module \$$module::VERSION\n}"
+                echo Finished installing $module
                 echo "==================="
             done
 
@@ -151,37 +152,35 @@ jobs:
       - name: Testing selected downstream modules
         run: |
             echo "Reverse dependencies ordered by River stage"
-            for module in CHI Test::Class::Most
+            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic
             do
-                echo $module
+                echo Start testing $module
                 date
                 set -x
                 cpanm --notest $module
                 cpanm --verbose --test-only $module
+                echo Finish testing $module
                 echo "==================="
             done
-
-            #cpanm --verbose CHI
-            #cpanm --verbose Test::Class::Most
             #cpanm --verbose Debug::Client   # currently failing
-            cpanm --verbose MooseX::Getopt::Usage
-            cpanm --verbose Ubic
             #cpanm --verbose Math::GSL  # needs gsl-config
             #cpanm --verbose EntityModel # fails
 
             echo "Other reverse dependencies listed by ABC"
+            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode
+            do
+                echo Start testing $module
+                date
+                set -x
+                cpanm --notest $module
+                cpanm --verbose --test-only $module
+                echo Finished testing $module
+                echo "==================="
+            done
             #cpanm --verbose Analizo # failed
-            cpanm --verbose App::GitGot
             #cpanm --verbose App::PRT # failed
-            cpanm --verbose App::Scaffolder::Puppet
-            cpanm --verbose cPanel::APIClient
-            cpanm --verbose Class::Mockable
-            cpanm --verbose File::Random
-            cpanm --verbose Mail::Pyzor
-            cpanm --verbose Test::Class::Simple
             #cpanm --verbose Term::CLI  # needs Term::ReadLine::Gnu
-            cpanm --verbose Business::FO::Postalcode
-            cpanm --verbose Business::DK::Postalcode
+
   native:
     needs: build-in-container
     strategy:
