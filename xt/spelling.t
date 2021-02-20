@@ -105,3 +105,12 @@ Hynek
 Edwardson
 Cosimo
 Streppone
+Diab
+D'Archangel
+Grangaard
+Jerius
+Massjouni
+Naveed
+Raymer
+Schwern
+irc
