@@ -148,7 +148,8 @@ jobs:
                 echo $module
                 date
                 cpanm --notest $name
-                cpanm --verbose $name
+                cpanm --verbose --test-only $name
+                echo "==================="
             done
 
             #cpanm --verbose CHI
