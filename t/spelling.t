@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use Test::More;
 
+unless ( $ENV{AUTOMATED_TESTING} or $ENV{RELEASE_TESTING} ) {
+	plan( skip_all => "Author tests not required for installation" );
+}
+
 ## no critic
 my $spell_checker = eval q{
     use Test::Spelling; 
@@ -105,3 +109,12 @@ Hynek
 Edwardson
 Cosimo
 Streppone
+Diab
+D'Archangel
+Grangaard
+Jerius
+Massjouni
+Naveed
+Raymer
+Schwern
+irc
