@@ -42,7 +42,6 @@ jobs:
 
       - name: Regular tests
         run: |
-            for module in A B C; do echo $module; done
             perl -v
             cpanm --notest Contextual::Return
             perl Makefile.PL
@@ -57,8 +56,8 @@ jobs:
 
       - name: Release tests
         run: |
-            RELEASE_TESTING=1 prove t/pod.t
-            RELEASE_TESTING=1 prove xt/documented.t
+            RELEASE_TESTING=1 prove -l t/pod.t
+            RELEASE_TESTING=1 prove -l xt/documented.t
 
       - name: Create release
         if: ${{ matrix.perl-version == '5.32' }}
@@ -144,8 +143,18 @@ jobs:
       - name: Testing selected downstream modules
         run: |
             echo "Reverse dependencies ordered by River stage"
-            cpanm --verbose CHI
-            cpanm --verbose Test::Class::Most
+            for module in
+                    CHI
+                    Test::Class::Most
+            do
+                echo $module
+                date
+                cpanm --notest $name
+                cpanm --verbose $name
+            done
+
+            #cpanm --verbose CHI
+            #cpanm --verbose Test::Class::Most
             #cpanm --verbose Debug::Client   # currently failing
             cpanm --verbose MooseX::Getopt::Usage
             cpanm --verbose Ubic
