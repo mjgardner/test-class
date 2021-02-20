@@ -50,7 +50,7 @@ jobs:
 
       - name: Install Extra dependencies
         run: |
-            for module in Test::Pod::Coverage Test::Perl::Critic Pod::Simple Test::Pod Perl::MinimumVersion Test::MinimumVersion Test::Spelling File::Which
+            for module in Test::Pod::Coverage Test::Perl::Critic Pod::Simple Test::Pod Perl::MinimumVersion Test::MinimumVersion Test::Spelling File::Which Test::Perl::Critic
              do
                 echo Start installing $module
                 date
@@ -67,6 +67,7 @@ jobs:
             RELEASE_TESTING=1 prove -l t/documented.t
             RELEASE_TESTING=1 prove -l t/pmv.t
             RELEASE_TESTING=1 prove -l t/spelling.t
+            RELEASE_TESTING=1 prove -l t/perlcritic.t
 
       - name: Create release
         if: ${{ matrix.perl-version == '5.32' }}
