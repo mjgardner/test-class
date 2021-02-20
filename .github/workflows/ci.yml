@@ -51,12 +51,12 @@ jobs:
       - name: Install Extra dependencies
         run: |
             cpanm --notest Test::Pod::Coverage Test::Perl::Critic Pod::Simple Test::Pod
-            perl -MTest::Pod -e 'print "Test::PodVERSION $Test::Pod::VERSION\n"'
+            perl -MTest::Pod -e 'print "Test::Pod::VERSION $Test::Pod::VERSION\n"'
             perl -MTest::Pod::Coverage -e 'print "Test::Pod::Coverage::VERSION $Test::Pod::Coverage::VERSION\n"'
 
-      - name: XT tests
+      - name: Release tests
         run: |
-            RELEASE_TESTING=1 prove xt/pod.t
+            RELEASE_TESTING=1 prove t/pod.t
 
       - name: Create release
         if: ${{ matrix.perl-version == '5.32' }}
