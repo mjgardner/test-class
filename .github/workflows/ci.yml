@@ -42,6 +42,7 @@ jobs:
 
       - name: Regular tests
         run: |
+            for module in A B C; do echo $module; done
             perl -v
             cpanm --notest Contextual::Return
             perl Makefile.PL
