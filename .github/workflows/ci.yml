@@ -65,8 +65,8 @@ jobs:
         run: |
             RELEASE_TESTING=1 prove -l t/pod.t
             RELEASE_TESTING=1 prove -l t/documented.t
-            RELEASE_TESTING=1 prove -l xt/pmv.t
-            RELEASE_TESTING=1 prove -l xt/spelling.t
+            RELEASE_TESTING=1 prove -l t/pmv.t
+            RELEASE_TESTING=1 prove -l t/spelling.t
 
       - name: Create release
         if: ${{ matrix.perl-version == '5.32' }}
