@@ -96,7 +96,7 @@ jobs:
       fail-fast: false
       matrix:
         perl-version:
-          - '5.32'
+          - "5.32"
           - "5.30"
           - "5.28"
           - "5.26"
@@ -158,8 +158,8 @@ jobs:
                 echo Start testing $module
                 date
                 set -x
-                cpanm --notest $module
-                cpanm --verbose --test-only $module
+                cpanm --notest --installdeps $module
+                cpanm --verbose $module
                 echo Finish testing $module
                 echo "==================="
             done
@@ -220,6 +220,6 @@ jobs:
       - name: Install Module on Linux and OSX
         if: ${{ ! startsWith( matrix.runner, 'windows-' )  }}
         run: |
-            cpanm Test-Class-*.tar.gz
+            cpanm --verbose Test-Class-*.tar.gz
             perl -MTest::Class -e 'print qq{$Test::Class::VERSION\n}'
 
