@@ -3,7 +3,11 @@
 use strict;
 use warnings;
 use autodie;
-use Test::More tests => 1;
+use Test::More;
+
+plan( skip_all => "Fails on Windows" ) if $^O eq 'MSWin32';
+
+plan tests => 1;
 
 use parent qw( Test::Class );
 
