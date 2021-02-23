@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: '*'
   pull_request:
-    branches: '*'
   schedule:
     - cron: '42 5 * * *'
 
@@ -157,7 +155,7 @@ jobs:
       - name: Testing selected downstream modules
         run: |
             echo "Reverse dependencies ordered by River stage"
-            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic
+            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO
             do
                 echo Start testing $module
                 date
@@ -167,12 +165,17 @@ jobs:
                 echo Finish testing $module
                 echo "==================="
             done
-            #cpanm --verbose Debug::Client   # currently failing
-            #cpanm --verbose Math::GSL  # needs gsl-config
-            #cpanm --verbose EntityModel # fails
+            # Debug::Client - fail
+            # Math::GSL     - needs gsl-config
+            # EntityModel   - fails
+            # PluceneSimple - not on CPAN?
+            # Mail::BIMI    - other dependencies fail
+            # Perl6-Pod     - other dependencies fail
+            # Fuse::Class   - needs libfuse-dev
+            # Crypt::Perl   - takes a looong time to build, have not waited for it to finish
 
             echo "Other reverse dependencies listed by ABC"
-            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode
+            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics
             do
                 echo Start testing $module
                 date
