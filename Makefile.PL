@@ -83,6 +83,7 @@ my %WriteMakefileArgs = (
                     'Test'                  => '0',
                     'base'                  => '0',
                     'overload'              => '0',
+                    'Capture::Tiny'         => '0',
                 },
             },
         },
