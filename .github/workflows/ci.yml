@@ -67,9 +67,10 @@ jobs:
             RELEASE_TESTING=1 prove -l t/903-spelling.t
             RELEASE_TESTING=1 prove -l t/904-perlcritic.t
 
-      #- name: Verbose Release tests
-      #  run: |
-      #      make test RELEASE_TESTING=1 TEST_VERBOSE=1
+      - name: Verbose Release tests
+        run: |
+            make test RELEASE_TESTING=1 TEST_VERBOSE=1
+            RELEASE_TESTING=1 TEST_VERBOSE=1 prove t/
 
       - name: Create release
         if: ${{ matrix.perl-version == '5.32' }}
