@@ -154,8 +154,9 @@ jobs:
 
       - name: Testing selected downstream modules
         run: |
+            apt-get install -y libgsl-dev  # needed by Math::GSL
             echo "Reverse dependencies ordered by River stage"
-            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO
+            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO Math::GSL
             do
                 echo Start testing $module
                 date
@@ -166,7 +167,6 @@ jobs:
                 echo "==================="
             done
             # Debug::Client - fail
-            # Math::GSL     - needs gsl-config
             # EntityModel   - fails
             # PluceneSimple - not on CPAN?
             # Mail::BIMI    - other dependencies fail
