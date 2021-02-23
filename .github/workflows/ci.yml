@@ -141,6 +141,9 @@ jobs:
       image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
 
     name: Test downstream on ${{ matrix.perl-version }}
+    # TERM needed by Term::ReadLine::Gnu
+    env:
+      TERM: xterm-256color
     steps:
       - name: Download a single artifact
         uses: actions/download-artifact@v2
@@ -169,10 +172,10 @@ jobs:
             done
             # EntityModel   - v0.102 fails on the majority of CPAN tester as well.
             # PluceneSimple - not on CPAN?
-            # Mail::BIMI    - other dependencies fail
-            # Perl6-Pod     - other dependencies fail
-            # Fuse::Class   - needs libfuse-dev
-            # Crypt::Perl   - takes a looong time to build, have not waited for it to finish
+            # Mail::BIMI    - v2.9.0 of Mail::SPF, the dependency of Mail::BIMI fails to install (and it wants to write to /usr/sbin)
+            # Perl6-Pod     - v0.74 fails to pass tests
+            # Fuse::Class   - v0.03 needs libfuse-dev but also depends on Unix::Mknod that fails
+            # Crypt::Perl   - v0.34 takes a looong time to build, 10-20 min, so we don't include it now.
 
             echo "Other reverse dependencies listed by ABC"
             for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI
