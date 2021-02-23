@@ -175,7 +175,7 @@ jobs:
             # Crypt::Perl   - takes a looong time to build, have not waited for it to finish
 
             echo "Other reverse dependencies listed by ABC"
-            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics
+            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS
             do
                 echo Start testing $module
                 date
