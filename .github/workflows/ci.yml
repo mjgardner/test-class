@@ -126,7 +126,7 @@ jobs:
       - name: Install Module
         run: |
             perl -v
-            cpanm Test-Class-*.tar.gz
+            cpanm --verbose Test-Class-*.tar.gz
 
 
   test-downstream:
