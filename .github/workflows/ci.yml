@@ -155,8 +155,9 @@ jobs:
       - name: Testing selected downstream modules
         run: |
             apt-get install -y libgsl-dev  # needed by Math::GSL
+            apt-get install -y libreadline-dev  # needed by Term::ReadLine::Gnu (which is needed by Term::CLI and Debug::Client)
             echo "Reverse dependencies ordered by River stage"
-            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO Math::GSL
+            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO Math::GSL Debug::Client
             do
                 echo Start testing $module
                 date
@@ -166,8 +167,7 @@ jobs:
                 echo Finish testing $module
                 echo "==================="
             done
-            # Debug::Client - fail
-            # EntityModel   - fails
+            # EntityModel   - v0.102 fails on the majority of CPAN tester as well.
             # PluceneSimple - not on CPAN?
             # Mail::BIMI    - other dependencies fail
             # Perl6-Pod     - other dependencies fail
@@ -175,7 +175,7 @@ jobs:
             # Crypt::Perl   - takes a looong time to build, have not waited for it to finish
 
             echo "Other reverse dependencies listed by ABC"
-            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS
+            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI
             do
                 echo Start testing $module
                 date
@@ -187,7 +187,6 @@ jobs:
             done
             #cpanm --verbose Analizo # failed
             #cpanm --verbose App::PRT # failed
-            #cpanm --verbose Term::CLI  # needs Term::ReadLine::Gnu
 
   native:
     needs: build-in-container
