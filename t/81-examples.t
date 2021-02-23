@@ -3,6 +3,7 @@ use warnings;
 
 use Test::More;
 use Capture::Tiny qw(capture);
+plan( skip_all => "This test fails on Perl 5.12 and earlier probably because of lack of subtest support." ) if $] < 5.014;
 
 subtest good_test_count_and_exception => sub {
     my ($out, $err, $exit) = capture { system "$^X t/examples/good-test-count-and-exception.pl" };
