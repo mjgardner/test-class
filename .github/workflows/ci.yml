@@ -177,8 +177,8 @@ jobs:
             # Fuse::Class   - v0.03 needs libfuse-dev but also depends on Unix::Mknod that fails
             # Crypt::Perl   - v0.34 takes a looong time to build, 10-20 min, so we don't include it now.
 
-            echo "Other reverse dependencies listed by ABC"
-            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI
+            echo "Other reverse dependencies"
+            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI App::PRT Tie::Tools SQL::OOP Hessian::Translator Business::GL::Postalcode Business::FO::Postalcode Business::DK::Postalcode
             do
                 echo Start testing $module
                 date
@@ -188,8 +188,7 @@ jobs:
                 echo Finished testing $module
                 echo "==================="
             done
-            #cpanm --verbose Analizo # failed
-            #cpanm --verbose App::PRT # failed
+            # Analizo   - v1.25.1 ?
 
   native:
     needs: build-in-container
