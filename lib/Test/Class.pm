@@ -289,8 +289,15 @@ sub _run_method {
         return $is_ok;
     };
 
-    my $exception;
-    $skip_reason = try { $self->$method } catch { $exception = $_; undef };
+    my ($exception, $succeeded);
+    try {
+        $skip_reason = $self->$method;
+        $succeeded = 1;
+    }
+    catch {
+        $exception = $_;
+    };
+
     $skip_reason = $method unless $skip_reason;
 
     my $num_done = $Builder->current_test - $num_start;
@@ -298,7 +305,7 @@ sub _run_method {
     $num_expected = $num_done if $num_expected eq NO_PLAN;
     if ($num_done == $num_expected) {
         _exception_failure($self, $method, $exception, $tests)
-                if $exception;
+                if !$succeeded;
     } elsif ($num_done > $num_expected) {
         local $Test::Builder::Level = $Test::Builder::Level+1;
         my $class = ref $self;
@@ -309,7 +316,7 @@ sub _run_method {
         }
     } else {
         until (($Builder->current_test - $num_start) >= $num_expected) {
-            if ($exception) {
+            if (!$succeeded) {
                 _exception_failure($self, $method, $exception, $tests);
                 $skip_reason = "$method died";
                 $exception = '';
