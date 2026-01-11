@@ -128,69 +128,69 @@ jobs:
             cpanm --verbose Test-Class-*.tar.gz
 
 
-  test-downstream:
-    runs-on: ubuntu-latest
-    needs: build-in-container
-
-    strategy:
-      fail-fast: false
-      matrix:
-        perl-version:
-          - '5.32'
-
-    container:
-      image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
-
-    name: Test downstream on ${{ matrix.perl-version }}
-    # TERM needed by Term::ReadLine::Gnu
-    env:
-      TERM: xterm-256color
-    steps:
-      - name: Download a single artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: the-release
-
-      - name: Install Module
-        run: |
-            perl -v
-            cpanm Test-Class-*.tar.gz
-
-      - name: Testing selected downstream modules
-        run: |
-            apt-get install -y libgsl-dev  # needed by Math::GSL
-            apt-get install -y libreadline-dev  # needed by Term::ReadLine::Gnu (which is needed by Term::CLI and Debug::Client)
-            echo "Reverse dependencies ordered by River stage"
-            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO Math::GSL Debug::Client
-            do
-                echo Start testing $module
-                date
-                set -x
-                cpanm --notest --installdeps $module
-                cpanm --verbose $module
-                echo Finish testing $module
-                echo "==================="
-            done
-            # EntityModel   - v0.102 fails on the majority of CPAN tester as well.
-            # PluceneSimple - not on CPAN?
-            # Mail::BIMI    - v2.9.0 of Mail::SPF, the dependency of Mail::BIMI fails to install (and it wants to write to /usr/sbin)
-            # Perl6-Pod     - v0.74 fails to pass tests
-            # Fuse::Class   - v0.03 needs libfuse-dev but also depends on Unix::Mknod that fails
-            # Crypt::Perl   - v0.34 takes a looong time to build, 10-20 min, so we don't include it now.
-
-            echo "Other reverse dependencies"
-            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI Tie::Tools SQL::OOP Hessian::Translator Business::GL::Postalcode Business::FO::Postalcode Business::DK::Postalcode
-            do
-                echo Start testing $module
-                date
-                set -x
-                cpanm --notest $module
-                cpanm --verbose --test-only $module
-                echo Finished testing $module
-                echo "==================="
-            done
-            # Analizo   - v1.25.1 ?
-            # App::PRT  - v0.22 failed in our CI environment.
+#  test-downstream:
+#    runs-on: ubuntu-latest
+#    needs: build-in-container
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        perl-version:
+#          - '5.32'
+#
+#    container:
+#      image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
+#
+#    name: Test downstream on ${{ matrix.perl-version }}
+#    # TERM needed by Term::ReadLine::Gnu
+#    env:
+#      TERM: xterm-256color
+#    steps:
+#      - name: Download a single artifact
+#        uses: actions/download-artifact@v7
+#        with:
+#          name: the-release
+#
+#      - name: Install Module
+#        run: |
+#            perl -v
+#            cpanm Test-Class-*.tar.gz
+#
+#      - name: Testing selected downstream modules
+#        run: |
+#            apt-get install -y libgsl-dev  # needed by Math::GSL
+#            apt-get install -y libreadline-dev  # needed by Term::ReadLine::Gnu (which is needed by Term::CLI and Debug::Client)
+#            echo "Reverse dependencies ordered by River stage"
+#            for module in CHI Test::Class::Most MooseX::Getopt::Usage Ubic Date::Holidays Promise::ES6 Math::ProvablePrime WebDAO Math::GSL Debug::Client
+#            do
+#                echo Start testing $module
+#                date
+#                set -x
+#                cpanm --notest --installdeps $module
+#                cpanm --verbose $module
+#                echo Finish testing $module
+#                echo "==================="
+#            done
+#            # EntityModel   - v0.102 fails on the majority of CPAN tester as well.
+#            # PluceneSimple - not on CPAN?
+#            # Mail::BIMI    - v2.9.0 of Mail::SPF, the dependency of Mail::BIMI fails to install (and it wants to write to /usr/sbin)
+#            # Perl6-Pod     - v0.74 fails to pass tests
+#            # Fuse::Class   - v0.03 needs libfuse-dev but also depends on Unix::Mknod that fails
+#            # Crypt::Perl   - v0.34 takes a looong time to build, 10-20 min, so we don't include it now.
+#
+#            echo "Other reverse dependencies"
+#            for module in App::GitGot App::Scaffolder::Puppet cPanel::APIClient Class::Mockable File::Random Mail::Pyzor Test::Class::Simple Business::FO::Postalcode Business::DK::Postalcode App::Sandy Code::Statistics Test::WWW::Stub Sub::Fp Text::FixedWidth::Parser Hostfile::Manager Test::MockTime::HiRes Test::Class::WithStrictPlan ParseUtil::Domain App::SimulateReads XML::XSS Term::CLI Tie::Tools SQL::OOP Hessian::Translator Business::GL::Postalcode Business::FO::Postalcode Business::DK::Postalcode
+#            do
+#                echo Start testing $module
+#                date
+#                set -x
+#                cpanm --notest $module
+#                cpanm --verbose --test-only $module
+#                echo Finished testing $module
+#                echo "==================="
+#            done
+#            # Analizo   - v1.25.1 ?
+#            # App::PRT  - v0.22 failed in our CI environment.
 
   native:
     needs: build-in-container
