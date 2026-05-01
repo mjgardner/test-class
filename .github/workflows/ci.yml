@@ -84,7 +84,7 @@ jobs:
 
       - name: Archive artifacts
         if: ${{ matrix.perl-version == '5.32' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: the-release
           path: |
@@ -118,7 +118,7 @@ jobs:
     name: Test on ${{ matrix.perl-version }}
     steps:
       - name: Download a single artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: the-release
 
@@ -147,7 +147,7 @@ jobs:
 #      TERM: xterm-256color
 #    steps:
 #      - name: Download a single artifact
-#        uses: actions/download-artifact@v7
+#        uses: actions/download-artifact@v8
 #        with:
 #          name: the-release
 #
@@ -205,7 +205,7 @@ jobs:
 
     steps:
       - name: Download a single artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: the-release
 
