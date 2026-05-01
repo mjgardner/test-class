@@ -9,7 +9,7 @@ on:
 
 # Build the module on several versions of Perl using an image that already has a lot of modules installed.
 # This will provide a fast feedback if a commit broke anything in the unit-tests.
-# Using 5.32 we also create the tar.gz file and save it as an artifact.
+# Using 5.42 we also create the tar.gz file and save it as an artifact.
 #
 # Once this job passed we launch several jobs in parallel
 # 1) Verify that we can install the created distribution on many versions of Perl using a Linux Docker image with vanilla Perl.
@@ -24,18 +24,20 @@ jobs:
   build-in-container:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        perl-version:
-          - '5.32'
-          - '5.30'
-          - '5.20'
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        perl-version:
+#          - '5.32'
+#          - '5.30'
+#          - '5.20'
 
     container:
-      image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
+      #image: perldocker/perl-tester:${{ matrix.perl-version }}     # https://hub.docker.com/r/perldocker/perl-tester
+      image: perldocker/perl-tester:5.42     # https://hub.docker.com/r/perldocker/perl-tester
 
-    name: Build on Linux with Perl ${{ matrix.perl-version }}
+    #name: Build on Linux with Perl ${{ matrix.perl-version }}
+    name: Build on Linux with Perl 5.42
     steps:
       - uses: actions/checkout@v6
 
@@ -73,7 +75,7 @@ jobs:
       #      make test RELEASE_TESTING=1 TEST_VERBOSE=1
 
       - name: Create release
-        if: ${{ matrix.perl-version == '5.32' }}
+        #if: ${{ matrix.perl-version == '5.32' }}
         run: |
             # Increase the version number by 0.000001 so in the reports we can be sure we are using the code to be released.
             perl -i -p -e "s/VERSION\s*=\s*'(\d+\.\d+)'/q{VERSION = '} . (\$1 + 0.01) . q{'}/e" lib/Test/*.pm lib/Test/Class/*.pm
@@ -83,7 +85,7 @@ jobs:
             make dist
 
       - name: Archive artifacts
-        if: ${{ matrix.perl-version == '5.32' }}
+        #if: ${{ matrix.perl-version == '5.32' }}
         uses: actions/upload-artifact@v7
         with:
           name: the-release
@@ -99,6 +101,7 @@ jobs:
       fail-fast: false
       matrix:
         perl-version:
+          - "5.42"
           - "5.32"
           - "5.30"
           - "5.28"
