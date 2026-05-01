@@ -41,10 +41,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Regular tests
+      - name: Show Version
         run: |
             perl -v
+
+      - name: Install dependencies
+        run: |
             cpanm --notest Contextual::Return
+            cpanm --notest --installdeps .
+
+      - name: Regular tests
+        run: |
             perl Makefile.PL
             make
             make test
