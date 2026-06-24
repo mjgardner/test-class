@@ -39,7 +39,7 @@ jobs:
     #name: Build on Linux with Perl ${{ matrix.perl-version }}
     name: Build on Linux with Perl 5.42
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Show Version
         run: |
